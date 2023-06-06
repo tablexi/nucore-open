@@ -47,7 +47,7 @@ class Notifier < ActionMailer::Base
                        end
 
     @accounts_grouped_by_owner = accounts.group_by(&:owner_user)
-    send_nucore_mail @user.email, text("views.notifier.review_orders.subject", abbreviation: @facility.abbreviation), nil, Settings.email.invoice_bcc
+    send_nucore_mail @user.email, text("views.notifier.review_orders.subject", abbreviation: @facility.abbreviation)
   end
 
   # Billing sends out the statement for the month. Appropriate users get
@@ -59,7 +59,7 @@ class Notifier < ActionMailer::Base
     @account = args[:account]
     @statement = args[:statement]
     attach_statement_pdf
-    send_nucore_mail args[:user].email, text("views.notifier.statement.subject", facility: @facility)
+    send_nucore_mail args[:user].email, text("views.notifier.statement.subject", facility: @facility), nil, Settings.email.invoice_bcc
   end
 
   def order_detail_status_changed(order_detail)
