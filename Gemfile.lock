@@ -367,7 +367,7 @@ GEM
     jwt (2.7.0)
     kgio (2.11.4)
     kostya-sigar (2.0.10)
-    kt-paperclip (7.1.1)
+    kt-paperclip (7.2.0)
       activemodel (>= 4.2.0)
       activesupport (>= 4.2.0)
       marcel (~> 1.0.1)
