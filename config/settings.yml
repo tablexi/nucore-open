@@ -44,6 +44,10 @@ validator:
     factory: # relative to Rails.root
     helper: 'spec/validator_helper' # relative to Rails.root
 
+testing:
+  account_factory: "nufs_account"
+  api_account_factory: ~
+
 email:
   from: 'noreply@example.com'
   fake:
