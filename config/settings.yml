@@ -50,6 +50,7 @@ testing:
 
 email:
   from: 'noreply@example.com'
+  invoice_bcc: 'invoice.bcc@example.com'
   fake:
     enabled: false
     to:
