@@ -1,17 +1,17 @@
 name: Staging auto deployment
 
 # When this action will be executed
-on:
-  workflow_run:
-    workflows: [ "Run test suite" ]
-    branches: [ master ]
-    types:
-      - completed
-# TODO: remove below after implementing automated stage deployments
 # on:
-#   push:
-#     branches:
-#       - "*"
+#   workflow_run:
+#     workflows: [ "Run test suite" ]
+#     branches: [ master ]
+#     types:
+#       - completed
+# TODO: remove below after implementing automated stage deployments
+on:
+  push:
+    branches:
+      - "*"
 
   # Allow manually triggering this workflow by visiting
   # https://github.com/tablexi/nucore-open/actions/workflows/nucore-auto-deploy-staging.yml
@@ -20,10 +20,25 @@ on:
 
 jobs:
   deploy-staging:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
+      - name: Install SSH key to Server
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          name: github-actions
+          known_hosts: 'random-placeholder-value-replaced-by-keyscan-below'
+          config: |
+            host tablexi-shared02.txihosting.com
+              IdentityFile ~/.ssh/github-actions
+              IdentitiesOnly yes
+              ForwardAgent yes
+
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }}
+
       - name: Checkout to the branch
         uses: actions/checkout@v3
 
@@ -32,10 +47,8 @@ jobs:
           ruby-version: 3.1.1 # Not needed with a .ruby-version file
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
-      # TODO: implement automated stage deployments
-      # - uses: miloserdow/capistrano-deploy@v3
-      #   with:
-      #     target: staging
-      #     deploy_key: ${{ secrets.DEPLOY_ENC_KEY }}
-      #     enc_rsa_key_val: ${{ vars.DEPLOY_PRIVATE_KEY }}
-
+      - name: Deploy to staging
+        run: |
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/github-actions
+          bundle exec cap staging deploy
