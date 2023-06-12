@@ -1,17 +1,12 @@
 name: Staging auto deployment
 
 # When this action will be executed
-# on:
-#   workflow_run:
-#     workflows: [ "Run test suite" ]
-#     branches: [ master ]
-#     types:
-#       - completed
-# TODO: remove below after implementing automated stage deployments
 on:
-  push:
-    branches:
-      - "*"
+  workflow_run:
+    workflows: [ "Run test suite" ]
+    branches: [ master ]
+    types:
+      - completed
 
   # Allow manually triggering this workflow by visiting
   # https://github.com/tablexi/nucore-open/actions/workflows/nucore-auto-deploy-staging.yml
@@ -20,7 +15,7 @@ on:
 
 jobs:
   deploy-staging:
-    # if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
