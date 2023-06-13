@@ -129,6 +129,7 @@ RSpec.describe "Creating a journal" do
           click_button "Create"
           expect(page).to have_content "90-Day Justification"
           click_link "OK"
+          # sometimes takes longer to load and causes failures in CI
           expect(page).to have_content "We are in the year-end closing window.", wait: 4
         end
       end
