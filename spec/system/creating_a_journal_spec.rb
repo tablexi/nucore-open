@@ -126,7 +126,8 @@ RSpec.describe "Creating a journal" do
 
         it "has a 90 day and journal creation reminder pop up" do
           click_button "Create"
-          expect(page).to have_content "90-Day Justification"
+          # sometimes takes longer to load and causes failures in CI
+          expect(page).to have_content "90-Day Justification", wait: 4
           click_link "OK"
           expect(page).to have_content "We are in the year-end closing window."
         end
