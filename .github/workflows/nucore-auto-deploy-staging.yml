@@ -19,15 +19,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # We are using the tablexi/infrastructure repo to add the public key for txinucorega to the .ssh/authorized_users file for nucore
+      # Here we install the private key so we can push the release
+      # https://github.com/LightningFF/deploy/wiki/Deploy-with-Capistrano-&-Github-Actions-on-Git-merge
       - name: Install SSH key to Server
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_KEY }}
-          name: github-actions
+          name: txinucorega
           known_hosts: 'random-placeholder-value-replaced-by-keyscan-below'
           config: |
             host tablexi-shared02.txihosting.com
-              IdentityFile ~/.ssh/github-actions
+              IdentityFile ~/.ssh/txinucorega
               IdentitiesOnly yes
               ForwardAgent yes
 
@@ -45,5 +48,5 @@ jobs:
       - name: Deploy to staging
         run: |
           eval "$(ssh-agent -s)"
-          ssh-add ~/.ssh/github-actions
+          ssh-add ~/.ssh/txinucorega
           bundle exec cap staging deploy
