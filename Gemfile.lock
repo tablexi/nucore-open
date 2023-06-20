@@ -364,7 +364,7 @@ GEM
     jquery-ui-rails (6.0.1)
       railties (>= 3.2.16)
     json (2.6.3)
-    jwt (2.7.0)
+    jwt (2.7.1)
     kgio (2.11.4)
     kostya-sigar (2.0.10)
     kt-paperclip (7.2.0)
