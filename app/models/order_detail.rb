@@ -753,7 +753,11 @@ class OrderDetail < ApplicationRecord
   end
 
   def in_dispute?
-    dispute_at.present? && dispute_resolved_at.nil? && !canceled?
+    dispute_at.present? && dispute_resolved_at.nil? && !canceled? && !auto_disputed?
+  end
+
+  def auto_disputed?
+    account.auto_dispute_by.present?
   end
 
   def in_review?

@@ -758,6 +758,9 @@ en:
       in_dispute:
         badge: In Dispute
         alert: 'To resolve the dispute, please make the necessary changes, including entering in Resolution Notes, and click "Resolve Dispute".'
+      auto_disputed:
+        badge: Auto Dispute
+        alert: 'Stuff here'
       in_open_journal:
         badge: Open Journal
         alert: You are unable to edit all aspects of this order because it is part of a pending journal. Please close the journal first.
