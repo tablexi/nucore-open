@@ -11,7 +11,7 @@ class OrderDetailNoticePresenter < DelegateClass(OrderDetail)
 
     statuses << Notice.new(:in_review) if in_review?
     statuses << Notice.new(:in_dispute) if in_dispute?
-    statuses << Notice.new(:auto_disputed) if auto_disputed?
+    statuses << Notice.new(:global_admin_must_resolve) if global_admin_must_resolve?
     statuses << Notice.new(:missing_form) if missing_form? && !problem?
     statuses << Notice.new(:can_reconcile) if can_reconcile_journaled?
     statuses << Notice.new(:in_open_journal) if in_open_journal?

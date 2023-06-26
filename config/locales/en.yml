@@ -758,7 +758,7 @@ en:
       in_dispute:
         badge: In Dispute
         alert: 'To resolve the dispute, please make the necessary changes, including entering in Resolution Notes, and click "Resolve Dispute".'
-      auto_disputed:
+      global_admin_must_resolve:
         badge: Auto Dispute
         alert: 'Only global administrators can resolve disputes with this account type.'
       in_open_journal:

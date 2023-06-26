@@ -753,10 +753,10 @@ class OrderDetail < ApplicationRecord
   end
 
   def in_dispute?
-    dispute_at.present? && dispute_resolved_at.nil? && !canceled? && !auto_disputed?
+    dispute_at.present? && dispute_resolved_at.nil? && !canceled? && !global_admin_must_resolve?
   end
 
-  def auto_disputed?
+  def global_admin_must_resolve?
     account&.global_admin_must_resolve_disputes?
   end
 
