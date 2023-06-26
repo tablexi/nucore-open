@@ -757,7 +757,7 @@ class OrderDetail < ApplicationRecord
   end
 
   def auto_disputed?
-    account.auto_dispute_by.present?
+    account&.global_admin_must_resolve_disputes?
   end
 
   def in_review?
