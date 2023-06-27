@@ -23,10 +23,14 @@ https://www.synaccess-net.com/np-02b
 Dataprobe iPIO
 https://dataprobe.com/ipio-8-ethernet-io/
 
+https://pm.tablexi.com/issues/65431
 
 ## Dependencies
+Synaccess:
 https://github.com/tablexi/synaccess
-gem "dataprobe", path: "vendor/engines/dataprobe"
+
+Dataprobe:
+`gem "dataprobe", path: "vendor/engines/dataprobe"`
 
 ## Known issues
 
