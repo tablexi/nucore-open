@@ -524,7 +524,6 @@ en:
       instruct:
         dispute: "To resolve the dispute, please make the necessary changes and click \"Resolve Dispute\"."
         bundle: "This order is part of a bundle.  Below is a summary of related bundle order line items."
-        admin_resolution_notice: Only Global Admins can resolve
       notice:
         no_results: "No results have been uploaded yet."
         no_time: "You must enter actual start/end reservation times."
