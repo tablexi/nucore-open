@@ -1,7 +1,7 @@
 # Relays
 
 ## Overview
-A relay is a wifi-enabled outlet.  Facilities often use these to control the power for a monitor or othernon-essential equipment as a means of access control.
+A relay is a wifi-enabled outlet.  Facilities often use these to control the power for a monitor or other non-essential equipment as a means of access control.
 
 Instruments can be configured so that when a user begins the reservation, NUCore sends a toggle signal and remotely switches on the power so the instrument can be used.  When the user ends their reservation (or the reservation ends) the power is switched off again.
 
@@ -41,3 +41,5 @@ This is a connectivity issue that is either because of erronious relay settings 
 First, check in NUCore to ensure the correct IP address and port have been provided -- the standard port is 80.
 
 NUCore needs to make an HTTP connection to the relay. So, from the NUCore server, test to see if the relay's IP address & port respond to `ping` and `curl`. If you are able to `ping` the IP address but it does not respond to `curl`, there may be a firewall issue that needs to be addressed.
+
+If the issue is only impacting 1 or 2 facilities, that is a good indication that the problem may be firewall related (not NUCore).
