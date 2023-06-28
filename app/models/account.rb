@@ -144,6 +144,10 @@ class Account < ApplicationRecord
   def auto_dispute_by
     nil
   end
+  
+  def global_admin_must_resolve_disputes?
+    false
+  end
 
   def owner_user_name
     owner_user.try(:name) || ""
