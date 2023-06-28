@@ -3,12 +3,6 @@
 require "rails_helper"
 
 RSpec.describe "Resolving a disputed order" do
-  class OrderDetail < ApplicationRecord
-    def global_admin_must_resolve?
-      true
-    end
-  end
-
   let(:item) { create(:setup_item) }
   let(:facility) { item.facility }
   let(:owner) { create(:user) }
@@ -18,18 +12,21 @@ RSpec.describe "Resolving a disputed order" do
   let(:order) { create(:complete_order, product: item, account:) }
   let(:logged_in_user) { nil }
 
-  let(:order_detail) do
-    od = order.order_details.first
-    od.update(
-      reviewed_at: 5.days.ago,
-      dispute_at: 3.days.ago,
+  let!(:order_detail) do
+    create(
+      :order_detail,
+      :disputed,
+      product: item,
+      order: order,
       dispute_by: owner,
-      dispute_reason: "Testing, testing"
+      dispute_reason: "Testing, testing",
+      fulfilled_at: Date.today,
+      account: account
     )
-    od
   end
 
   before do
+    allow_any_instance_of(OrderDetailNoticePresenter).to receive(:global_admin_must_resolve?).and_return(true)
     login_as logged_in_user
     visit facility_disputed_orders_path facility
     click_link order_detail.id.to_s
@@ -39,7 +36,8 @@ RSpec.describe "Resolving a disputed order" do
     let(:logged_in_user) { administrator }
 
     it "allows global admins to resolve a disputed order" do
-      expect(page).to have_content "Resolution Notes"
+      click_on "Save"
+      expect(page).to have_content "The order was successfully updated."
     end
   end
 
