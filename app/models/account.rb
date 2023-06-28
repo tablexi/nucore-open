@@ -131,6 +131,10 @@ class Account < ApplicationRecord
     account_number <=> other.account_number
   end
 
+  def global_admin_must_resolve_disputes?
+    false
+  end
+
   def owner_user_name
     owner_user.try(:name) || ""
   end
