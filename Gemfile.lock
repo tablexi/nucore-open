@@ -630,7 +630,7 @@ GEM
     thor (1.2.2)
     thread_safe (0.3.6)
     tilt (2.2.0)
-    timeout (0.3.2)
+    timeout (0.4.0)
     timers (4.3.5)
     ttfunk (1.7.0)
     tzinfo (2.0.6)
