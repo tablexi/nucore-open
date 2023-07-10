@@ -268,7 +268,7 @@ GEM
       warden (~> 1.2.3)
     devise-encryptable (0.2.0)
       devise (>= 2.1.0)
-    devise-security (0.17.0)
+    devise-security (0.18.0)
       devise (>= 4.3.0)
     devise_ldap_authenticatable (0.8.7)
       devise (>= 3.4.1)
