@@ -23,7 +23,6 @@
           - if od.state == "complete" && current_user.administrator?
             = f.input :fulfilled_at,
               as: :string,
-              label: "&nbsp;".html_safe,
               placeholder: OrderDetail.human_attribute_name(:fulfilled_at),
               input_html: { class: "datepicker__data js--showOnCompleteStatus",
                 data: { min_date: ValidFulfilledAtDate.min.iso8601,

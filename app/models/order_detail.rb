@@ -927,6 +927,13 @@ class OrderDetail < ApplicationRecord
     ActiveModel::Type::Boolean.new.cast(resolve_dispute)
   end
 
+  def update_completed_fulfilled_at
+    return unless complete?
+    return if manual_fulfilled_at_time.beginning_of_day == fulfilled_at.beginning_of_day
+
+    make_complete
+  end
+
   private
 
   # Is there enough information to move an associated order to complete/problem?

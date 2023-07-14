@@ -258,7 +258,7 @@ RSpec.describe "Managing an order detail" do
     end
   end
 
-  describe "updating fulfilled date" do
+  describe "updating fulfilled date of a completed order" do
     before do
       order_detail.update!(state: :complete, fulfilled_at: 3.days.ago, order_status: OrderStatus.complete)
       visit manage_facility_order_order_detail_path(facility, order, order_detail)
@@ -267,13 +267,19 @@ RSpec.describe "Managing an order detail" do
     context "as global admin" do
       let(:logged_in_user) { administrator }
 
-      it "fills out fulfilled at" do
+      it "can update the fulfilled at date" do
         fill_in "order_detail[fulfilled_at]", with: DateTime.now.to_s
         click_button "Save"
         expect(page).to have_content("The order was successfully updated.")
+        click_link order_detail
+        expect(page).to have_content SpecDateHelper.format_usa_date(Date.today)
       end
     end
 
-    context "as non-global admin"
+    context "as non-global admin" do
+      let(:logged_in_user) { director }
+
+      it "cannont update the fulfilled at date"
+    end
   end
 end
