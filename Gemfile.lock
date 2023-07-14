@@ -293,6 +293,8 @@ GEM
       devise (> 2.0.0)
       ruby-saml (~> 1.7)
     diff-lcs (1.5.0)
+    domain_name (0.5.20190701)
+      unf (>= 0.0.5, < 1.0.0)
     dry-configurable (1.0.1)
       dry-core (~> 1.0, < 2)
       zeitwerk (~> 2.6)
@@ -364,6 +366,9 @@ GEM
     hashdiff (1.0.1)
     health_check (3.1.0)
       railties (>= 5.0)
+    http-accept (1.7.0)
+    http-cookie (1.0.5)
+      domain_name (~> 0.5)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     icalendar (2.8.0)
@@ -403,6 +408,8 @@ GEM
       net-imap
       net-pop
       net-smtp
+    mailgun-ruby (1.2.10)
+      rest-client (>= 2.0.2)
     marcel (1.0.2)
     matrix (0.4.2)
     method_source (1.0.0)
@@ -434,6 +441,7 @@ GEM
     net-smtp (0.3.3)
       net-protocol
     net-ssh (7.1.0)
+    netrc (0.11.0)
     nio4r (2.5.9)
     nokogiri (1.15.3)
       mini_portile2 (~> 2.8.2)
@@ -530,6 +538,11 @@ GEM
     responders (3.1.0)
       actionpack (>= 5.2)
       railties (>= 5.2)
+    rest-client (2.1.0)
+      http-accept (>= 1.7.0, < 2.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 4.0)
+      netrc (~> 0.8)
     rexml (3.2.5)
     rollbar (3.4.0)
     rspec-activejob (0.6.1)
@@ -657,6 +670,9 @@ GEM
       tzinfo (>= 1.0.0)
     uglifier (4.1.18)
       execjs (>= 0.3.0, < 3)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.8.2)
     unicode-display_width (2.4.2)
     unicorn (6.1.0)
       kgio (~> 2.6)
@@ -746,6 +762,7 @@ DEPENDENCIES
   kt-paperclip
   ldap_authentication!
   letter_opener
+  mailgun-ruby (~> 1.2.10)
   matrix
   mysql2
   nested_form_fields
