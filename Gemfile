@@ -80,7 +80,7 @@ gem "ice_cube"
 gem "jwt"
 
 # Optional: File uploads to S3
-# gem "aws-sdk-s3"
+gem "aws-sdk-s3"
 
 # Optional: File uploads to Azure Blob via ActiveStorage
 # gem "azure-storage-blob", "~> 2.0", require: false
