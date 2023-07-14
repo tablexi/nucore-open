@@ -19,7 +19,17 @@
       .span2
         - if @order_statuses
           = f.association :order_status, collection: @order_statuses, label_method: :name_with_level, include_blank: false
-          - if f.object.fulfilled_at.blank? || f.object.fulfilled_at_changed?
+          - od = f.object
+          - if od.state == "complete" && current_user.administrator?
+            = f.input :fulfilled_at,
+              as: :string,
+              label: "&nbsp;".html_safe,
+              placeholder: OrderDetail.human_attribute_name(:fulfilled_at),
+              input_html: { class: "datepicker__data js--showOnCompleteStatus",
+                data: { min_date: ValidFulfilledAtDate.min.iso8601,
+                  max_date: ValidFulfilledAtDate.max.iso8601,
+                  complete_target: "#order_detail_order_status_id"}}
+          - elsif od.fulfilled_at.blank? || od.fulfilled_at_changed?
             = f.input :fulfilled_at,
               as: :string,
               label: "&nbsp;".html_safe,
