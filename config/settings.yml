@@ -138,8 +138,8 @@ feature:
   kiosk_view: true
   bypass_kiosk_auth: false
   revenue_account_editable: false
-  active_storage: false
-  active_storage_for_images_only: false
+  active_storage: true
+  active_storage_for_images_only: true
   facility_tile_list: <%= ENV.fetch("FACILITY_TILE_LIST", false) %>  
   facility_tile_list_admin: false
   po_require_affiliate_account: true
@@ -154,10 +154,10 @@ split_accounts:
 # appropriate environment, e.g. config/settings/production.yml.
 # If you wish to use it for development, add it to a `config/settings/development.local.yml`
 # file (this file is gitignored).
-paperclip:
-  storage: filesystem
-  url: ":rails_relative_url_root/system/:class/:attachment/:id_partition/:style/:safe_filename"
-  path: ":rails_root/public/system/:class/:attachment/:id_partition/:style/:safe_filename"
+# paperclip:
+#   storage: filesystem
+#   url: ":rails_relative_url_root/system/:class/:attachment/:id_partition/:style/:safe_filename"
+#   path: ":rails_root/public/system/:class/:attachment/:id_partition/:style/:safe_filename"
 
 # saml:
 #   create_user: true
