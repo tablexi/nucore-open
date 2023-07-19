@@ -267,12 +267,19 @@ RSpec.describe "Managing an order detail" do
     context "as global admin" do
       let(:logged_in_user) { administrator }
 
-      it "can update the fulfilled at date" do
+      before do
         fill_in "order_detail[fulfilled_at]", with: DateTime.now.to_s
         click_button "Save"
         expect(page).to have_content("The order was successfully updated.")
         click_link order_detail
+      end
+
+      it "can update the fulfilled at date" do
         expect(page).to have_content SpecDateHelper.format_usa_date(Date.today)
+      end
+
+      it "logs fulfilled at date updates" do
+        expect(LogEvent).to be_exists(loggable: order_detail, event_type: :updated_fulfilled_at, user: logged_in_user)
       end
     end
 

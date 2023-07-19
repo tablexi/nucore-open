@@ -492,6 +492,8 @@ en:
     update:
       success: Cutoff date successfully updated
 
+  order_detail:
+    updated_fulfilled_at: Fulfilled date updated on completed order
 
   facility_order_details:
     edit:

@@ -42,6 +42,8 @@ class OrderManagement::OrderDetailsController < ApplicationController
       else
         redirect_to [current_facility, @order]
       end
+
+      LogEvent.log(@order_detail, :updated_fulfilled_at, current_user) if @order_detail.updated_completed_fulfilled_at?
     else
       flash.now[:error] = text("update.error")
       render :edit, layout: !modal?, status: 406

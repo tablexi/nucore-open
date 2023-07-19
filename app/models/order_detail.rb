@@ -66,6 +66,7 @@ class OrderDetail < ApplicationRecord
   has_many   :notifications, as: :subject, dependent: :destroy
   has_many   :stored_files, dependent: :destroy
   has_many   :sample_results_files, -> { sample_result }, class_name: "StoredFile"
+  has_many   :log_events, as: :loggable
 
   # This is a _temporary_ associaton to make up for the fact that the
   # vestal versions gem is no longer in the project. It's here to
@@ -931,7 +932,14 @@ class OrderDetail < ApplicationRecord
     return unless complete? && manual_fulfilled_at_time
     return if manual_fulfilled_at_time.beginning_of_day == fulfilled_at.beginning_of_day
 
+    @updated_fulfilled_at = true
     make_complete
+  end
+
+  # OrderManagement::OrderDetailsController#update uses this to determine if
+  # a LogEvent should be logged  
+  def updated_completed_fulfilled_at?
+    @updated_fulfilled_at
   end
 
   private
