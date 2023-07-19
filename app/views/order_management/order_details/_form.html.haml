@@ -19,7 +19,6 @@
       .span2
         - if @order_statuses
           = f.association :order_status, collection: @order_statuses, label_method: :name_with_level, include_blank: false
-          - od = f.object
           - if can_edit_fulfilled_at?(f.object, current_user)
             = f.input :fulfilled_at,
               as: :string,
@@ -28,6 +27,7 @@
                 data: { min_date: ValidFulfilledAtDate.min.iso8601,
                   max_date: ValidFulfilledAtDate.max.iso8601,
                   complete_target: "#order_detail_order_status_id"}}
+
         - else
           = f.label :order_status
           = @order_detail.order_status

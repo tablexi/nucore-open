@@ -491,7 +491,6 @@ en:
       header: New Journal Cutoff Date
     update:
       success: Cutoff date successfully updated
-
   facility_order_details:
     edit:
       head:
