@@ -275,7 +275,9 @@ RSpec.describe "Managing an order detail" do
     context "as non-global admin" do
       let(:logged_in_user) { director }
 
-      it "cannont update the fulfilled at date"
+      it "cannont update the fulfilled at date" do
+        expect(page).to have_content("Fulfilled Date").once
+      end
     end
   end
 end
