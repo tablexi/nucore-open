@@ -928,8 +928,8 @@ class OrderDetail < ApplicationRecord
   end
 
   def update_completed_fulfilled_at
-    return unless complete?
-    return if manual_fulfilled_at_time&.beginning_of_day == fulfilled_at.beginning_of_day
+    return unless complete? && manual_fulfilled_at_time
+    return if manual_fulfilled_at_time.beginning_of_day == fulfilled_at.beginning_of_day
 
     make_complete
   end
