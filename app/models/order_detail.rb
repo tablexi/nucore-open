@@ -927,18 +927,15 @@ class OrderDetail < ApplicationRecord
     ActiveModel::Type::Boolean.new.cast(resolve_dispute)
   end
 
-  def update_completed_fulfilled_at
+  # This is called by OrderDetails::ParamUpdater#update_param_attributes and
+  # handles (and logs) the case when `fulfilled_at` is updated on an
+  # OrderDetail that is complete.
+  def update_completed_fulfilled_at(editing_user)
     return unless complete? && manual_fulfilled_at_time
     return if manual_fulfilled_at_time.beginning_of_day == fulfilled_at.beginning_of_day
 
-    @updated_fulfilled_at = true
     make_complete
-  end
-
-  # OrderManagement::OrderDetailsController#update uses this to determine if
-  # a LogEvent should be logged  
-  def updated_completed_fulfilled_at?
-    @updated_fulfilled_at
+    LogEvent.log(self, :updated_fulfilled_at, editing_user)
   end
 
   private
