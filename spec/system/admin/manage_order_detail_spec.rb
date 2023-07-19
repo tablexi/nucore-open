@@ -12,15 +12,13 @@ RSpec.describe "Managing an order detail" do
   let(:order) { reservation.order }
   let(:administrator) { create(:user, :administrator) }
   let(:director) { create(:user, :facility_director, facility: facility) }
-  let(:logged_in_user) {}
+  let(:logged_in_user) { director }
 
   before do
     login_as logged_in_user
   end
 
   describe "editing an order detail with a reservation" do
-    let(:logged_in_user) { director }
-
     before do
       visit manage_facility_order_order_detail_path(facility, order, order_detail)
     end
@@ -52,7 +50,6 @@ RSpec.describe "Managing an order detail" do
   end
 
   describe "order detail with missing form" do
-    let(:logged_in_user) { director }
     let(:service) { create(:setup_service, :with_order_form, facility: facility) }
     let!(:order) { create(:purchased_order, product: service) }
     let(:order_detail) { order.order_details.first }
@@ -74,7 +71,6 @@ RSpec.describe "Managing an order detail" do
   end
 
   describe "order detail with missing survey" do
-    let(:logged_in_user) { director }
     let(:service) { create(:setup_service, facility: facility) }
     let!(:order) { create(:purchased_order, product: service) }
     let(:order_detail) { order.order_details.first }
@@ -97,7 +93,6 @@ RSpec.describe "Managing an order detail" do
   end
 
   describe "editing a problem order detail with a reservation" do
-    let(:logged_in_user) { director }
     let(:instrument) { create(:setup_instrument, :timer, :always_available, charge_for: :usage, facility: facility) }
     let!(:reservation) do
       create(
@@ -132,7 +127,6 @@ RSpec.describe "Managing an order detail" do
   end
 
   describe "canceling order details" do
-    let(:logged_in_user) { director }
     before do
       visit manage_facility_order_order_detail_path(facility, order, order_detail)
     end
@@ -181,8 +175,6 @@ RSpec.describe "Managing an order detail" do
   end
 
   describe "resolving a dispute", :js do
-    let(:logged_in_user) { director }
-
     describe "a simple order detail" do
       let(:item) { create(:setup_item, facility: facility) }
       let(:order) { create(:complete_order, product: item) }
@@ -224,7 +216,6 @@ RSpec.describe "Managing an order detail" do
   end
 
   describe "reconciling an order" do
-    let(:logged_in_user) { director }
     let(:item) { create(:setup_item, facility: facility) }
     let(:order) { create(:complete_order, product: item) }
     let(:order_detail) { order.order_details.first }
@@ -245,8 +236,6 @@ RSpec.describe "Managing an order detail" do
   end
 
   describe "a reconciled orderd" do
-    let(:logged_in_user) { director }
-
     before do
       order_detail.update!(state: :reconciled, order_status: OrderStatus.reconciled, reconciled_at: 1.day.ago, reconciled_note: "I was reconciled")
       visit manage_facility_order_order_detail_path(facility, order, order_detail)
@@ -271,7 +260,7 @@ RSpec.describe "Managing an order detail" do
         fill_in "order_detail[fulfilled_at]", with: DateTime.now.to_s
         click_button "Save"
         expect(page).to have_content("The order was successfully updated.")
-        click_link order_detail
+        click_link order_detail.to_s
       end
 
       it "can update the fulfilled at date" do

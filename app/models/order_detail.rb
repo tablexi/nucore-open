@@ -66,7 +66,6 @@ class OrderDetail < ApplicationRecord
   has_many   :notifications, as: :subject, dependent: :destroy
   has_many   :stored_files, dependent: :destroy
   has_many   :sample_results_files, -> { sample_result }, class_name: "StoredFile"
-  has_many   :log_events, as: :loggable
 
   # This is a _temporary_ associaton to make up for the fact that the
   # vestal versions gem is no longer in the project. It's here to
