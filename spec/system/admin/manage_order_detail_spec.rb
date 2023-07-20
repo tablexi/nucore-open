@@ -276,7 +276,7 @@ RSpec.describe "Managing an order detail" do
       let(:logged_in_user) { director }
 
       it "cannont update the fulfilled at date" do
-        expect(page).to have_no_selector("input", "order_detail[fulfilled_at]")
+        expect(page).to have_no_selector("input[name='order_detail[fulfilled_at]']")
       end
     end
   end
