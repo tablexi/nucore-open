@@ -257,6 +257,7 @@ RSpec.describe "Managing an order detail" do
       let(:logged_in_user) { administrator }
 
       before do
+        expect(page).to have_selector("input[name='order_detail[fulfilled_at]']")
         fill_in "order_detail[fulfilled_at]", with: DateTime.now.to_s
         click_button "Save"
         expect(page).to have_content("The order was successfully updated.")
