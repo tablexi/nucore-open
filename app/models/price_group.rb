@@ -33,6 +33,72 @@ class PriceGroup < ApplicationRecord
     globals.find_by(name: Settings.price_group.name.external)
   end
 
+  # Create a global price group, if it does not exist, and setup all the
+  # schedule rules with price group discounts for the price group.
+  def self.setup_global(name:, is_internal: false, admin_editable: true, discount_percent: 0)
+    price_group = find_or_create_global(name:, is_internal:, admin_editable:)
+    price_group.setup_schedule_rules(discount_percent:)
+    price_group
+  end
+
+  # Find a global price group by name, or create it if it does not exist
+  def self.find_or_create_global(name:, is_internal: false, admin_editable: true)
+    global_price_groups = PriceGroup.globals
+    found_price_group = global_price_groups.find_by(name:)
+
+    if found_price_group
+      log_string = "Global price group '#{name}' already exists."
+
+      puts log_string
+      logger.info log_string
+
+      found_price_group
+    else
+      pg = PriceGroup.new(
+        name:,
+        is_internal:,
+        admin_editable:,
+        facility_id: nil,
+        display_order: global_price_groups.count + 1
+      )
+
+      pg.save(validate: false)
+      log_string = "Created global price group '#{name}'"
+
+      puts log_string
+      logger.info log_string
+
+      pg
+    end
+  end
+
+  # Creates price group discounts for every schedule rule that does not have a
+  # price group discount for this price group
+  def setup_schedule_rules(discount_percent: 0)
+    ScheduleRule.all.each do |schedule_rule|
+      schedule_price_groups = schedule_rule.price_group_discounts.map(&:price_group)
+
+      if schedule_price_groups.include? self
+        log_string = "price_group_discount for #{self} already exists for schedule rule #{schedule_rule.id}"
+
+        puts log_string
+        logger.info log_string
+
+        next
+      end
+
+      schedule_rule.price_group_discounts.create(
+        price_group: self,
+        discount_percent:
+      )
+
+      log_string = "Created price_group_discount for #{self} and schedule rule #{schedule_rule.id}"
+
+      puts log_string
+      logger.info log_string
+    end
+  end
+
   def is_not_global?
     !global?
   end
