@@ -41,6 +41,53 @@ class PriceGroup < ApplicationRecord
     price_group
   end
 
+  def is_not_global?
+    !global?
+  end
+
+  def global?
+    facility.nil?
+  end
+
+  def can_manage_price_group_members?
+    is_not_global? || SettingsHelper.feature_on?(:can_manage_global_price_groups)
+  end
+
+  def can_purchase?(product)
+    !PriceGroupProduct.find_by(price_group_id: id, product_id: product.id).nil?
+  end
+
+  def name
+    master_internal? ? "#{I18n.t('institution_name')} #{self[:name]}" : self[:name]
+  end
+
+  def to_s
+    name
+  end
+
+  def type_string
+    is_internal? ? "Internal" : "External"
+  end
+
+  def master_internal?
+    is_internal? && display_order == 1
+  end
+
+  def <=>(other)
+    "#{display_order}-#{name}".casecmp("#{other.display_order}-#{other.name}")
+  end
+
+  def can_delete?
+    # use !.any? because it uses SQL count(), unlike none?
+    !global? && !order_details.any?
+  end
+
+  def external?
+    !is_internal?
+  end
+
+  private
+
   # Find a global price group by name, or create it if it does not exist
   def self.find_or_create_global(name:, is_internal: false, admin_editable: true)
     global_price_groups = PriceGroup.globals
@@ -98,50 +145,4 @@ class PriceGroup < ApplicationRecord
       logger.info log_string
     end
   end
-
-  def is_not_global?
-    !global?
-  end
-
-  def global?
-    facility.nil?
-  end
-
-  def can_manage_price_group_members?
-    is_not_global? || SettingsHelper.feature_on?(:can_manage_global_price_groups)
-  end
-
-  def can_purchase?(product)
-    !PriceGroupProduct.find_by(price_group_id: id, product_id: product.id).nil?
-  end
-
-  def name
-    master_internal? ? "#{I18n.t('institution_name')} #{self[:name]}" : self[:name]
-  end
-
-  def to_s
-    name
-  end
-
-  def type_string
-    is_internal? ? "Internal" : "External"
-  end
-
-  def master_internal?
-    is_internal? && display_order == 1
-  end
-
-  def <=>(other)
-    "#{display_order}-#{name}".casecmp("#{other.display_order}-#{other.name}")
-  end
-
-  def can_delete?
-    # use !.any? because it uses SQL count(), unlike none?
-    !global? && !order_details.any?
-  end
-
-  def external?
-    !is_internal?
-  end
-
 end
