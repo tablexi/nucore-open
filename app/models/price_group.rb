@@ -94,10 +94,7 @@ class PriceGroup < ApplicationRecord
     found_price_group = global_price_groups.find_by(name:)
 
     if found_price_group
-      log_string = "Global price group '#{name}' already exists."
-
-      puts log_string
-      logger.info log_string
+      puts "Global price group '#{name}' already exists."
 
       found_price_group
     else
@@ -110,10 +107,8 @@ class PriceGroup < ApplicationRecord
       )
 
       pg.save(validate: false)
-      log_string = "Created global price group '#{name}'"
 
-      puts log_string
-      logger.info log_string
+      puts "Created global price group '#{name}'"
 
       pg
     end
@@ -126,11 +121,7 @@ class PriceGroup < ApplicationRecord
       schedule_price_groups = schedule_rule.price_group_discounts.map(&:price_group)
 
       if schedule_price_groups.include? self
-        log_string = "price_group_discount for #{self} already exists for schedule rule #{schedule_rule.id}"
-
-        puts log_string
-        logger.info log_string
-
+        puts "price_group_discount for #{self} already exists for schedule rule #{schedule_rule.id}"
         next
       end
 
@@ -139,10 +130,7 @@ class PriceGroup < ApplicationRecord
         discount_percent:
       )
 
-      log_string = "Created price_group_discount for #{self} and schedule rule #{schedule_rule.id}"
-
-      puts log_string
-      logger.info log_string
+      puts "Created price_group_discount for #{self} and schedule rule #{schedule_rule.id}"
     end
   end
 end
