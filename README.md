@@ -288,22 +288,6 @@ It is possible to track deprecation warnings locally with [deprecation_toolkit](
 
 `deprecation_toolkit` is configured in [`spec/deprecation_toolkit_env.rb`](spec/deprecation_toolkit_env.rb).
 
-## Creating Global Price Groups
-
-A global price group is a price group that's accessible across all facilities, and it must be created via the Rails console.
-
-```
-pg = PriceGroup.new(name: "New Price Group Name", display_order: PriceGroup.globals.count + 1, is_internal: false)
-pg.save(validate: false)
-```
-
-Once the price group is created, the `schedule_rule:add_new_price_groups` rake task should be run to add the price group to all existing schedule rules. If you would like the discount to be something other than 0%, the task accepts the discount as a parameter. This example will set a 20% discount for all the price group it will add to all schedule rules
-
-```
-rake schedule_rule:add_new_price_groups[20]
-```
-
-
 ## Optional Modules
 
 The following modules are provided as optional features via
