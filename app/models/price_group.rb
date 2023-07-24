@@ -114,8 +114,7 @@ class PriceGroup < ApplicationRecord
     end
   end
 
-  # Creates price group discounts for every schedule rule that does not have a
-  # price group discount for this price group
+  # Creates price group discounts for this price group, if they do not exist
   def setup_schedule_rules(discount_percent: 0)
     ScheduleRule.all.each do |schedule_rule|
       schedule_price_groups = schedule_rule.price_group_discounts.map(&:price_group)
