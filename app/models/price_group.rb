@@ -86,6 +86,25 @@ class PriceGroup < ApplicationRecord
     !is_internal?
   end
 
+  # Creates price group discounts for this price group, if they do not exist
+  def setup_schedule_rules(discount_percent: 0)
+    ScheduleRule.all.each do |schedule_rule|
+      schedule_price_groups = schedule_rule.price_group_discounts.map(&:price_group)
+
+      if schedule_price_groups.include? self
+        puts "price_group_discount for #{self} already exists for schedule rule #{schedule_rule.id}"
+        next
+      end
+
+      schedule_rule.price_group_discounts.create(
+        price_group: self,
+        discount_percent:
+      )
+
+      puts "Created price_group_discount for #{self} and schedule rule #{schedule_rule.id}"
+    end
+  end
+
   private
 
   # Find a global price group by name, or create it if it does not exist
@@ -111,25 +130,6 @@ class PriceGroup < ApplicationRecord
       puts "Created global price group '#{name}'"
 
       pg
-    end
-  end
-
-  # Creates price group discounts for this price group, if they do not exist
-  def setup_schedule_rules(discount_percent: 0)
-    ScheduleRule.all.each do |schedule_rule|
-      schedule_price_groups = schedule_rule.price_group_discounts.map(&:price_group)
-
-      if schedule_price_groups.include? self
-        puts "price_group_discount for #{self} already exists for schedule rule #{schedule_rule.id}"
-        next
-      end
-
-      schedule_rule.price_group_discounts.create(
-        price_group: self,
-        discount_percent:
-      )
-
-      puts "Created price_group_discount for #{self} and schedule rule #{schedule_rule.id}"
     end
   end
 end
