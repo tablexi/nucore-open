@@ -30,6 +30,7 @@ en:
             initial_order_status: "Default status for new orders"
             is_archived: "Inactivate the product, disallowing purchase and viewing"
             is_hidden: "Hide %{field} from end users; visible to staff when \"ordering on behalf\" of another user"
+            billing_mode: "Default: Standard billing workflow, and payment source required.<br>Skip Review: Reconciled on completion, and payment source required<br>Nonbillable: Reconciled on completion, and NO payment source is required"
 
       services:
         index:
