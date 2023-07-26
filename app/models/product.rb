@@ -55,6 +55,11 @@ class Product < ApplicationRecord
     errors.add(:contact_email, text("errors.models.product.attributes.contact_email.required")) unless email.present?
   end
 
+  def self.billing_modes
+    ["Default", "Skip Review", "Nonbillable"]
+  end
+  validates :billing_mode, inclusion: Product.billing_modes
+
   scope :active, -> { where(is_archived: false, is_hidden: false) }
   scope :alphabetized, -> { order(Arel.sql("LOWER(products.name)")) }
   scope :archived, -> { where(is_archived: true) }
@@ -66,11 +71,6 @@ class Product < ApplicationRecord
   scope :without_display_group, -> {
     left_outer_joins(:product_display_group_product).where(product_display_group_products: { id: nil })
   }
-
-  def self.billing_modes
-    ["Default", "Skip Review", "Nonbillable"]
-  end
-  validates :billing_mode, inclusion: Product.billing_modes
 
   # All product types. This cannot be a cattr_accessor because the block is evaluated
   # at definition time (not lazily as I expected) and this causes a circular dependency
