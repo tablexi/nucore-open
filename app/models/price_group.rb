@@ -35,8 +35,8 @@ class PriceGroup < ApplicationRecord
 
   # Create a global price group, if it does not exist, and setup all the
   # schedule rules with price group discounts for the price group.
-  def self.setup_global(name:, is_internal: false, admin_editable: true, discount_percent: 0)
-    price_group = find_or_create_global(name:, is_internal:, admin_editable:)
+  def self.setup_global(name:, is_internal: false, admin_editable: true, discount_percent: 0, display_order: nil)
+    price_group = find_or_create_global(name:, is_internal:, admin_editable:, display_order:)
     price_group.setup_schedule_rules(discount_percent:)
     price_group
   end
@@ -108,7 +108,7 @@ class PriceGroup < ApplicationRecord
   private
 
   # Find a global price group by name, or create it if it does not exist
-  def self.find_or_create_global(name:, is_internal: false, admin_editable: true)
+  def self.find_or_create_global(name:, display_order:, is_internal: false, admin_editable: true)
     global_price_groups = PriceGroup.globals
     found_price_group = global_price_groups.find_by(name:)
 
@@ -122,7 +122,7 @@ class PriceGroup < ApplicationRecord
         is_internal:,
         admin_editable:,
         facility_id: nil,
-        display_order: global_price_groups.count + 1
+        display_order: display_order || (global_price_groups.count + 1)
       )
 
       pg.save(validate: false)
