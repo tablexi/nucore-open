@@ -639,7 +639,7 @@ ActiveRecord::Schema.define(version: 2023_07_24_224847) do
     t.string "tablet_circuit_number"
     t.integer "tablet_port_number"
     t.text "tablet_location_description"
-    t.string "billing_mode"
+    t.string "billing_mode", default: "Default", null: false
     t.index ["dashboard_token"], name: "index_products_on_dashboard_token"
     t.index ["facility_account_id"], name: "fk_facility_accounts"
     t.index ["facility_id"], name: "fk_rails_0c9fa1afbe"

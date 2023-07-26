@@ -67,6 +67,11 @@ class Product < ApplicationRecord
     left_outer_joins(:product_display_group_product).where(product_display_group_products: { id: nil })
   }
 
+  def self.billing_modes
+    ["Default", "Skip Review", "Nonbillable"]
+  end
+  validates :billing_mode, inclusion: Product.billing_modes
+
   # All product types. This cannot be a cattr_accessor because the block is evaluated
   # at definition time (not lazily as I expected) and this causes a circular dependency
   # in some schools.

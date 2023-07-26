@@ -7,7 +7,6 @@ RSpec.describe "Managing products" do
   let(:facility) { instrument.facility }
   let(:administrator) { create(:user, :administrator) }
   let(:facility_administrator) { create(:user, :facility_administrator, facility: facility) }
-  let(:user) { nil }
   let(:new_instrument) { FactoryBot.build(:instrument) }
 
   before do
