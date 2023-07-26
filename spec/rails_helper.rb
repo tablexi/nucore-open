@@ -132,7 +132,7 @@ RSpec.configure do |config|
     Affiliate.OTHER
 
     # initialize price groups
-    PriceGroup.setup_global(name: Settings.price_group.name.base, is_internal: true)
+    @nupg = PriceGroup.setup_global(name: Settings.price_group.name.base, is_internal: true)
     PriceGroup.setup_global(name: Settings.price_group.name.external, is_internal: false)
 
     # Because many specs rely on not crossing a fiscal year boundary we lock the
