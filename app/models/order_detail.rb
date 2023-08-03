@@ -370,7 +370,7 @@ class OrderDetail < ApplicationRecord
       transitions to: :inprocess, from: :new
     end
 
-    event :to_complete do
+    event :to_complete, after: :reconcile_if_skip_review do
       transitions to: :complete, from: [:new, :inprocess], guard: :time_data_completeable?
     end
 
@@ -381,6 +381,10 @@ class OrderDetail < ApplicationRecord
     event :to_canceled do
       transitions to: :canceled, from: CANCELABLE_STATES, guard: :cancelable?
     end
+  end
+
+  def reconcile_if_skip_review
+    to_reconciled! if product.billing_mode == "Skip Review"
   end
 
   # block will be called after the transition, but before the save
