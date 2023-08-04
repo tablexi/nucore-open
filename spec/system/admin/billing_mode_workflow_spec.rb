@@ -31,7 +31,7 @@ RSpec.describe "Billing mode workflows" do
     let(:billing_mode) { "Skip Review" }
 
     context "valid account" do
-      it "is reconciled when complete" do
+      it "automatically moves an order detail from complete to reconciled" do
         order._validate_order!
         order.purchase!
         visit manage_facility_order_order_detail_path(facility, order, order_detail)
