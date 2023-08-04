@@ -8,23 +8,15 @@ RSpec.describe "Billing mode workflows" do
   let(:billing_mode) { "Default" }
   let(:item) { create(:setup_item, facility:, billing_mode:) }
   let(:order) { create(:setup_order, product: item) }
+  let(:order_detail) { order.order_details.first }
   let(:nufs_account) { order.account }
   let(:account) { nufs_account }
-  let(:administrator) { create(:user, :administrator) }
-  let(:director) { create(:user, :facility_director, facility:) }
-  let(:logged_in_user) { director }
+  let(:logged_in_user) { create(:user, :facility_director, facility:) }
 
   let(:po_account) do
     po = create(:purchase_order_account, account_users: nufs_account.account_users)
     create(:account_price_group_member, account: po, price_group: item.price_groups.last)
     po
-  end
-
-  let(:order_detail) do
-    od = order.order_details.first
-    od.account_id = order.account_id
-    od.save
-    od
   end
 
   before do
