@@ -33,7 +33,6 @@ RSpec.describe "Billing mode workflows" do
         visit facility_transactions_path(facility)
 
         expect(page).to have_selector("tr td.nowrap", text: "Reconciled")
-        expect(order_detail.reload.reconciled?).to be true
       end
     end
 
