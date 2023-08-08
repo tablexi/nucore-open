@@ -352,6 +352,8 @@ class OrderDetail < ApplicationRecord
     end
   end
 
+  after_save :reconcile_if_skip_review, if: :complete?
+
   include AASM
 
   CANCELABLE_STATES = [:new, :inprocess, :complete].freeze
@@ -370,12 +372,12 @@ class OrderDetail < ApplicationRecord
       transitions to: :inprocess, from: :new
     end
 
-    event :to_complete, after: :reconcile_if_skip_review do
+    event :to_complete do
       transitions to: :complete, from: [:new, :inprocess], guard: :time_data_completeable?
     end
 
     event :to_reconciled do
-      transitions to: :reconciled, from: :complete, guard: :actual_total
+      transitions to: :reconciled, from: :complete
     end
 
     event :to_canceled do
@@ -384,7 +386,7 @@ class OrderDetail < ApplicationRecord
   end
 
   def reconcile_if_skip_review
-    to_reconciled! if product.billing_mode == "Skip Review"
+    change_status!(OrderStatus.reconciled) if complete? && product.billing_mode == "Skip Review"
   end
 
   # block will be called after the transition, but before the save

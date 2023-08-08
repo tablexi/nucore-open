@@ -22,13 +22,17 @@ RSpec.describe "Billing mode workflows" do
     let(:billing_mode) { "Skip Review" }
 
     context "valid account" do
-      it "automatically moves an order detail from complete to reconciled" do
+      it "automatically moves an order detail from complete to reconciled", :js do
         order._validate_order!
         order.purchase!
         visit manage_facility_order_order_detail_path(facility, order, order_detail)
 
         select "Complete", from: "Order Status"
+
         click_button "Save"
+        visit facility_transactions_path(facility)
+
+        expect(page).to have_selector("tr td.nowrap", text: "Reconciled")
         expect(order_detail.reload.reconciled?).to be true
       end
     end
