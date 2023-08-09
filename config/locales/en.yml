@@ -939,6 +939,7 @@ en:
       th:
         pg: "Price Group"
         type: "Type"
+        scope: "Scope"
         users: "Number of Users"
         accounts: "Number of Payment Sources"
 
