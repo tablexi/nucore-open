@@ -137,7 +137,7 @@ GEM
       zeitwerk (~> 2.3)
     addressable (2.8.4)
       public_suffix (>= 2.0.2, < 6.0)
-    airbrussh (1.4.1)
+    airbrussh (1.4.2)
       sshkit (>= 1.6.1, != 1.7.0)
     amazing_print (1.5.0)
     ast (2.4.2)
@@ -416,7 +416,7 @@ GEM
       net-ssh (>= 2.6.5, < 8.0.0)
     net-smtp (0.3.3)
       net-protocol
-    net-ssh (7.1.0)
+    net-ssh (7.2.0)
     nio4r (2.5.9)
     nokogiri (1.15.3)
       mini_portile2 (~> 2.8.2)
