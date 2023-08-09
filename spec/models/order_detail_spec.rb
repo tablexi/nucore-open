@@ -2034,7 +2034,7 @@ RSpec.describe OrderDetail do
       expect(order_detail.state).to eq "reconciled"
     end
 
-    it "does not reconcile if produce billing mode is 'Default'" do
+    it "does not reconcile if product billing mode is 'Default'" do
       order_detail.reconcile_if_skip_review
       expect(order_detail.reconciled?).to be false
       expect(order_detail.state).to eq "complete"
