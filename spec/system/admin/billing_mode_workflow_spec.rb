@@ -22,7 +22,7 @@ RSpec.describe "Billing mode workflows" do
   describe "'Skip Review' billing mdoe" do
     let(:billing_mode) { "Skip Review" }
 
-    context "valid account" do
+    context "with a valid account" do
       let(:logged_in_user) { director }
 
       it "automatically moves an order detail from complete to reconciled", :js do
@@ -79,11 +79,11 @@ RSpec.describe "Billing mode workflows" do
       end
     end
 
-    context "invalid account" do
+    context "with an invalid account" do
       let(:accepts_po) { false }
       let(:logged_in_user) { user }
 
-      it "should not have a valid cart" do
+      it "does not allow the product to be ordered" do
         visit facility_item_path(facility, item)
         expect(page).to have_content("Sorry, but we could not find a valid payment source that you can use to purchase this item")
       end
