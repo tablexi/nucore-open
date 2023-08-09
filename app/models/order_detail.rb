@@ -386,11 +386,13 @@ class OrderDetail < ApplicationRecord
   end
 
   def reconcile_if_skip_review
-    should_change_status = actual_total &&
-                           complete? &&
-                           product.billing_mode == "Skip Review"
+    change_status!(OrderStatus.reconciled) if skip_review?
+  end
 
-    change_status!(OrderStatus.reconciled) if should_change_status
+  def skip_review?
+    actual_total &&
+      complete? &&
+      product.billing_mode == "Skip Review"
   end
 
   # block will be called after the transition, but before the save

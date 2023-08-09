@@ -17,8 +17,6 @@ RSpec.describe "Billing mode workflows" do
     login_as logged_in_user
   end
 
-  describe "'Default' billing mode"
-
   describe "'Skip Review' billing mdoe" do
     let(:billing_mode) { "Skip Review" }
 
