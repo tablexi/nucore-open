@@ -386,7 +386,10 @@ class OrderDetail < ApplicationRecord
   end
 
   def reconcile_if_skip_review
-    should_change_status = complete? && product.billing_mode == "Skip Review"
+    should_change_status = actual_total &&
+                           complete? &&
+                           product.billing_mode == "Skip Review"
+
     change_status!(OrderStatus.reconciled) if should_change_status
   end
 
