@@ -152,6 +152,7 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
+    base64 (0.1.1)
     bcrypt (3.1.19)
     bcrypt_pbkdf (1.1.0)
     bindex (0.8.1)
@@ -539,7 +540,8 @@ GEM
     rspec-support (3.12.1)
     rspec_junit_formatter (0.6.0)
       rspec-core (>= 2, < 4, != 2.12.0)
-    rubocop (1.55.0)
+    rubocop (1.56.0)
+      base64 (~> 0.1.1)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
@@ -754,7 +756,7 @@ DEPENDENCIES
   rspec-collection_matchers
   rspec-rails
   rspec_junit_formatter
-  rubocop (= 1.55.0)
+  rubocop (= 1.56.0)
   rubocop-performance
   rubocop-rails
   rubocop-rspec
