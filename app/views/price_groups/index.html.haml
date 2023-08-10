@@ -20,7 +20,7 @@
         %th
         %th= t(".th.pg")
         %th= t(".th.type")
-        %th= t(".th.scope")
+        %th= t(".th.global")
         %th= t(".th.users")
         %th= t(".th.accounts")
     %tbody
@@ -38,7 +38,7 @@
               facility_price_group_path(current_facility, price_group)
 
           %td= price_group.type_string
-          %td= price_group.price_group_scope
+          %td= t(".#{price_group.global?.to_s}")
           - if price_group.admin_editable?
             %td= price_group.user_price_group_members.count
           - else

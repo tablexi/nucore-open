@@ -49,10 +49,6 @@ class PriceGroup < ApplicationRecord
     facility.nil?
   end
 
-  def price_group_scope
-    global? ? "Global" : "Local"
-  end
-
   def can_manage_price_group_members?
     is_not_global? || SettingsHelper.feature_on?(:can_manage_global_price_groups)
   end
