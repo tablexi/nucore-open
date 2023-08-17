@@ -56,6 +56,15 @@ class User < ApplicationRecord
   scope :with_recent_orders, ->(facility) { distinct.joins(:order_details).merge(OrderDetail.recent.for_facility(facility)) }
   scope :sort_last_first, -> { order(Arel.sql("LOWER(users.last_name), LOWER(users.first_name)")) }
 
+  def self.nonbillable_account_owner
+    find_or_create_by!(
+      username: "nonbillableuser",
+      first_name: "Nonbillable",
+      last_name: "User",
+      email: "nonbillableuser@example.com",
+    )
+  end
+
   # This method is only used by devise-security to determine
   # whether or not password validations should run.
   # A better name would be password_validations_required?
