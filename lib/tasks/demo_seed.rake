@@ -113,7 +113,7 @@ namespace :demo do
     skip_review_service = Service.find_or_create_by!(url_name: "skip-review-example-service") do |example_service|
       example_service.facility_id = facility.id
       example_service.account = Settings.accounts.product_default
-      example_service.name = "Example Service"
+      example_service.name = "Skip Example Service"
       example_service.description = "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non ipsum id odio cursus euismod eu bibendum nisl. Sed nec.</p>"
       example_service.requires_approval = false
       example_service.initial_order_status_id = in_process.id
