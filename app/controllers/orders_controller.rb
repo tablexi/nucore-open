@@ -115,6 +115,8 @@ class OrdersController < ApplicationController
           @order.invalidate! ## this is because we just added an order_detail
         rescue NUCore::MixedFacilityCart
           @order.errors.add(:base, "You can not add a product from another facility; please clear your cart or place a separate order.")
+        rescue NUCore::MixedBillingMode
+          @order.errors.add(:base, "You can mix billing modes with a non-billable product")
         rescue => e
           if !@order.has_valid_payment?
             @order.errors.add(:base, invalid_for_orderer_message)
@@ -172,29 +174,7 @@ class OrdersController < ApplicationController
   def choose_account
     if request.post?
       account = Account.find(params[:account_id])
-      if account
-        success = true
-        @order.transaction do
-          begin
-            @order.invalidate
-            @order.update!(account_id: account.id)
-          rescue ActiveRecord::ActiveRecordError => e
-            success = false
-            raise ActiveRecord::Rollback
-          end
-        end
-      end
-
-      if success
-        if session[:add_to_cart].nil?
-          redirect_to cart_path
-        else
-          redirect_to add_order_path(@order)
-        end
-        return
-      else
-        flash.now[:error] = account.nil? ? "Please select a payment method." : "An error was encountered while selecting a payment method."
-      end
+      add_account_to_order(account)
     end
 
     @product = if session[:add_to_cart].blank?
@@ -204,6 +184,11 @@ class OrdersController < ApplicationController
                end
 
     redirect_to(cart_path) && return unless @product
+
+    if @product.nonbillable?
+      account = NonbillableAccount.account
+      add_account_to_order(account)
+    end
 
     @accounts = AvailableAccountsFinder.new(acting_user, @product.facility).accounts
     @errors   = {}
@@ -323,6 +308,32 @@ class OrdersController < ApplicationController
   end
 
   private
+
+  def add_account_to_order(account)
+    if account
+      success = true
+      @order.transaction do
+        begin
+          @order.invalidate
+          @order.update!(account_id: account.id)
+        rescue ActiveRecord::ActiveRecordError => e
+          success = false
+          raise ActiveRecord::Rollback
+        end
+      end
+    end
+
+    if success
+      if session[:add_to_cart].nil?
+        redirect_to cart_path
+      else
+        redirect_to add_order_path(@order)
+      end
+      return
+    else
+      flash.now[:error] = account.nil? ? "Please select a payment method." : "An error was encountered while selecting a payment method."
+    end
+  end
 
   def build_order_date
     if params[:order_date].present?

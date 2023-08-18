@@ -3,7 +3,15 @@
 class NonbillableAccount < Account
   before_validation :set_owner, :set_description, :set_created_by, :set_account_number, :set_expries_at
 
+  def self.account
+    first
+  end
+
   def account_open?(_)
+    true
+  end
+
+  def can_be_used_by?(_)
     true
   end
 
@@ -25,7 +33,7 @@ class NonbillableAccount < Account
   end
 
   def set_created_by
-    reutnr if created_by
+    return if created_by
     self.created_by = User.nonbillable_account_owner.id
   end
 

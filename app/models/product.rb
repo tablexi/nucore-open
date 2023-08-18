@@ -118,6 +118,10 @@ class Product < ApplicationRecord
     order(:type, :name).group_by { |product| product.class.model_name.human }
   end
 
+  def nonbillable?
+    billing_mode == "Nonbillable"
+  end
+
   def initial_order_status
     self[:initial_order_status_id] ? OrderStatus.find(self[:initial_order_status_id]) : OrderStatus.default_order_status
   end
