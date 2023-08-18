@@ -1,0 +1,43 @@
+# frozen_string_literal: true
+
+require "rails_helper"
+
+RSpec.describe "Adding products with different billing modes to cart" do
+  let(:facility) { create(:setup_facility) }
+  let(:billing_mode) { "Default" }
+  let!(:nonbillable_item) { create(:setup_item, facility:, billing_mode: "Nonbillable") }
+  let!(:default_item) { create(:setup_item, facility:, billing_mode: "Default") }
+  let!(:account) { create(:purchase_order_account, :with_account_owner, facility:) }
+  let!(:nonbillable_price_policy) { create(:item_price_policy, price_group: PriceGroup.globals.first, product: nonbillable_item) }
+  let!(:default_price_policy) { create(:item_price_policy, price_group: PriceGroup.globals.first, product: default_item) }
+  let(:user) { account.owner.user }
+
+  before do
+    login_as user
+  end
+
+  context "when nonbillable product is added first" do
+    before do
+      visit facility_item_path(facility, nonbillable_item)
+      click_on "Add to cart"
+    end
+
+    it "allows user to add another nonbillable product" do
+      visit facility_item_path(facility, nonbillable_item)
+      click_on "Add to cart"
+      # save_and_open_page
+      # binding.pry
+      expect(page).to have_content(nonbillable_item.name).twice
+    end
+
+    it "does not allow user to add a default billing mode product" do
+      visit facility_item_path(facility, default_item)
+      click_on "Add to cart"
+      # save_and_open_page
+      expect(page).to have_content("You can not mix billing modes with a non-billable product")
+    end
+  end
+
+  context "when default product is added first" do
+  end
+end
