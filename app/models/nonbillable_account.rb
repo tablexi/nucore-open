@@ -3,8 +3,10 @@
 class NonbillableAccount < Account
   before_validation :set_owner, :set_description, :set_created_by, :set_account_number, :set_expries_at
 
+  # Since this account can be used by anyone, we only need one in the system
+  # so this class method should be used to access it.
   def self.account
-    first
+    @account ||= first || create
   end
 
   def account_open?(_)
