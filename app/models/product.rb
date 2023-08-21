@@ -118,8 +118,16 @@ class Product < ApplicationRecord
     order(:type, :name).group_by { |product| product.class.model_name.human }
   end
 
-  def nonbillable?
+  def nonbillable_mode?
     billing_mode == "Nonbillable"
+  end
+
+  def skip_review_mode?
+    billing_mode == "Skip Review"
+  end
+
+  def default_mode?
+    billing_mode == "Default"
   end
 
   def initial_order_status

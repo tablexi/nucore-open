@@ -185,7 +185,7 @@ class OrdersController < ApplicationController
 
     redirect_to(cart_path) && return unless @product
 
-    add_account_to_order(NonbillableAccount.account) if @product.nonbillable?
+    add_account_to_order(NonbillableAccount.singleton_instance) if @product.nonbillable_mode?
 
     @accounts = AvailableAccountsFinder.new(acting_user, @product.facility).accounts
     @errors   = {}
