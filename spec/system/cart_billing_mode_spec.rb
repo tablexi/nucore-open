@@ -16,28 +16,43 @@ RSpec.describe "Adding products with different billing modes to cart" do
     login_as user
   end
 
-  context "when nonbillable product is added first" do
+  context "when a nonbillable product is added first" do
     before do
       visit facility_item_path(facility, nonbillable_item)
       click_on "Add to cart"
     end
 
-    it "allows user to add another nonbillable product" do
+    it "allows a user to add another nonbillable product" do
       visit facility_item_path(facility, nonbillable_item)
       click_on "Add to cart"
-      # save_and_open_page
-      # binding.pry
       expect(page).to have_content(nonbillable_item.name).twice
     end
 
-    it "does not allow user to add a default billing mode product" do
+    it "does not allow a user to add a default billing mode product" do
       visit facility_item_path(facility, default_item)
       click_on "Add to cart"
-      # save_and_open_page
       expect(page).to have_content("You can not mix billing modes with a non-billable product")
     end
   end
 
-  context "when default product is added first" do
+  context "when a default product is added first" do
+    before do
+      visit facility_item_path(facility, default_item)
+      click_on "Add to cart"
+      choose account.description
+      click_on "Continue"
+    end
+
+    it "allows a user to add another default product" do
+      visit facility_item_path(facility, default_item)
+      click_on "Add to cart"
+      expect(page).to have_content(default_item.name).twice
+    end
+
+    it "does not allow a user to add another nonbillable product" do
+      visit facility_item_path(facility, nonbillable_item)
+      click_on "Add to cart"
+      expect(page).to have_content("There were errors adding to your cart")
+    end
   end
 end
