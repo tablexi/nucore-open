@@ -116,7 +116,15 @@ class OrdersController < ApplicationController
         rescue NUCore::MixedFacilityCart
           @order.errors.add(:base, "You can not add a product from another facility; please clear your cart or place a separate order.")
         rescue NUCore::MixedBillingMode
-          @order.errors.add(:base, "You can not mix billing modes with a non-billable product")
+          email = @order.facility.email
+
+          msg = if email
+                  "Mixing billing modes not allowed; please contact the facility administrator <#{email}> for assistance"
+                else
+                  "Mixing billing modes not allowed; please contact the facility administrator for assistance"
+                end
+
+          @order.errors.add(:base, msg)
         rescue => e
           if !@order.has_valid_payment?
             @order.errors.add(:base, invalid_for_orderer_message)

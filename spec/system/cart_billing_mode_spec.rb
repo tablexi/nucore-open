@@ -31,7 +31,7 @@ RSpec.describe "Adding products with different billing modes to cart" do
     it "does not allow a user to add a default billing mode product" do
       visit facility_item_path(facility, default_item)
       click_on "Add to cart"
-      expect(page).to have_content("You can not mix billing modes with a non-billable product")
+      expect(page).to have_content("Mixing billing modes not allowed; please contact the facility administrator for assistance")
     end
   end
 
@@ -52,7 +52,7 @@ RSpec.describe "Adding products with different billing modes to cart" do
     it "does not allow a user to add another nonbillable product" do
       visit facility_item_path(facility, nonbillable_item)
       click_on "Add to cart"
-      expect(page).to have_content("There were errors adding to your cart")
+      expect(page).to have_content("Mixing billing modes not allowed; please contact the facility administrator for assistance")
     end
   end
 end
