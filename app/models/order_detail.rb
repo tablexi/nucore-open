@@ -392,7 +392,7 @@ class OrderDetail < ApplicationRecord
   def skip_review?
     actual_total &&
       complete? &&
-      product.billing_mode == "Skip Review"
+      product.skip_order_review?
   end
 
   # block will be called after the transition, but before the save
