@@ -6,7 +6,7 @@ class NonbillableAccount < Account
   # Since this account can be used by anyone, we only need one in the system
   # so this class method should be used to access it.
   def self.singleton_instance
-    @singleton_instance ||= first || create
+    first || create
   end
 
   def account_open?(_account_number)
