@@ -16,6 +16,26 @@ RSpec.describe "Adding products with different billing modes to cart" do
     login_as user
   end
 
+  context "when a user has no account" do
+    let(:user) do
+      u = account.owner.user
+      u.account_users.each { |au| au.destroy }
+      u.save
+      u.reload
+    end
+
+    it "allows a user without any accounts to add a nonbillable product to cart" do
+      visit facility_item_path(facility, nonbillable_item)
+      click_on "Add to cart"
+      expect(page).to have_content(nonbillable_item.name)
+    end
+
+    it "does not allow a user without any accounts to add a default product to cart" do
+      visit facility_item_path(facility, default_item)
+      expect(page).to have_content("Sorry, but we could not find a valid payment source that you can use to purchase this item")
+    end
+  end
+
   context "when a nonbillable product is added first" do
     before do
       visit facility_item_path(facility, nonbillable_item)

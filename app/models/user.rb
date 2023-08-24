@@ -58,10 +58,10 @@ class User < ApplicationRecord
 
   def self.nonbillable_account_owner
     find_or_create_by!(
-      username: "nonbillableuser",
+      username: "None (Nonbillable)",
       first_name: "Nonbillable",
       last_name: "User",
-      email: "nonbillableuser@example.com",
+      email: (Settings.support_email || Settings.email.from),
     )
   end
 
@@ -166,6 +166,7 @@ class User < ApplicationRecord
   # Given a +Product+ returns all valid accounts this user has for
   # purchasing that product
   def accounts_for_product(product)
+    return [NonbillableAccount.singleton_instance] if product.nonbillable_mode?
     acts = accounts.active.for_facility(product.facility).to_a
     acts.reject! { |acct| !acct.validate_against_product(product, self).nil? }
     acts
