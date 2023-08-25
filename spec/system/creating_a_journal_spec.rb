@@ -86,7 +86,7 @@ RSpec.describe "Creating a journal" do
           expect(page).to have_content "The journal file has been created successfully", wait: 3
         end
 
-        it "has a 90 day pop up when the check box is clicked" do
+        it "has a 90 day pop up when the check box is checked" do
           check "order_detail_ids_"
           click_button "Create"
           expect(page).to have_content "90-Day Justification"
