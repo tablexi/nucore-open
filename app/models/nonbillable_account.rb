@@ -44,7 +44,7 @@ class NonbillableAccount < Account
 
   def set_created_by
     return if created_by
-    self.created_by = User.nonbillable_account_owner.id
+    self.created_by = nonbillable_account_owner.id
   end
 
   def set_owner
@@ -52,8 +52,21 @@ class NonbillableAccount < Account
 
     account_users << AccountUser.new(
       user_role: AccountUser::ACCOUNT_OWNER,
-      user: User.nonbillable_account_owner,
-      created_by_user: User.nonbillable_account_owner,
+      user: nonbillable_account_owner,
+      created_by_user: nonbillable_account_owner,
     )
+  end
+
+  def nonbillable_account_owner
+    User.find_or_create_by!(nonbillable_account_owner_attrs)
+  end
+
+  def nonbillable_account_owner_attrs
+    {
+      username: "none (nonbillable)",
+      first_name: "Nonbillable",
+      last_name: "User",
+      email: (Settings.support_email || Settings.email.from),
+    }
   end
 end
