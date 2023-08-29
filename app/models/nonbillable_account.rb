@@ -63,10 +63,11 @@ class NonbillableAccount < Account
 
   def nonbillable_account_owner_attrs
     {
-      username: "none (nonbillable)",
+      username: Settings.nonbillable_user.username,
       first_name: "Nonbillable",
       last_name: "User",
-      email: (Settings.support_email || Settings.email.from),
+      email: Settings.nonbillable_user.email,
     }
   end
+
 end
