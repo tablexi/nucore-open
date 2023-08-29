@@ -64,6 +64,10 @@ email:
 support_email: ~
 support_email_subject: ~
 
+nonbillable_user:
+  email: "nonbillableuser@example.come"
+  username: "none (nonbillable)"
+
 order_details:
   list_transformer: SplitAccounts::OrderDetailListTransformer
 
