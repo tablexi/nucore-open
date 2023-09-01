@@ -24,7 +24,7 @@ class Product < ApplicationRecord
   has_one :product_display_group, through: :product_display_group_product
 
   after_create :create_default_price_group_products
-  after_create :create_nonbillable_price_policies
+  after_create :create_nonbillable_price_policy
 
   email_list_attribute :training_request_contacts
 
@@ -209,13 +209,12 @@ class Product < ApplicationRecord
     end
   end
 
-  def create_nonbillable_price_policies
+  def create_nonbillable_price_policy
     if skip_order_review?
-      pp = PricePolicy.new(
+      price_policies.create(
         type: "#{type}PricePolicy",
         start_date: 1.month.ago,
         expire_date: 75.years.from_now,
-        product: self,
         price_group: PriceGroup.base,
         usage_rate: 0,
         minimum_cost: 0,
@@ -224,11 +223,9 @@ class Product < ApplicationRecord
         unit_cost: 0,
         unit_subsidy: 0,
         can_purchase: true,
-        charge_for: "reservation", #
+        charge_for: "reservation",
         note: "Adding default price policy"
       )
-      # binding.pry
-      pp.save
     end
   end
 
