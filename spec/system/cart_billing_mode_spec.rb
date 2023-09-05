@@ -8,8 +8,8 @@ RSpec.describe "Adding products with different billing modes to cart" do
   let!(:nonbillable_item) { create(:setup_item, facility:, billing_mode: "Nonbillable") }
   let!(:default_item) { create(:setup_item, facility:, billing_mode: "Default") }
   let!(:account) { create(:purchase_order_account, :with_account_owner, facility:) }
-  let!(:account_price_group_member) { create(:account_price_group_member, account: account, price_group: PriceGroup.globals.first) }
-  let!(:account_price_group_member_2) { create(:account_price_group_member, account: account, price_group: PriceGroup.globals.second) }
+  let!(:account_price_group_member) { create(:account_price_group_member, account: account, price_group: PriceGroup.base) }
+  let!(:account_price_group_member_2) { create(:account_price_group_member, account: account, price_group: PriceGroup.external) }
 
   let!(:nonbillable_price_policy) { create(:item_price_policy, price_group: PriceGroup.globals.first, product: nonbillable_item) }
   let!(:nonbillable_price_policy_2) { create(:item_price_policy, price_group: PriceGroup.globals.second, product: nonbillable_item) }
@@ -96,13 +96,13 @@ RSpec.describe "Adding products with different billing modes to cart" do
         u.reload
       end
 
-      it "allows a user without any accounts to add a nonbillable product to cart" do
+      it "allows adding a nonbillable product to cart" do
         visit facility_item_path(facility, nonbillable_item)
         click_on "Add to cart"
         expect(page).to have_content(nonbillable_item.name)
       end
 
-      it "does not allow a user without any accounts to add a default product to cart" do
+      it "does not allow adding a default product to cart" do
         visit facility_item_path(facility, default_item)
         expect(page).to have_content("Sorry, but we could not find a valid payment source that you can use to purchase this item")
       end
