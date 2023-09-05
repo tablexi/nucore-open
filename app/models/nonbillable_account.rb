@@ -28,6 +28,8 @@ class NonbillableAccount < Account
 
   private
 
+  # This insures that NonbillableAccount#price_groups isn't empty, in the case
+  # the user doesn't have a price group
   def set_price_group
     price_group_members.create(price_group: PriceGroup.base, type: "AccountPriceGroupMember")
   end

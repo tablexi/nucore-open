@@ -25,8 +25,9 @@ class PricePolicy < ApplicationRecord
     start_date = record.start_date
     if value.present? && start_date.present?
       gen_exp_date = generate_expire_date(start_date)
+      outside_fiscal_year = gen_exp_date < value || value <= start_date
 
-      if (value <= start_date || value > gen_exp_date) && !record.product.skip_order_review?
+      if outside_fiscal_year && !record.product.skip_order_review? # skip review price rules should not expire
         record.errors.add(:expire_date, "must be after #{start_date.to_date} and before #{gen_exp_date.to_date}") 
       end
     end

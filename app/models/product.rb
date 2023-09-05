@@ -24,7 +24,7 @@ class Product < ApplicationRecord
   has_one :product_display_group, through: :product_display_group_product
 
   after_create :create_default_price_group_products
-  after_create :create_nonbillable_price_policy
+  after_create :create_nonbillable_price_policy, if: :skip_order_review?
 
   email_list_attribute :training_request_contacts
 
@@ -210,23 +210,21 @@ class Product < ApplicationRecord
   end
 
   def create_nonbillable_price_policy
-    if skip_order_review?
-      price_policies.create(
-        type: "#{type}PricePolicy",
-        start_date: 1.month.ago,
-        expire_date: 75.years.from_now,
-        price_group: PriceGroup.base,
-        usage_rate: 0,
-        minimum_cost: 0,
-        cancellation_cost: 0,
-        usage_subsidy: 0,
-        unit_cost: 0,
-        unit_subsidy: 0,
-        can_purchase: true,
-        charge_for: "reservation",
-        note: "Adding default price policy"
-      )
-    end
+    price_policies.create(
+      type: "#{type}PricePolicy",
+      start_date: 1.month.ago,
+      expire_date: 75.years.from_now,
+      price_group: PriceGroup.base,
+      usage_rate: 0,
+      minimum_cost: 0,
+      cancellation_cost: 0,
+      usage_subsidy: 0,
+      unit_cost: 0,
+      unit_subsidy: 0,
+      can_purchase: true,
+      charge_for: "reservation",
+      note: "Price rule automatically created because of billing mode"
+    )
   end
 
   def available_for_purchase?
@@ -259,7 +257,7 @@ class Product < ApplicationRecord
 
   def can_purchase_order_detail?(order_detail)
     price_group_ids = if skip_order_review?
-                        [PriceGroup.base.id]
+                        [PriceGroup.base.id] # the skip review price policy is in PriceGroup.base
                       else
                         order_detail.price_groups.map(&:id)
                       end
