@@ -77,7 +77,7 @@ class ProductForCart
   def check_that_product_has_price_groups_accessible_to_user(user)
     proc do
       price_group_ids = if product.skip_order_review?
-                          [PriceGroup.base.id]
+                          [PriceGroup.nonbillable.id]
                         else
                           (user.price_groups + user.account_price_groups).flatten.uniq.map(&:id)
                         end

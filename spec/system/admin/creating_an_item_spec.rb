@@ -47,7 +47,7 @@ RSpec.describe "Creating an item" do
       click_button "Create"
       click_on "Pricing"
 
-      expect(page).to have_content "#{PriceGroup.base} (#{PriceGroup.base.type_string}) $0"
+      expect(page).to have_content "#{PriceGroup.nonbillable} (#{PriceGroup.nonbillable.type_string}) $0"
     end
   end
 
@@ -67,7 +67,7 @@ RSpec.describe "Creating an item" do
       click_button "Create"
       click_on "Pricing"
 
-      expect(page).to have_content "#{PriceGroup.base} (#{PriceGroup.base.type_string}) $0"
+      expect(page).to have_content "#{PriceGroup.nonbillable} (#{PriceGroup.nonbillable.type_string}) $0"
     end
   end
 end

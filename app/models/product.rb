@@ -214,7 +214,7 @@ class Product < ApplicationRecord
       type: "#{type}PricePolicy",
       start_date: 1.month.ago,
       expire_date: 75.years.from_now,
-      price_group: PriceGroup.base,
+      price_group: PriceGroup.nonbillable,
       usage_rate: 0,
       minimum_cost: 0,
       cancellation_cost: 0,
@@ -257,7 +257,7 @@ class Product < ApplicationRecord
 
   def can_purchase_order_detail?(order_detail)
     price_group_ids = if skip_order_review?
-                        [PriceGroup.base.id] # the skip review price policy is in PriceGroup.base
+                        [PriceGroup.nonbillable.id]
                       else
                         order_detail.price_groups.map(&:id)
                       end
