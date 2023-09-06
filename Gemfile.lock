@@ -334,8 +334,8 @@ GEM
     ffi (1.15.5)
     font-awesome-rails (4.7.0.8)
       railties (>= 3.2, < 8.0)
-    globalid (1.1.0)
-      activesupport (>= 5.0)
+    globalid (1.2.1)
+      activesupport (>= 6.1)
     haml (6.1.2)
       temple (>= 0.8.2)
       thor
