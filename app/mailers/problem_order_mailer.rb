@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ProblemOrderMailer < ApplicationMailer
+
   def notify_user(order_detail)
     @order_detail = order_detail
     @user = @order_detail.user
@@ -20,4 +21,5 @@ class ProblemOrderMailer < ApplicationMailer
   def translation_scope
     "views.problem_order_mailer"
   end
+  
 end
