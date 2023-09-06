@@ -21,14 +21,14 @@ class PricePolicy < ApplicationRecord
   end
   validates :note, length: { maximum: 256 }
 
-  validates_each :expire_date do |record, _attr, value|
+  validates_each :expire_date, if: :order_review_product? do |record, _attr, value|
     start_date = record.start_date
     if value.present? && start_date.present?
       gen_exp_date = generate_expire_date(start_date)
       outside_fiscal_year = gen_exp_date < value || value <= start_date
 
-      if outside_fiscal_year && !record.product.skip_order_review? # skip review price rules should not expire
-        record.errors.add(:expire_date, "must be after #{start_date.to_date} and before #{gen_exp_date.to_date}") 
+      if outside_fiscal_year
+        record.errors.add(:expire_date, "must be after #{start_date.to_date} and before #{gen_exp_date.to_date}")
       end
     end
   end
@@ -129,6 +129,10 @@ class PricePolicy < ApplicationRecord
       charge_for: "reservation",
       note: "Price rule automatically created because of billing mode"
     )
+  end
+
+  def order_review_product?
+    !product.skip_order_review?
   end
 
   def has_subsidy?
