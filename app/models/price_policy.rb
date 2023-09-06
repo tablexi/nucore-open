@@ -132,6 +132,7 @@ class PricePolicy < ApplicationRecord
   end
 
   def order_review_product?
+    return true unless product
     !product.skip_order_review?
   end
 
