@@ -1,6 +1,6 @@
 # To start all docker containers run: `docker-compose up`
 #
-version: "3.8"
+version: '3.8'
 services:
   app:
     build:
