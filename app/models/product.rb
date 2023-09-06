@@ -210,21 +210,7 @@ class Product < ApplicationRecord
   end
 
   def create_nonbillable_price_policy
-    price_policies.create(
-      type: "#{type}PricePolicy",
-      start_date: 1.month.ago,
-      expire_date: 75.years.from_now,
-      price_group: PriceGroup.nonbillable,
-      usage_rate: 0,
-      minimum_cost: 0,
-      cancellation_cost: 0,
-      usage_subsidy: 0,
-      unit_cost: 0,
-      unit_subsidy: 0,
-      can_purchase: true,
-      charge_for: "reservation",
-      note: "Price rule automatically created because of billing mode"
-    )
+    price_policies << PricePolicy.create_nonbillable_price_policy(self)
   end
 
   def available_for_purchase?
