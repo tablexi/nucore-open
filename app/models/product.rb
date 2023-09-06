@@ -210,7 +210,7 @@ class Product < ApplicationRecord
   end
 
   def create_nonbillable_price_policy
-    price_policies << PricePolicy.create_nonbillable_price_policy(self)
+    PricePolicy.create_nonbillable_price_policy(self)
   end
 
   def available_for_purchase?
