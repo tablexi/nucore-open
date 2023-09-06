@@ -112,25 +112,6 @@ class PricePolicy < ApplicationRecord
     SettingsHelper.fiscal_year_end(start_date)
   end
 
-  def self.create_nonbillable_price_policy(product)
-    create(
-      type: "#{product.type}PricePolicy",
-      product: product,
-      start_date: 1.month.ago,
-      expire_date: 75.years.from_now,
-      price_group: PriceGroup.nonbillable,
-      usage_rate: 0,
-      minimum_cost: 0,
-      cancellation_cost: 0,
-      usage_subsidy: 0,
-      unit_cost: 0,
-      unit_subsidy: 0,
-      can_purchase: true,
-      charge_for: "reservation",
-      note: "Price rule automatically created because of billing mode"
-    )
-  end
-
   def order_review_product?
     return true unless product
     !product.skip_order_review?
