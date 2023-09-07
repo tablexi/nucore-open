@@ -40,8 +40,12 @@ class StatementPresenter < SimpleDelegator
   end
 
   def status
-    return "Canceled" if canceled_at
-
-    reconciled? ? "Reconciled" : "Unreconciled"
+    if canceled_at
+      "Canceled"
+    elsif reconciled?
+      "Reconciled"
+    else
+      "Unreconciled"
+    end
   end
 end

@@ -20,16 +20,19 @@ RSpec.describe "canceling statements" do
     visit facility_statements_path(facility)
   end
 
-  it "cancels a statement" do
-    click_on "Cancel"
-    expect(page).to have_content "#{I18n.t('Statement')} has been canceled"
-    expect(page).to have_content "Canceled"
-  end
+  context "when an order detail is NOT reconciled" do
+    it "cancels a statement" do
+      click_on "Cancel"
+      expect(page).to have_content "#{I18n.t('Statement')} has been canceled"
+      expect(page).to have_content "Canceled"
+    end
 
-  it "does not allow download or emailing of statement" do
-    click_on "Cancel"
-    expect(page).to_not have_content "Download"
-    expect(page).to_not have_content "Resend"
+    it "does not allow download or emailing of statement" do
+      click_on "Cancel"
+      expect(page).to_not have_content "Download"
+      expect(page).to_not have_content "Resend"
+      expect(page).to_not have_link "Cancel"
+    end
   end
 
   context "when an order detail is reconciled" do
@@ -39,7 +42,9 @@ RSpec.describe "canceling statements" do
     end
 
     it "does not allow statement to be canceled" do
-      expect(page).to_not have_content "Cancel"
+      expect(page).to have_content "Download"
+      expect(page).to have_content "Resend"
+      expect(page).to_not have_link "Cancel"
     end
   end
 end
