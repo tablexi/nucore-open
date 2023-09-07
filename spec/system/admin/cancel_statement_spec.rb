@@ -32,14 +32,14 @@ RSpec.describe "canceling statements" do
     expect(page).to_not have_content "Resend"
   end
 
-	context "when an order detail is reconciled" do
-		before do
-			order_details.first.to_reconciled!
-			visit facility_statements_path(facility)
-		end
+  context "when an order detail is reconciled" do
+    before do
+      order_details.first.to_reconciled!
+      visit facility_statements_path(facility)
+    end
 
-		it "does not allow statement to be canceled" do
-			expect(page).to_not have_content "Cancel"
-		end
-	end
+    it "does not allow statement to be canceled" do
+      expect(page).to_not have_content "Cancel"
+    end
+  end
 end
