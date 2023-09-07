@@ -39,4 +39,9 @@ class StatementPresenter < SimpleDelegator
     @closed_events ||= LogEvent.where(loggable_type: "Statement", loggable_id: id, event_type: "closed")
   end
 
+  def status
+    return "Canceled" if canceled_at
+
+    reconciled? ? "Reconciled" : "Unreconciled"
+  end
 end
