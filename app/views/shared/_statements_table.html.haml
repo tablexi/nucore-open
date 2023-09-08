@@ -30,8 +30,8 @@
                 %br
                 = link_to(t("statements.resend"), resend_emails_facility_statement_path(current_facility, s), method: :post, class: "js--resend", data: { confirm: "You are about to re-send this invoice to the following recipients: #{s.users_to_notify.join(", ")}" })
 
-                - if s.can_cancel?
-                  %span= link_to(t("statements.cancel"), cancel_facility_statement_path(current_facility, s), method: :post, class: "btn btn-danger", data: {confirm: "Are you sure you want to cancel?"})
+              - if s.can_cancel?
+                %span= link_to(t("statements.cancel"), cancel_facility_statement_path(current_facility, s), method: :post, class: "btn btn-danger", data: {confirm: "Are you sure you want to cancel?"})
           %td= format_usa_datetime(s.created_at)
           %td= s.account.notify_users.map(&:full_name).join(', ')
           - unless @account
