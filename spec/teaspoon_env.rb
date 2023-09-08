@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'engine_manager'
 
 Teaspoon.configure do |config|
   # Determines where the Teaspoon routes will be mounted. Changing this to "/jasmine" would allow you to browse to
@@ -81,7 +82,7 @@ Teaspoon.configure do |config|
   #  suite.matcher = "spec/javascripts/targeted/*_spec.{js,js.coffee,coffee}"
   # end
 
-  # config.asset_paths += EngineManager.loaded_nucore_engines.map { |e| File.join(e.root, "spec/javascripts") }
+  config.asset_paths += EngineManager.loaded_nucore_engines.map { |e| File.join(e.root, "spec/javascripts") }
 
   # CONSOLE RUNNER SPECIFIC
   #
@@ -132,11 +133,11 @@ Teaspoon.configure do |config|
     selenium_options: selenium_options
   }
 
-  # config.suite :engines do |suite|
-  #   engine_names = EngineManager.loaded_nucore_engines.map { |e| e.name.underscore.split("/engine").first }
-  #   spec_paths = engine_names.map { |engine_name| "vendor/engines/#{engine_name}/spec/javascripts"}
-  #   suite.matcher = "{#{spec_paths.join(',')}}/**/*_spec.{js,js.coffee,coffee}"
-  # end
+  config.suite :engines do |suite|
+    engine_names = EngineManager.loaded_nucore_engines.map { |e| e.name.underscore.split("/engine").first }
+    spec_paths = engine_names.map { |engine_name| "vendor/engines/#{engine_name}/spec/javascripts"}
+    suite.matcher = "{#{spec_paths.join(',')}}/**/*_spec.{js,js.coffee,coffee}"
+  end
 
   # Specify the timeout for the driver. Specs are expected to complete within this time frame or the run will be
   # considered a failure. This is to avoid issues that can arise where tests stall.
