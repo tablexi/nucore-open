@@ -69,6 +69,16 @@ class Statement < ApplicationRecord
     order_details.reconciled.empty? && canceled_at.blank?
   end
 
+  def status
+    if canceled_at
+      "Canceled"
+    elsif reconciled?
+      "Reconciled"
+    else
+      "Unreconciled"
+    end
+  end
+
   def paid_in_full?
     payments.sum(:amount) >= total_cost
   end
