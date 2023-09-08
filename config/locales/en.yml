@@ -665,6 +665,7 @@ en:
       filename: "%{facility}-%{invoice_number}-%{date}.pdf"
       download: Download
     resend: Resend
+    cancel: Cancel
     closed_at: Closed At
     closed_by: Closed By
 
