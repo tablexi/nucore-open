@@ -129,11 +129,11 @@ group :development, :test do
   gem "pry-byebug"
   gem "rspec-rails"
   gem "rspec-activejob"
-  gem "teaspoon-jasmine"
   gem "selenium-webdriver"
 end
 
 group :test do
+  gem "teaspoon-jasmine"
   gem "capybara"
   gem "capybara-email"
   gem "rails-controller-testing"
