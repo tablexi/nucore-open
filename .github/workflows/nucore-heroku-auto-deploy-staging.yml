@@ -2,11 +2,10 @@ name: Staging heroku auto deployment
 
 # When this action will be executed
 on:
-  workflow_run:
-    workflows: [ "Run test suite" ]
-    branches: [ deploy-heroku ]
-    types:
-      - completed
+  push:
+    branches:
+      - "deploy-heroku"
+
 
   # Allow manually triggering this workflow by visiting
   # https://github.com/tablexi/nucore-open/actions/workflows/nucore-auto-deploy-staging.yml
