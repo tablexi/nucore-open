@@ -30,7 +30,6 @@ deprecations/
 config/settings.local.yml
 config/settings/*.local.yml
 config/environments/*.local.yml
-config/secrets.yml
 
 public/images/bg-search-form.pxm
 
