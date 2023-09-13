@@ -19,6 +19,10 @@ staging:
   <<: *defaults
   database: <%= ENV.fetch("MYSQL_DATABASE", "") %>
 
+stage:
+  <<: *defaults
+  database: <%= ENV.fetch("MYSQL_DATABASE", "") %>
+
 production:
   <<: *defaults
   database: <%= ENV.fetch("MYSQL_DATABASE", "") %>
