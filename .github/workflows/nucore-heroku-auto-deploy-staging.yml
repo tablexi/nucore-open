@@ -2,11 +2,9 @@ name: Staging heroku auto deployment
 
 # When this action will be executed
 on:
-  workflow_run:
-    workflows: [ "Run test suite" ]
-    branches: [ master ]
-    types:
-      - completed
+  push:
+    branches:
+      - "deploy-heroku"
 
   # Allow manually triggering this workflow by visiting
   # https://github.com/tablexi/nucore-open/actions/workflows/nucore-heroku-auto-deploy-staging.yml
@@ -19,6 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Adding Known Hosts
+        run: cp config/database.yml.mysql.template config/database.yml
       - uses: akhileshns/heroku-deploy@v3.12.14
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
