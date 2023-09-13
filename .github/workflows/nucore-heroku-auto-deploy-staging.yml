@@ -17,8 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Adding Known Hosts
+      - name: Adding Database Config
         run: cp config/database.yml.mysql.template config/database.yml
+      - name: Adding Secrets Config
+        run: cp config/secrets.yml.template config/secrets.yml
       - uses: akhileshns/heroku-deploy@v3.12.14
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
