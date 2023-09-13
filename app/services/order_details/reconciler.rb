@@ -32,7 +32,7 @@ module OrderDetails
     end
 
     def full_errors
-      Array(persist_errors) + errors.map { |_attr, msg| msg }
+      Array(persist_errors) + errors.map { |msg| msg }
     end
 
     private

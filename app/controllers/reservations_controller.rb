@@ -197,7 +197,6 @@ class ReservationsController < ApplicationController
         else
           redirect_to (@order.purchased? ? reservations_path : cart_path)
         end
-        return
       rescue ActiveRecord::RecordInvalid => e
         raise ActiveRecord::Rollback
       end
