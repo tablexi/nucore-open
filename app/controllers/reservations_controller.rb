@@ -191,20 +191,18 @@ class ReservationsController < ApplicationController
     Reservation.transaction do
       begin
         save_reservation_and_order_detail
+
+        flash[:notice] = "The reservation was successfully updated."
+        if mergeable
+          redirect_to facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
+        else
+          redirect_to (@order.purchased? ? reservations_path : cart_path)
+        end
+        next
       rescue ActiveRecord::RecordInvalid => e
         success = false
         raise ActiveRecord::Rollback
       end
-    end
-
-    if mergeable && success
-      flash[:notice] = "The reservation was successfully updated."
-      redirect_to facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
-    elsif success
-      flash[:notice] = "The reservation was successfully updated."
-      redirect_to (@order.purchased? ? reservations_path : cart_path)
-    else
-      render_edit
     end
   end
 

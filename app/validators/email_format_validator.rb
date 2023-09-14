@@ -6,7 +6,9 @@ class EmailFormatValidator < ActiveModel::EachValidator
 
   def validate_each(record, attribute, value)
     return if value.nil?
-    record.errors[attribute] << error_message if value !~ EMAIL_PATTERN
+    if value !~ EMAIL_PATTERN
+      record.errors.add(attribute, error_message)
+    end
   end
 
   private
