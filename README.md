@@ -213,7 +213,7 @@ NUcore uses [Rspec](http://rspec.info) to run tests. Try any of the following fr
     ```
     bundle exec rake teaspoon
     ```
-    ... or to run in docker, first set ENV variables:
+    ... or to run with docker, first set ENV variables in `docker-compose.yml`:
     ```
     # Uncomment below to run teaspoon tests
     - RAILS_ENV=test
