@@ -130,10 +130,10 @@ group :development, :test do
   gem "rspec-rails"
   gem "rspec-activejob"
   gem "selenium-webdriver"
+  gem "teaspoon-jasmine"
 end
 
 group :test do
-  gem "teaspoon-jasmine"
   gem "capybara"
   gem "capybara-email"
   gem "rails-controller-testing"

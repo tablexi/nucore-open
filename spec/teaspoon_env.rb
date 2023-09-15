@@ -112,6 +112,7 @@ Teaspoon.configure do |config|
   selenium_args = ["headless", "disable-gpu", "no-sandbox", "window-size=1366,768"]
   selenium_options = { options: Selenium::WebDriver::Chrome::Options.new(args: selenium_args) }
 
+  client_driver = :chrome
   # Using a standalone chrome container for testing.
   # https://github.com/jejacks0n/teaspoon/wiki/Using-docker-compose-with-selenium-standalone-%2A
   if ENV['SELENIUM_HOST']
@@ -126,10 +127,11 @@ Teaspoon.configure do |config|
         http_client: http_client,
       }
     )
+    client_driver = :remote
   end
 
   config.driver_options = {
-    client_driver: :chrome,
+    client_driver: client_driver,
     selenium_options: selenium_options
   }
 
