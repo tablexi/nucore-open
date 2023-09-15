@@ -6,7 +6,14 @@ class ReservationWindow
 
   def max_window
     return 365 if operator?
-    @reservation.longest_reservation_window(@reservation.order_detail.price_groups)
+
+    price_groups = if @reservation.product.skip_order_review?
+                     [PriceGroup.nonbillable]
+                   else
+                     @reservation.order_detail.price_groups
+                   end
+
+    @reservation.longest_reservation_window(price_groups)
   end
 
   def max_days_ago
