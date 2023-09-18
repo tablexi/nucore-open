@@ -93,7 +93,7 @@ class FacilityStatementsController < ApplicationController
       LogEvent.log(statement, :closed, current_user)
       flash[:notice] = "#{t('Statement')} has been canceled"
     else
-      flash[:error] = "Unable to cancel statement"
+      flash[:error] = "Unable to cancel #{t('statement')}"
     end
 
     redirect_to action: :index
