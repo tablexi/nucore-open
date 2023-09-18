@@ -31,7 +31,7 @@ RSpec.describe "Translation loading" do
 
   describe "load_path" do
     let(:load_path) { Rails.application.config.i18n.load_path }
-    let(:override_index) { load_path.find_index("#{Rails.root}/config/locales/override/en.yml") }
+    let(:override_index) { load_path.find_index("#{Rails.root}/config/override_locales/en.yml") }
     let(:other_index) { load_path.find_index("#{Rails.root}/config/locales/#{other_path}") }
 
     describe "/en.yml" do

@@ -46,9 +46,11 @@ module Nucore
 
     # The default locale is :en and all translations under config/locales/ are auto-loaded
     # But we want to make sure anything in the override folder happens at the very end
+    # In Rails 7, the application by default overloads nested locales, so we do not need to override the load_path in the application.rb
+    # https://blog.saeloun.com/2021/07/20/rails-7-allows-nested-locales/
+    # In order to ensure overrides are loaded last, we need to store them outside of config/locales.  See https://github.com/rails/rails/pull/41872#issuecomment-1083413346
     initializer "nucore.i18n.move_overrides_to_end", after: "text_helpers.i18n.add_load_paths" do
-      config.i18n.load_path -= Dir[Rails.root.join("config", "locales", "override", "*.{rb,yml}").to_s]
-      config.i18n.load_path += Dir[Rails.root.join("config", "locales", "override", "*.{rb,yml}").to_s]
+      config.i18n.load_path += Dir[Rails.root.join("config", "override_locales", "*.{rb,yml}").to_s]
     end
 
     config.active_job.queue_adapter = :delayed_job
