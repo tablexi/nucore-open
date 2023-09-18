@@ -36,10 +36,10 @@
                     class: "js--resend",
                     data: { confirm: confirm })
 
-                - if s.can_cancel?
+                - if s.can_cancel? && show_cancel_button
                   = button_to(t("statements.cancel"),
                     cancel_facility_statement_path(current_facility, s),
-∑                    class: "btn btn-danger",
+                    class: "btn btn-danger",
                     data: { confirm: "Are you sure you want to cancel?" })
           %td= format_usa_datetime(s.created_at)
           %td= s.account.notify_users.map(&:full_name).join(', ')
