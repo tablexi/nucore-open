@@ -6,7 +6,6 @@ class ReservationWindow
 
   def max_window
     return 365 if operator?
-
     @reservation.longest_reservation_window(@reservation.order_detail.price_groups)
   end
 
