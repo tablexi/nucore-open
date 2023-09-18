@@ -242,13 +242,7 @@ class Product < ApplicationRecord
   end
 
   def can_purchase_order_detail?(order_detail)
-    price_group_ids = if skip_order_review?
-                        [PriceGroup.nonbillable.id]
-                      else
-                        order_detail.price_groups.map(&:id)
-                      end
-
-    can_purchase? price_group_ids
+    can_purchase? order_detail.price_groups.map(&:id)
   end
 
   def cheapest_price_policy(order_detail, date = Time.zone.now)
