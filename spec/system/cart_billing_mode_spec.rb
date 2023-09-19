@@ -7,6 +7,22 @@ RSpec.describe "Adding products with different billing modes to cart" do
   let(:billing_mode) { "Default" }
   let!(:nonbillable_item) { create(:setup_item, facility:, billing_mode: "Nonbillable") }
   let!(:default_item) { create(:setup_item, facility:, billing_mode: "Default") }
+
+  let(:skip_review_item) do
+    # Do not want the facotry to add price policies, so not using
+    # :setup_item
+    FactoryBot.create(:item,
+      facility:,
+      facility_account: facility.facility_accounts.first,
+      billing_mode: "Skip Review",
+      name: "Skip Review Item",
+      url_name: "skip-review-item",
+      description: "Product description",
+      account: 71_234,
+      initial_order_status: FactoryBot.create(:order_status, name: "New"),
+    )
+  end
+
   let!(:account) { create(:purchase_order_account, :with_account_owner, facility:) }
   let!(:account_price_group_member) { create(:account_price_group_member, account: account, price_group: PriceGroup.base) }
   let!(:account_price_group_member_2) { create(:account_price_group_member, account: account, price_group: PriceGroup.external) }
@@ -17,10 +33,24 @@ RSpec.describe "Adding products with different billing modes to cart" do
   let!(:default_price_policy) { create(:item_price_policy, price_group: PriceGroup.globals.first, product: default_item) }
   let!(:default_price_policy_2) { create(:item_price_policy, price_group: PriceGroup.globals.second, product: default_item) }
 
+  let(:external_user) { create(:user, :external) }
+
+  let!(:external_account) do
+    a = build(:purchase_order_account, facility:)
+    a.account_users.build(
+      user: external_user,
+      user_role: AccountUser::ACCOUNT_OWNER,
+      created_by_user: user
+    )
+    a.save
+    a
+  end
+
   let(:user) { account.owner.user }
+  let(:logged_in_user) { user }
 
   before do
-    login_as user
+    login_as logged_in_user
   end
 
   context "with user-based price groups disabled", feature_setting: { user_based_price_groups: false } do
@@ -151,6 +181,20 @@ RSpec.describe "Adding products with different billing modes to cart" do
         expect(page).to have_content(default_item.name)
         expect(page).to have_content(nonbillable_item.name)
         expect(page).not_to have_content("#{nonbillable_item.name} cannot be added to your cart because it's billing mode does not match the current products in the cart; please clear your cart or place a separate order.")
+      end
+    end
+
+    context "when an external user is used" do
+      let(:logged_in_user) { external_user }
+
+      it "Adds skip review item to cart" do
+        external_account
+        visit facility_item_path(facility, skip_review_item)
+
+        click_on "Add to cart"
+        choose external_account.to_s
+        click_button "Continue"
+        expect(page).to have_content(skip_review_item.name)
       end
     end
   end
