@@ -96,18 +96,18 @@ RSpec.describe "Adding products with different billing modes to cart" do
       expect(page).to have_content(nonbillable_item.name)
     end
 
-    it "allows a user to add another default product" do
+    it "can add a default item to cart" do
       visit facility_item_path(facility, default_item)
       click_on "Add to cart"
-      expect(page).to have_content(default_item.name).twice
-    end
-
-    it "allows a user to add another nonbillable product" do
-      visit facility_item_path(facility, nonbillable_item)
-      click_on "Add to cart"
+      click_button "Continue"
       expect(page).to have_content(default_item.name)
-      expect(page).to have_content(nonbillable_item.name)
-      expect(page).not_to have_content("#{nonbillable_item.name} cannot be added to your cart because it's billing mode does not match the current products in the cart; please clear your cart or place a separate order.")
+    end
+  end
+
+  context "internal user and internal account" do
+    it_behaves_like "adding item to cart" do
+      let(:user_used) { user }
+      let(:account_used) { account }
     end
   end
 
