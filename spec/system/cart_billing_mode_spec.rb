@@ -12,20 +12,20 @@ RSpec.describe "Adding products with different billing modes to cart" do
     # Do not want the facotry to add price policies, so not using
     # :setup_item
     FactoryBot.create(:item,
-      facility:,
-      facility_account: facility.facility_accounts.first,
-      billing_mode: "Skip Review",
-      name: "Skip Review Item",
-      url_name: "skip-review-item",
-      description: "Product description",
-      account: 71_234,
-      initial_order_status: FactoryBot.create(:order_status, name: "New"),
-    )
+                      facility:,
+                      facility_account: facility.facility_accounts.first,
+                      billing_mode: "Skip Review",
+                      name: "Skip Review Item",
+                      url_name: "skip-review-item",
+                      description: "Product description",
+                      account: 71_234,
+                      initial_order_status: FactoryBot.create(:order_status, name: "New"),
+                     )
   end
 
   let!(:account) { create(:purchase_order_account, :with_account_owner, facility:) }
-  let!(:account_price_group_member) { create(:account_price_group_member, account: account, price_group: PriceGroup.base) }
-  let!(:account_price_group_member_2) { create(:account_price_group_member, account: account, price_group: PriceGroup.external) }
+  let!(:account_price_group_member) { create(:account_price_group_member, account:, price_group: PriceGroup.base) }
+  let!(:account_price_group_member_2) { create(:account_price_group_member, account:, price_group: PriceGroup.external) }
 
   let!(:nonbillable_price_policy) { create(:item_price_policy, price_group: PriceGroup.globals.first, product: nonbillable_item) }
   let!(:nonbillable_price_policy_2) { create(:item_price_policy, price_group: PriceGroup.globals.second, product: nonbillable_item) }
@@ -64,58 +64,50 @@ RSpec.describe "Adding products with different billing modes to cart" do
         u.reload
       end
 
-      xit "allows a user without any accounts to add a nonbillable product to cart" do
+      it "allows a user without any accounts to add a nonbillable product to cart" do
         visit facility_item_path(facility, nonbillable_item)
         click_on "Add to cart"
         expect(page).to have_content(nonbillable_item.name)
       end
 
-      xit "does not allow a user without any accounts to add a default product to cart" do
+      it "does not allow a user without any accounts to add a default product to cart" do
         visit facility_item_path(facility, default_item)
-        expect(page).to have_content("Sorry, but we could not find a valid payment source that you can use to purchase this item")
+        expect(page).to have_content("You are not in a price group that may purchase this")
       end
     end
+  end
 
-    context "when a nonbillable product is added first" do
-      before do
-        visit facility_item_path(facility, nonbillable_item)
-        click_on "Add to cart"
-      end
-
-      it "allows a user to add another nonbillable product" do
-        visit facility_item_path(facility, nonbillable_item)
-        click_on "Add to cart"
-        expect(page).to have_content(nonbillable_item.name).twice
-      end
-
-      it "does not allow a user to add a default billing mode product" do
-        visit facility_item_path(facility, default_item)
-        click_on "Add to cart"
-        expect(page).to have_content("#{default_item.name} cannot be added to your cart because it's billing mode does not match the current products in the cart; please clear your cart or place a separate order.")
-      end
+  shared_examples "adding item to cart" do
+    before do
+      login_as user_used
     end
 
-    context "when a default product is added first" do
-      before do
-        visit facility_item_path(facility, default_item)
-        click_on "Add to cart"
-        choose account.description
-        click_on "Continue"
-      end
+    it "can add Skip Review item to cart" do
+      visit facility_item_path(facility, skip_review_item)
+      click_on "Add to cart"
+      choose account_used.to_s
+      click_button "Continue"
+      expect(page).to have_content(skip_review_item.name)
+    end
 
-      it "allows a user to add another default product" do
-        visit facility_item_path(facility, default_item)
-        click_on "Add to cart"
-        expect(page).to have_content(default_item.name).twice
-      end
+    it "can add Nonbillable item to cart" do
+      visit facility_item_path(facility, nonbillable_item)
+      click_on "Add to cart"
+      expect(page).to have_content(nonbillable_item.name)
+    end
 
-      it "allows a user to add another nonbillable product" do
-        visit facility_item_path(facility, nonbillable_item)
-        click_on "Add to cart"
-        expect(page).to have_content(default_item.name)
-        expect(page).to have_content(nonbillable_item.name)
-        expect(page).not_to have_content("#{nonbillable_item.name} cannot be added to your cart because it's billing mode does not match the current products in the cart; please clear your cart or place a separate order.")
-      end
+    it "allows a user to add another default product" do
+      visit facility_item_path(facility, default_item)
+      click_on "Add to cart"
+      expect(page).to have_content(default_item.name).twice
+    end
+
+    it "allows a user to add another nonbillable product" do
+      visit facility_item_path(facility, nonbillable_item)
+      click_on "Add to cart"
+      expect(page).to have_content(default_item.name)
+      expect(page).to have_content(nonbillable_item.name)
+      expect(page).not_to have_content("#{nonbillable_item.name} cannot be added to your cart because it's billing mode does not match the current products in the cart; please clear your cart or place a separate order.")
     end
   end
 
@@ -134,67 +126,67 @@ RSpec.describe "Adding products with different billing modes to cart" do
         expect(page).to have_content(nonbillable_item.name)
       end
 
-
-
       it "does not allow adding a default product to cart" do
         visit facility_item_path(facility, default_item)
         expect(page).to have_content("Sorry, but we could not find a valid payment source that you can use to purchase this item")
       end
     end
 
-    context "when a nonbillable product is added first" do
-      before do
-        visit facility_item_path(facility, nonbillable_item)
-        click_on "Add to cart"
+    describe "multi-item cart" do
+      context "when a nonbillable product is added first" do
+        before do
+          visit facility_item_path(facility, nonbillable_item)
+          click_on "Add to cart"
+        end
+
+        it "allows a user to add another nonbillable product" do
+          visit facility_item_path(facility, nonbillable_item)
+          click_on "Add to cart"
+          expect(page).to have_content(nonbillable_item.name).twice
+        end
+
+        it "does not allow a user to add a default billing mode product" do
+          visit facility_item_path(facility, default_item)
+          click_on "Add to cart"
+          expect(page).to have_content("#{default_item.name} cannot be added to your cart because it's billing mode does not match the current products in the cart; please clear your cart or place a separate order.")
+        end
       end
 
-      it "allows a user to add another nonbillable product" do
-        visit facility_item_path(facility, nonbillable_item)
-        click_on "Add to cart"
-        expect(page).to have_content(nonbillable_item.name).twice
+      context "when a default product is added first" do
+        before do
+          visit facility_item_path(facility, default_item)
+          click_on "Add to cart"
+          choose account.description
+          click_on "Continue"
+        end
+
+        it "allows a user to add another default product" do
+          visit facility_item_path(facility, default_item)
+          click_on "Add to cart"
+          expect(page).to have_content(default_item.name).twice
+        end
+
+        it "allows a user to add another nonbillable product" do
+          visit facility_item_path(facility, nonbillable_item)
+          click_on "Add to cart"
+          expect(page).to have_content(default_item.name)
+          expect(page).to have_content(nonbillable_item.name)
+          expect(page).not_to have_content("#{nonbillable_item.name} cannot be added to your cart because it's billing mode does not match the current products in the cart; please clear your cart or place a separate order.")
+        end
       end
 
-      it "does not allow a user to add a default billing mode product" do
-        visit facility_item_path(facility, default_item)
-        click_on "Add to cart"
-        expect(page).to have_content("#{default_item.name} cannot be added to your cart because it's billing mode does not match the current products in the cart; please clear your cart or place a separate order.")
-      end
-    end
+      context "when an external user is used" do
+        let(:logged_in_user) { external_user }
 
-    context "when a default product is added first" do
-      before do
-        visit facility_item_path(facility, default_item)
-        click_on "Add to cart"
-        choose account.description
-        click_on "Continue"
-      end
+        it "Adds skip review item to cart" do
+          external_account
+          visit facility_item_path(facility, skip_review_item)
 
-      it "allows a user to add another default product" do
-        visit facility_item_path(facility, default_item)
-        click_on "Add to cart"
-        expect(page).to have_content(default_item.name).twice
-      end
-
-      it "allows a user to add another nonbillable product" do
-        visit facility_item_path(facility, nonbillable_item)
-        click_on "Add to cart"
-        expect(page).to have_content(default_item.name)
-        expect(page).to have_content(nonbillable_item.name)
-        expect(page).not_to have_content("#{nonbillable_item.name} cannot be added to your cart because it's billing mode does not match the current products in the cart; please clear your cart or place a separate order.")
-      end
-    end
-
-    context "when an external user is used" do
-      let(:logged_in_user) { external_user }
-
-      it "Adds skip review item to cart" do
-        external_account
-        visit facility_item_path(facility, skip_review_item)
-
-        click_on "Add to cart"
-        choose external_account.to_s
-        click_button "Continue"
-        expect(page).to have_content(skip_review_item.name)
+          click_on "Add to cart"
+          choose external_account.to_s
+          click_button "Continue"
+          expect(page).to have_content(skip_review_item.name)
+        end
       end
     end
   end
