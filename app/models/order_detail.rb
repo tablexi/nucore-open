@@ -392,6 +392,7 @@ class OrderDetail < ApplicationRecord
   def skip_review?
     actual_total &&
       complete? &&
+      !problem_order? &&
       product.skip_order_review?
   end
 
