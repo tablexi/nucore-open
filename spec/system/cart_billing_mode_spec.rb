@@ -47,8 +47,10 @@ RSpec.describe "Adding products with different billing modes to cart" do
     before(:each) do
       # The setup_item factory creates a price_policy
       # for a facility-based price group.
-      # This allows purchasing the default_item with the internal_account.
+      # This allows purchasing the default_item
+      # with internal_account or external_account.
       create(:item_price_policy, price_group: PriceGroup.base, product: default_item)
+      create(:item_price_policy, price_group: PriceGroup.external, product: default_item)
       login_as logged_in_user
     end
 
@@ -103,6 +105,30 @@ RSpec.describe "Adding products with different billing modes to cart" do
         visit facility_item_path(facility, default_item)
         click_on "Add to cart"
         expect(page).to have_content(default_item.name)
+      end
+    end
+
+    context "when a Default product is added first" do
+      before do
+        visit facility_item_path(facility, default_item)
+        click_on "Add to cart"
+        choose account_used.to_s
+        click_button "Continue"
+      end
+
+      it "can add another Default product" do
+        expect(page).to have_content(default_item.name)
+        visit facility_item_path(facility, default_item)
+        click_on "Add to cart"
+        expect(page).to have_content(default_item.name).twice
+      end
+
+      it "can add a Nonbillable product" do
+        visit facility_item_path(facility, nonbillable_item)
+        click_on "Add to cart"
+        expect(page).to have_content(default_item.name)
+        expect(page).to have_content(nonbillable_item.name)
+        expect(page).not_to have_content("#{nonbillable_item.name} cannot be added to your cart because it's billing mode does not match the current products in the cart; please clear your cart or place a separate order.")
       end
     end
   end
