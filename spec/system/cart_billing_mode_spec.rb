@@ -21,25 +21,22 @@ RSpec.describe "Adding products with different billing modes to cart" do
   let!(:default_price_policy) { create(:item_price_policy, price_group: PriceGroup.base, product: default_item) }
   let!(:default_price_policy_2) { create(:item_price_policy, price_group: PriceGroup.external, product: default_item) }
 
-  let(:logged_in_user) { internal_user }
-
   before do
     create(:account_user, :purchaser, account: internal_account, user: external_user)
     create(:account_user, :purchaser, account: external_account, user: internal_user)
-    login_as logged_in_user
   end
 
   ### SHARED EXAMPLES ###
   shared_examples "user with no accounts" do
     before(:each) do
-      u = user_used
+      u = logged_in_user
       u.account_users.each(&:destroy)
       u.save
       u.reload
     end
 
     before do
-      login_as user_used
+      login_as logged_in_user
     end
 
     it "allows a user without any accounts to add a nonbillable product to cart" do
@@ -65,7 +62,7 @@ RSpec.describe "Adding products with different billing modes to cart" do
 
   shared_examples "adding item to cart" do
     before do
-      login_as user_used
+      login_as logged_in_user
     end
 
     it "can add Skip Review item to cart" do
@@ -95,14 +92,14 @@ RSpec.describe "Adding products with different billing modes to cart" do
   context "with user-based price groups disabled", feature_setting: { user_based_price_groups: false } do
     context "when a user has no price groups (or no account with price groups)" do
       it_behaves_like "user with no accounts" do
-        let(:user_used) { internal_user }
+        let(:logged_in_user) { internal_user }
         let(:price_groups_present) { false }
       end
     end
 
     context "with an external user that has no account" do
       it_behaves_like "user with no accounts" do
-        let(:user_used) { external_user }
+        let(:logged_in_user) { external_user }
         let(:price_groups_present) { false }
       end
     end
@@ -111,42 +108,42 @@ RSpec.describe "Adding products with different billing modes to cart" do
   context "with user-based price groups enabled", feature_setting: { user_based_price_groups: true } do
     context "with an internal that has no account" do
       it_behaves_like "user with no accounts" do
-        let(:user_used) { internal_user }
+        let(:logged_in_user) { internal_user }
         let(:price_groups_present) { true }
       end
     end
 
     context "with an external user that has no account" do
       it_behaves_like "user with no accounts" do
-        let(:user_used) { external_user }
+        let(:logged_in_user) { external_user }
         let(:price_groups_present) { true }
       end
     end
 
     context "internal user and internal account" do
       it_behaves_like "adding item to cart" do
-        let(:user_used) { internal_user }
+        let(:logged_in_user) { internal_user }
         let(:account_used) { internal_account }
       end
     end
 
     context "internal user and external account" do
       it_behaves_like "adding item to cart" do
-        let(:user_used) { internal_user }
+        let(:logged_in_user) { internal_user }
         let(:account_used) { external_account }
       end
     end
 
     context "external user and external account" do
       it_behaves_like "adding item to cart" do
-        let(:user_used) { external_user }
+        let(:logged_in_user) { external_user }
         let(:account_used) { external_account }
       end
     end
 
     context "external user and internal account" do
       it_behaves_like "adding item to cart" do
-        let(:user_used) { external_user }
+        let(:logged_in_user) { external_user }
         let(:account_used) { internal_account }
       end
     end
