@@ -24,7 +24,8 @@ class Product < ApplicationRecord
   has_one :product_display_group, through: :product_display_group_product
 
   after_create :create_default_price_group_products
-  after_create :create_skip_review_price_policies, if: :skip_order_review?
+  after_create :create_skip_review_price_policies, if: :skip_review_mode?
+  after_create :create_nonbillable_price_policy, if: :nonbillable_mode?
 
   email_list_attribute :training_request_contacts
 
@@ -211,6 +212,10 @@ class Product < ApplicationRecord
 
   def create_skip_review_price_policies
     PricePolicyBuilder.create_skip_review_for(self)
+  end
+
+  def create_nonbillable_price_policy
+    PricePolicyBuilder.create_nonbillable_for(self)
   end
 
   def available_for_purchase?
