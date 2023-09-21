@@ -14,7 +14,7 @@ RSpec.describe "Adding products with different billing modes to cart" do
   let(:internal_user) { internal_account.owner.user }
   let(:external_user) { create(:user, :external) }
 
-  before do
+  before(:each) do
     create(:account_user, :purchaser, account: internal_account, user: external_user)
     create(:account_user, :purchaser, account: external_account, user: internal_user)
   end
@@ -26,9 +26,6 @@ RSpec.describe "Adding products with different billing modes to cart" do
       u.account_users.each(&:destroy)
       u.save
       u.reload
-    end
-
-    before do
       login_as logged_in_user
     end
 
@@ -49,8 +46,8 @@ RSpec.describe "Adding products with different billing modes to cart" do
     end
   end
 
-  shared_examples "adding item to cart" do
-    before do
+  shared_examples "adding items to the cart" do
+    before(:each) do
       login_as logged_in_user
     end
 
@@ -67,14 +64,6 @@ RSpec.describe "Adding products with different billing modes to cart" do
       click_on "Add to cart"
       expect(page).to have_content(nonbillable_item.name)
     end
-
-    # it "can add a default item to cart" do
-    #   visit facility_item_path(facility, default_item)
-    #   click_on "Add to cart"
-    #   choose account_used.to_s
-    #   click_button "Continue"
-    #   expect(page).to have_content(default_item.name)
-    # end
   end
 
   ### SPEC CONTEXTS ###
@@ -106,28 +95,28 @@ RSpec.describe "Adding products with different billing modes to cart" do
     end
 
     context "internal user and internal account" do
-      it_behaves_like "adding item to cart" do
+      it_behaves_like "adding items to the cart" do
         let(:logged_in_user) { internal_user }
         let(:account_used) { internal_account }
       end
     end
 
     context "internal user and external account" do
-      it_behaves_like "adding item to cart" do
+      it_behaves_like "adding items to the cart" do
         let(:logged_in_user) { internal_user }
         let(:account_used) { external_account }
       end
     end
 
     context "external user and external account" do
-      it_behaves_like "adding item to cart" do
+      it_behaves_like "adding items to the cart" do
         let(:logged_in_user) { external_user }
         let(:account_used) { external_account }
       end
     end
 
     context "external user and internal account" do
-      it_behaves_like "adding item to cart" do
+      it_behaves_like "adding items to the cart" do
         let(:logged_in_user) { external_user }
         let(:account_used) { internal_account }
       end
