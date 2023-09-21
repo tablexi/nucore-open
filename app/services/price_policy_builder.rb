@@ -14,8 +14,9 @@ class PricePolicyBuilder
     new(product, start_date).new_policies_based_on_most_recent
   end
 
-  def self.create_skip_review_for(product)
-    PriceGroup.globals.each do |price_group|
+  def self.create_skip_review_for(product, price_groups = nil)
+    groups = price_groups || PriceGroup.globals
+    groups.each do |price_group|
       PricePolicy.create(
         type: "#{product.type}PricePolicy",
         product:,
