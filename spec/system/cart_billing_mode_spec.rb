@@ -40,6 +40,8 @@ RSpec.describe "Adding products with different billing modes to cart" do
   let(:logged_in_user) { user }
 
   before do
+    create(:account_user, :purchaser, account:, user: external_user)
+    create(:account_user, :purchaser, account: external_account, user:)
     login_as logged_in_user
   end
 
@@ -144,10 +146,24 @@ RSpec.describe "Adding products with different billing modes to cart" do
       end
     end
 
+    context "internal user and external account" do
+      it_behaves_like "adding item to cart" do
+        let(:user_used) { user }
+        let(:account_used) { external_account }
+      end
+    end
+
     context "external user and external account" do
       it_behaves_like "adding item to cart" do
         let(:user_used) { external_user }
         let(:account_used) { external_account }
+      end
+    end
+
+    context "external user and internal account" do
+      it_behaves_like "adding item to cart" do
+        let(:user_used) { external_user }
+        let(:account_used) { account }
       end
     end
   end
