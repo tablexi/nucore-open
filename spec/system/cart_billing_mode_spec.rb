@@ -14,13 +14,6 @@ RSpec.describe "Adding products with different billing modes to cart" do
   let(:internal_user) { internal_account.owner.user }
   let(:external_user) { create(:user, :external) }
 
-  # not sure we should be doing these
-  let!(:internal_account_price_group_member) { create(:account_price_group_member, account: internal_account, price_group: PriceGroup.base) }
-  let!(:internal_account_price_group_member_2) { create(:account_price_group_member, account: internal_account, price_group: PriceGroup.external) }
-
-  let!(:default_price_policy) { create(:item_price_policy, price_group: PriceGroup.base, product: default_item) }
-  let!(:default_price_policy_2) { create(:item_price_policy, price_group: PriceGroup.external, product: default_item) }
-
   before do
     create(:account_user, :purchaser, account: internal_account, user: external_user)
     create(:account_user, :purchaser, account: external_account, user: internal_user)
@@ -52,11 +45,7 @@ RSpec.describe "Adding products with different billing modes to cart" do
 
     it "does not allow a user without any accounts to add a default product to cart" do
       visit facility_item_path(facility, default_item)
-      if price_groups_present
-        expect(page).to have_content("Sorry, but we could not find a valid payment source that you can use to purchase this")
-      else
-        expect(page).to have_content("You are not in a price group that may purchase this")
-      end
+      expect(page).to have_content("You are not in a price group that may purchase this")
     end
   end
 
@@ -93,14 +82,12 @@ RSpec.describe "Adding products with different billing modes to cart" do
     context "when a user has no price groups (or no account with price groups)" do
       it_behaves_like "user with no accounts" do
         let(:logged_in_user) { internal_user }
-        let(:price_groups_present) { false }
       end
     end
 
     context "with an external user that has no account" do
       it_behaves_like "user with no accounts" do
         let(:logged_in_user) { external_user }
-        let(:price_groups_present) { false }
       end
     end
   end
@@ -109,14 +96,12 @@ RSpec.describe "Adding products with different billing modes to cart" do
     context "with an internal that has no account" do
       it_behaves_like "user with no accounts" do
         let(:logged_in_user) { internal_user }
-        let(:price_groups_present) { true }
       end
     end
 
     context "with an external user that has no account" do
       it_behaves_like "user with no accounts" do
         let(:logged_in_user) { external_user }
-        let(:price_groups_present) { true }
       end
     end
 
