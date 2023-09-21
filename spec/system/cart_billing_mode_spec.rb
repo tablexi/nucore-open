@@ -4,12 +4,12 @@ require "rails_helper"
 
 RSpec.describe "Adding products with different billing modes to cart" do
   let(:facility) { create(:setup_facility) }
-  let!(:nonbillable_item) { create(:setup_item, facility:, billing_mode: "Nonbillable") }
-  let!(:default_item) { create(:setup_item, facility:, billing_mode: "Default") }
+  let(:nonbillable_item) { create(:setup_item, facility:, billing_mode: "Nonbillable") }
+  let(:default_item) { create(:setup_item, facility:, billing_mode: "Default") }
   let(:skip_review_item) { create(:setup_item, facility:, billing_mode: "Skip Review") }
 
-  let!(:internal_account) { create(:purchase_order_account, :with_account_owner, facility:) }
-  let!(:external_account) { create(:purchase_order_account, :with_account_owner, owner: external_user, facility:) }
+  let(:internal_account) { create(:purchase_order_account, :with_account_owner, facility:) }
+  let(:external_account) { create(:purchase_order_account, :with_account_owner, owner: external_user, facility:) }
 
   let(:internal_user) { internal_account.owner.user }
   let(:external_user) { create(:user, :external) }
