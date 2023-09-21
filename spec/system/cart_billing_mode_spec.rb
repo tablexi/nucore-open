@@ -9,24 +9,23 @@ RSpec.describe "Adding products with different billing modes to cart" do
   let(:skip_review_item) { create(:setup_item, facility:, billing_mode: "Skip Review") }
 
   let!(:internal_account) { create(:purchase_order_account, :with_account_owner, facility:) }
+  let!(:external_account) { create(:purchase_order_account, :with_account_owner, owner: external_user, facility:) }
+
+  let(:internal_user) { internal_account.owner.user }
+  let(:external_user) { create(:user, :external) }
+
+  # not sure we should be doing these
   let!(:internal_account_price_group_member) { create(:account_price_group_member, account: internal_account, price_group: PriceGroup.base) }
   let!(:internal_account_price_group_member_2) { create(:account_price_group_member, account: internal_account, price_group: PriceGroup.external) }
 
-  let!(:nonbillable_price_policy) { create(:item_price_policy, price_group: PriceGroup.globals.first, product: nonbillable_item) }
-  let!(:nonbillable_price_policy_2) { create(:item_price_policy, price_group: PriceGroup.globals.second, product: nonbillable_item) }
+  let!(:default_price_policy) { create(:item_price_policy, price_group: PriceGroup.base, product: default_item) }
+  let!(:default_price_policy_2) { create(:item_price_policy, price_group: PriceGroup.external, product: default_item) }
 
-  let!(:default_price_policy) { create(:item_price_policy, price_group: PriceGroup.globals.first, product: default_item) }
-  let!(:default_price_policy_2) { create(:item_price_policy, price_group: PriceGroup.globals.second, product: default_item) }
-
-  let(:external_user) { create(:user, :external) }
-  let!(:external_account) { create(:purchase_order_account, :with_account_owner, owner: external_user, facility:) }
-
-  let(:user) { internal_account.owner.user }
-  let(:logged_in_user) { user }
+  let(:logged_in_user) { internal_user }
 
   before do
     create(:account_user, :purchaser, account: internal_account, user: external_user)
-    create(:account_user, :purchaser, account: external_account, user:)
+    create(:account_user, :purchaser, account: external_account, user: internal_user)
     login_as logged_in_user
   end
 
@@ -96,7 +95,7 @@ RSpec.describe "Adding products with different billing modes to cart" do
   context "with user-based price groups disabled", feature_setting: { user_based_price_groups: false } do
     context "when a user has no price groups (or no account with price groups)" do
       it_behaves_like "user with no accounts" do
-        let(:user_used) { user }
+        let(:user_used) { internal_user }
         let(:price_groups_present) { false }
       end
     end
@@ -112,7 +111,7 @@ RSpec.describe "Adding products with different billing modes to cart" do
   context "with user-based price groups enabled", feature_setting: { user_based_price_groups: true } do
     context "with an internal that has no account" do
       it_behaves_like "user with no accounts" do
-        let(:user_used) { user }
+        let(:user_used) { internal_user }
         let(:price_groups_present) { true }
       end
     end
@@ -126,14 +125,14 @@ RSpec.describe "Adding products with different billing modes to cart" do
 
     context "internal user and internal account" do
       it_behaves_like "adding item to cart" do
-        let(:user_used) { user }
+        let(:user_used) { internal_user }
         let(:account_used) { internal_account }
       end
     end
 
     context "internal user and external account" do
       it_behaves_like "adding item to cart" do
-        let(:user_used) { user }
+        let(:user_used) { internal_user }
         let(:account_used) { external_account }
       end
     end
