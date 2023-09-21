@@ -22,10 +22,7 @@ RSpec.describe "Adding products with different billing modes to cart" do
   ### SHARED EXAMPLES ###
   shared_examples "user with no accounts" do
     before(:each) do
-      u = logged_in_user
-      u.account_users.each(&:destroy)
-      u.save
-      u.reload
+      logged_in_user.account_users.each(&:destroy)
       login_as logged_in_user
     end
 
