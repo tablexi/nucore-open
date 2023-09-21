@@ -26,7 +26,7 @@ RSpec.describe "Adding products with different billing modes to cart" do
       login_as logged_in_user
     end
 
-    it "allows a user without any accounts to add a nonbillable product to cart" do
+    it "allows a user without any accounts to add a Nonbillable product to cart" do
       visit facility_item_path(facility, nonbillable_item)
       click_on "Add to cart"
       expect(page).to have_content(nonbillable_item.name)
@@ -34,10 +34,15 @@ RSpec.describe "Adding products with different billing modes to cart" do
 
     it "does not allow a user without any accounts to add a Skip Review product to cart" do
       visit facility_item_path(facility, skip_review_item)
-      expect(page).to have_content("Sorry, but we could not find a valid payment source that you can use to purchase this")
+      price_groups_present = self.class.metadata[:feature_setting][:user_based_price_groups]
+      if price_groups_present
+        expect(page).to have_content("Sorry, but we could not find a valid payment source that you can use to purchase this")
+      else
+        expect(page).to have_content("You are not in a price group that may purchase this")
+      end
     end
 
-    it "does not allow a user without any accounts to add a default product to cart" do
+    it "does not allow a user without any accounts to add a Default product to cart" do
       visit facility_item_path(facility, default_item)
       expect(page).to have_content("You are not in a price group that may purchase this")
     end
