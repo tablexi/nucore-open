@@ -109,6 +109,7 @@ RSpec.describe "Adding products with different billing modes to cart" do
     it "can add a default item to cart" do
       visit facility_item_path(facility, default_item)
       click_on "Add to cart"
+      choose account_used.to_s
       click_button "Continue"
       expect(page).to have_content(default_item.name)
     end
