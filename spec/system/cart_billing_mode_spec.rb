@@ -52,14 +52,14 @@ RSpec.describe "Adding products with different billing modes to cart" do
       login_as logged_in_user
     end
 
-    context "when a nonbillable product is added first" do
+    context "when a Nonbillable product is added first" do
       before do
         visit facility_item_path(facility, nonbillable_item)
         click_on "Add to cart"
-        expect(page).to have_content(nonbillable_item.name)
       end
 
       it "can add another Nonbillable product" do
+        expect(page).to have_content(nonbillable_item.name)
         visit facility_item_path(facility, nonbillable_item)
         click_on "Add to cart"
         expect(page).to have_content(nonbillable_item.name).twice
@@ -71,21 +71,40 @@ RSpec.describe "Adding products with different billing modes to cart" do
         expect(page).to have_content("#{skip_review_item.name} cannot be added to your cart because it's billing mode does not match the current products in the cart; please clear your cart or place a separate order.")
       end
 
-      it "cannot add a default billing mode product" do
+      it "cannot add a Default billing mode product" do
         visit facility_item_path(facility, default_item)
         click_on "Add to cart"
         expect(page).to have_content("#{default_item.name} cannot be added to your cart because it's billing mode does not match the current products in the cart; please clear your cart or place a separate order.")
       end
     end
 
-    it "can add Skip Review item to cart" do
-      visit facility_item_path(facility, skip_review_item)
-      click_on "Add to cart"
-      choose account_used.to_s
-      click_button "Continue"
-      expect(page).to have_content(skip_review_item.name)
-    end
+    context "when a Skip Review product is added first" do
+      before do
+        visit facility_item_path(facility, skip_review_item)
+        click_on "Add to cart"
+        choose account_used.to_s
+        click_button "Continue"
+      end
 
+      it "can add another Skip Review item to cart" do
+        expect(page).to have_content(skip_review_item.name)
+        visit facility_item_path(facility, skip_review_item)
+        click_on "Add to cart"
+        expect(page).to have_content(skip_review_item.name).twice
+      end
+
+      it "can add a Nonbillable product" do
+        visit facility_item_path(facility, nonbillable_item)
+        click_on "Add to cart"
+        expect(page).to have_content(nonbillable_item.name)
+      end
+
+      it "can add Default item to cart" do
+        visit facility_item_path(facility, default_item)
+        click_on "Add to cart"
+        expect(page).to have_content(default_item.name)
+      end
+    end
   end
 
   ### SPEC CONTEXTS ###
