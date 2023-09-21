@@ -4,24 +4,9 @@ require "rails_helper"
 
 RSpec.describe "Adding products with different billing modes to cart" do
   let(:facility) { create(:setup_facility) }
-  let(:billing_mode) { "Default" }
   let!(:nonbillable_item) { create(:setup_item, facility:, billing_mode: "Nonbillable") }
   let!(:default_item) { create(:setup_item, facility:, billing_mode: "Default") }
-
-  let(:skip_review_item) do
-    # Do not want the facotry to add price policies, so not using
-    # :setup_item
-    FactoryBot.create(:item,
-                      facility:,
-                      facility_account: facility.facility_accounts.first,
-                      billing_mode: "Skip Review",
-                      name: "Skip Review Item",
-                      url_name: "skip-review-item",
-                      description: "Product description",
-                      account: 71_234,
-                      initial_order_status: FactoryBot.create(:order_status, name: "New"),
-                     )
-  end
+  let(:skip_review_item) { create(:setup_item, facility:, billing_mode: "Skip Review") }
 
   let!(:account) { create(:purchase_order_account, :with_account_owner, facility:) }
   let!(:account_price_group_member) { create(:account_price_group_member, account:, price_group: PriceGroup.base) }
