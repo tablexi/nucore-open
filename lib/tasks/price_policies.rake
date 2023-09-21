@@ -57,7 +57,7 @@ namespace :price_policies do
     skip_review_products = Product.where(billing_mode: "Skip Review")
     if commit
       skip_review_products.each do |product|
-        product.create_skip_review_price_policies(groups)
+        PricePolicyBuilder.create_skip_review_for(product, groups)
       end
     else
       puts "Found #{skip_review_products.count} Skip Review products"

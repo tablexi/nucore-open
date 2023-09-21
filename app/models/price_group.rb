@@ -110,11 +110,11 @@ class PriceGroup < ApplicationRecord
     end
   end
 
-  # Creates price rules for all Skip Review products.
+  # Creates a new price rule for all Skip Review products.
   # Price rules should not prevent any user from purchasing
   def setup_skip_review_price_policies
     Product.where(billing_mode: "Skip Review").each do |product|
-      product.create_skip_review_price_policies([self])
+      PricePolicyBuilder.create_skip_review_for(product, [self])
     end
   end
 

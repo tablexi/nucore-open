@@ -210,8 +210,8 @@ class Product < ApplicationRecord
     end
   end
 
-  def create_skip_review_price_policies(price_groups = nil)
-    PricePolicyBuilder.create_skip_review_for(self, price_groups)
+  def create_skip_review_price_policies
+    PricePolicyBuilder.create_skip_review_for(self)
   end
 
   def create_nonbillable_price_policy
