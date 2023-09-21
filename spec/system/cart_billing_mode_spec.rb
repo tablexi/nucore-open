@@ -128,6 +128,12 @@ RSpec.describe "Adding products with different billing modes to cart" do
         expect(page).to have_content(default_item.name).twice
       end
 
+      it "can add a Skip Review item to cart" do
+        visit facility_item_path(facility, skip_review_item)
+        click_on "Add to cart"
+        expect(page).to have_content(skip_review_item.name)
+      end
+
       it "can add a Nonbillable product" do
         visit facility_item_path(facility, nonbillable_item)
         click_on "Add to cart"
