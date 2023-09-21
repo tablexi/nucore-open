@@ -75,9 +75,10 @@ RSpec.describe AutoExpireReservation, :time_travel do
         expect(log_event.metadata).to eq("cause"=>"auto_expire")
       end
 
-      it "does not assign pricing" do
+      it "assigns a price policy" do
         action.perform
-        expect(order_detail.reload.price_policy).to be_nil
+        expect(order_detail.reload.price_policy).to be_present
+        expect(order_detail.reload.price_policy.unit_cost).to eq 0
       end
 
       it "sets the reservation fulfilled at time" do
