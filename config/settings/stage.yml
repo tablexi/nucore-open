@@ -1,5 +1,5 @@
 email:
-  from: "nucore-noreply@nucore.stage.tablexi.com"
+  from: "nucore-noreply@sandbox4500a20c96c44623a533cf4ecc2f1d05.mailgun.org"
   fake:
     enabled: true
     to:
