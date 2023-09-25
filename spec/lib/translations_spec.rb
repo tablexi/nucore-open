@@ -24,7 +24,7 @@ RSpec.describe "Translation loading" do
       expect(text("testing.locale_loading")).to start_with("This is here")
     end
 
-    it "gives override_localesprecedence over the root files" do
+    it "gives override_locales precedence over the root files" do
       expect(text("testing.overriding")).to start_with("This overrides")
     end
   end
