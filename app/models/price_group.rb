@@ -33,11 +33,16 @@ class PriceGroup < ApplicationRecord
     globals.find_by(name: Settings.price_group.name.external)
   end
 
+  def self.nonbillable
+    base
+  end
+
   # Create a global price group, if it does not exist, and setup all the
   # schedule rules with price group discounts for the price group.
   def self.setup_global(name:, is_internal: false, admin_editable: true, discount_percent: 0, display_order: nil)
     price_group = find_or_create_global(name:, is_internal:, admin_editable:, display_order:)
     price_group.setup_schedule_rules(discount_percent:)
+    price_group.setup_skip_review_price_policies
     price_group
   end
 
@@ -102,6 +107,14 @@ class PriceGroup < ApplicationRecord
       )
 
       puts("Created price_group_discount for #{self} and schedule rule #{schedule_rule.id}") unless Rails.env.test?
+    end
+  end
+
+  # Creates a new price rule for all Skip Review products.
+  # Price rules should not prevent any user from purchasing
+  def setup_skip_review_price_policies
+    Product.where(billing_mode: "Skip Review").each do |product|
+      PricePolicyBuilder.create_skip_review_for(product, [self])
     end
   end
 

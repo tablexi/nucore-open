@@ -82,6 +82,23 @@ class FacilityStatementsController < ApplicationController
     redirect_to action: :index
   end
 
+  # POST /facilities/:facility_id/statements/:id/cancel
+  def cancel
+    statement = Statement.find(params[:id])
+
+    statement.canceled_at = Time.current
+
+    if statement.save
+      OrderDetail.where(statement_id: statement.id).update_all(statement_id: nil)
+      LogEvent.log(statement, :closed, current_user)
+      flash[:notice] = text("cancel_success")
+    else
+      flash[:error] = text("cancel_fail")
+    end
+
+    redirect_to action: :index
+  end
+
   # GET /facilities/:facility_id/statements/:id
   def show
     @statement = Statement.find(params[:id])
