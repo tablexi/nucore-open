@@ -63,16 +63,14 @@ class OrdersController < ApplicationController
   def add
     ## get items to add from the form post or from the session
     ods_from_params = (params[:order].presence && params[:order][:order_details].presence) || []
-    items = ods_from_params.presence || session["add_to_cart"].presence || []
+    items = ods_from_params.presence || session[:add_to_cart].presence || []
+    session[:add_to_cart] = nil
 
-     # binding.pry
-    session["add_to_cart"] = nil
     # ignore ods w/ empty or 0 quantities
-    items = items.compact.select { |od| od["quantity"].to_i > 0 }
-
+    items = items.compact.map { |i| i.permit(:product_id, :quantity) }.select { |od| od[:quantity].to_i > 0 }
     return redirect_back(fallback_location: cart_path, notice: "Please add at least one quantity to order something") unless items.size > 0
 
-    first_product = Product.find(items.first["product_id"])
+    first_product = Product.find(items.first[:product_id])
     facility_ability = Ability.new(session_user, first_product.facility, self)
 
     # if acting_as, make sure the session user can place orders for the facility
@@ -82,7 +80,7 @@ class OrdersController < ApplicationController
     end
 
     ## handle a single instrument reservation
-    if items.size == 1 && (quantity = items.first["quantity"].to_i) == 1 # only one od w/ quantity of 1
+    if items.size == 1 && (quantity = items.first[:quantity].to_i) == 1 # only one od w/ quantity of 1
       if first_product.respond_to?(:reservations) # and product is reservable
 
         # make a new cart w/ instrument (unless this order is empty.. then use that one)
@@ -104,16 +102,16 @@ class OrdersController < ApplicationController
       ## add auto_assign back here if needed
 
       ## save the state to the session and redirect
-      session["add_to_cart"] = items
+      session[:add_to_cart] = items
       redirect_to(choose_account_order_path(@order)) && return
     end
 
     ## process each item
     @order.transaction do
       items.each do |item|
-        @product = Product.find(item["product_id"])
+        @product = Product.find(item[:product_id])
         begin
-          @order.add(@product, item["quantity"])
+          @order.add(@product, item[:quantity])
           @order.invalidate! ## this is because we just added an order_detail
         rescue NUCore::MixedFacilityCart
           @order.errors.add(:base, "You can not add a product from another facility; please clear your cart or place a separate order.")
@@ -179,10 +177,10 @@ class OrdersController < ApplicationController
       add_account_to_order(account)
     end
 
-    @product = if session["add_to_cart"].blank?
+    @product = if session[:add_to_cart].blank?
                  @order.order_details[0].try(:product)
                else
-                 Product.find(session["add_to_cart"].first["product_id"])
+                 Product.find(session[:add_to_cart].first[:product_id])
                end
 
     redirect_to(cart_path) && return unless @product
@@ -194,8 +192,8 @@ class OrdersController < ApplicationController
       @errors   = {}
       details   = @order.order_details
       @accounts.each do |account|
-        if session["add_to_cart"] &&
-           (ods = session["add_to_cart"].presence) &&
+        if session[:add_to_cart] &&
+           (ods = session[:add_to_cart].presence) &&
            (product_id = ods.first[:product_id])
           error = account.validate_against_product(Product.find(product_id), acting_user)
           @errors[account.id] = error if error
@@ -325,7 +323,7 @@ class OrdersController < ApplicationController
     end
 
     if success
-      if session["add_to_cart"].nil?
+      if session[:add_to_cart].nil?
         redirect_to cart_path
       else
         redirect_to add_order_path(@order)
