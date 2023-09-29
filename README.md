@@ -8,6 +8,8 @@ TXI has been maintaining and developing NUCore since 2011.
 We host a demo app on heroku:
 https://nucore-open.herokuapp.com
 
+NOTE: The recurring tasks background process is not running on the demo app.
+
 ## Note for School-specific Repos
 
 As you pull in new features/bug fixes from open, please keep up with the [CHANGELOG](CHANGELOG.md)
