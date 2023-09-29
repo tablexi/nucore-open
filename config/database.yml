@@ -24,7 +24,6 @@ stage:
 
 stage:
   <<: *defaults
-  database: <%= ENV.fetch("MYSQL_DATABASE", "") %>
 
 production:
   <<: *defaults
