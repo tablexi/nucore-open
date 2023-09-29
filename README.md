@@ -4,7 +4,9 @@ Open source version of Northwestern University Core Facility Management Software
 
 ## NUCore Open Environment
 
-Staging: https://nucore.stage.tablexi.com
+TXI has been maintaining and developing NUCore since 2011.
+We host a demo app on heroku:
+https://nucore-open.herokuapp.com
 
 ## Note for School-specific Repos
 
