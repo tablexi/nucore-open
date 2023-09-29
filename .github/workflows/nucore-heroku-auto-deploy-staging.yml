@@ -4,7 +4,7 @@ name: Staging heroku auto deployment
 on:
   push:
     branches:
-      - "deploy-heroku"
+      - "master"
 
   # Allow manually triggering this workflow by visiting
   # https://github.com/tablexi/nucore-open/actions/workflows/nucore-heroku-auto-deploy-staging.yml
@@ -13,7 +13,7 @@ on:
 
 jobs:
   deploy-staging-heroku:
-    # if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
