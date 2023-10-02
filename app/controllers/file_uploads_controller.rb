@@ -144,7 +144,7 @@ class FileUploadsController < ApplicationController
         end
         @file.save!
         flash[:notice] = "Order File Template uploaded"
-        redirect_to(product_survey_path(current_facility, @product.parameterize, @product)) && return
+        redirect_to(product_survey_path(current_facility, @product.parameterize, @product))
       rescue => e
         @file.errors.add(:base, "Order File Template delete error: #{e.message}")
         raise ActiveRecord::Rollback
@@ -172,7 +172,7 @@ class FileUploadsController < ApplicationController
           ExternalServicePasser.create!(passer: @product, external_service: ext)
         end
 
-        redirect_to(product_survey_path(current_facility, @product.parameterize, @product)) && return
+        redirect_to(product_survey_path(current_facility, @product.parameterize, @product))
       rescue => e
         @survey ||= UrlService.new
         @survey.errors.add(:base, "Online Order Form add error: #{e.message}")
