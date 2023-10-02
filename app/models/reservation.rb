@@ -384,20 +384,22 @@ class Reservation < ApplicationRecord
   end
 
   def set_billable_minutes
-    self.billable_minutes = calculated_billable_minutes
+    self.billable_minutes = calculated_billable_minutes if set_billable_minutes?
+  end
+
+  def set_billable_minutes?
+    order_detail&.complete? && order_detail&.canceled_at.blank? && price_policy.present?
   end
 
   def calculated_billable_minutes
-    if (order_detail&.complete? || order_detail&.reconciled?) && order_detail&.canceled_at.blank? && price_policy.present?
-      case price_policy.charge_for
-      when InstrumentPricePolicy::CHARGE_FOR.fetch(:reservation)
-        TimeRange.new(reserve_start_at, reserve_end_at).duration_mins
-      when InstrumentPricePolicy::CHARGE_FOR.fetch(:usage)
-        TimeRange.new(actual_start_at, actual_end_at).duration_mins
-      when InstrumentPricePolicy::CHARGE_FOR.fetch(:overage)
-        end_time = [reserve_end_at, actual_end_at].max
-        TimeRange.new(reserve_start_at, end_time).duration_mins
-      end
+    case price_policy.charge_for
+    when InstrumentPricePolicy::CHARGE_FOR.fetch(:reservation)
+      TimeRange.new(reserve_start_at, reserve_end_at).duration_mins
+    when InstrumentPricePolicy::CHARGE_FOR.fetch(:usage)
+      TimeRange.new(actual_start_at, actual_end_at).duration_mins
+    when InstrumentPricePolicy::CHARGE_FOR.fetch(:overage)
+      end_time = [reserve_end_at, actual_end_at].max
+      TimeRange.new(reserve_start_at, end_time).duration_mins
     end
   end
 
