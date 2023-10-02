@@ -388,7 +388,7 @@ class Reservation < ApplicationRecord
   end
 
   def calculated_billable_minutes
-    if order_detail&.complete? && order_detail&.canceled_at.blank? && price_policy.present?
+    if (order_detail&.complete? || order_detail&.reconciled?) && order_detail&.canceled_at.blank? && price_policy.present?
       case price_policy.charge_for
       when InstrumentPricePolicy::CHARGE_FOR.fetch(:reservation)
         TimeRange.new(reserve_start_at, reserve_end_at).duration_mins
