@@ -363,8 +363,8 @@ GEM
       temple (>= 0.8.2)
       thor
       tilt
-    haml_lint (0.50.0)
-      haml (>= 4.0, < 6.2)
+    haml_lint (0.51.0)
+      haml (>= 4.0)
       parallel (~> 1.10)
       rainbow
       rubocop (>= 1.0)
@@ -680,7 +680,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8.2)
-    unicode-display_width (2.4.2)
+    unicode-display_width (2.5.0)
     unicorn (6.1.0)
       kgio (~> 2.6)
       raindrops (~> 0.7)
