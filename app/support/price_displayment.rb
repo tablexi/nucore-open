@@ -72,14 +72,22 @@ module PriceDisplayment
   private
 
   def build_quantity_presenter
-    quantity_to_display = if time_data.try(:actual_duration_mins) && time_data.actual_duration_mins.to_i > 0
-                            time_data.actual_duration_mins
+    quantity_to_display = if time_data.try(:billable_minutes) && time_data.billable_minutes.to_i > 0
+                            calculated_billable_minutes
                           elsif time_data.try(:duration_mins)
                             time_data.duration_mins
                           else
                             quantity
                           end
     QuantityPresenter.new(product, quantity_to_display)
+  end
+
+  def calculated_billable_minutes
+    if time_data.present? && time_data.respond_to?(:billable_minutes)
+      time_data.billable_minutes
+    else
+      quantity
+    end
   end
 
   def empty_display
