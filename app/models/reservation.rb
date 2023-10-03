@@ -358,7 +358,7 @@ class Reservation < ApplicationRecord
   end
 
   def update_billable_minutes
-    update_column(:billable_minutes, calculated_billable_minutes)
+    update_column(:billable_minutes, calculated_billable_minutes) if set_billable_minutes?
   end
 
   private
@@ -384,7 +384,9 @@ class Reservation < ApplicationRecord
   end
 
   def set_billable_minutes
-    self.billable_minutes = calculated_billable_minutes if set_billable_minutes?
+    if set_billable_minutes?
+      self.billable_minutes = calculated_billable_minutes
+    end
   end
 
   def set_billable_minutes?
@@ -392,6 +394,7 @@ class Reservation < ApplicationRecord
   end
 
   def calculated_billable_minutes
+    # binding.pry
     case price_policy.charge_for
     when InstrumentPricePolicy::CHARGE_FOR.fetch(:reservation)
       TimeRange.new(reserve_start_at, reserve_end_at).duration_mins
