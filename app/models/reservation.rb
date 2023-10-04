@@ -358,7 +358,7 @@ class Reservation < ApplicationRecord
   end
 
   def update_billable_minutes
-    update_column(:billable_minutes, calculated_billable_minutes) if set_billable_minutes?
+    update_column(:billable_minutes, calculated_billable_minutes)
   end
 
   private
@@ -384,9 +384,7 @@ class Reservation < ApplicationRecord
   end
 
   def set_billable_minutes
-    if set_billable_minutes?
-      self.billable_minutes = calculated_billable_minutes
-    end
+    self.billable_minutes = calculated_billable_minutes
   end
 
   def set_billable_minutes?
@@ -394,15 +392,16 @@ class Reservation < ApplicationRecord
   end
 
   def calculated_billable_minutes
-    # binding.pry
-    case price_policy.charge_for
-    when InstrumentPricePolicy::CHARGE_FOR.fetch(:reservation)
-      TimeRange.new(reserve_start_at, reserve_end_at).duration_mins
-    when InstrumentPricePolicy::CHARGE_FOR.fetch(:usage)
-      TimeRange.new(actual_start_at, actual_end_at).duration_mins
-    when InstrumentPricePolicy::CHARGE_FOR.fetch(:overage)
-      end_time = [reserve_end_at, actual_end_at].max
-      TimeRange.new(reserve_start_at, end_time).duration_mins
+    if set_billable_minutes?
+      case price_policy.charge_for
+      when InstrumentPricePolicy::CHARGE_FOR.fetch(:reservation)
+        TimeRange.new(reserve_start_at, reserve_end_at).duration_mins
+      when InstrumentPricePolicy::CHARGE_FOR.fetch(:usage)
+        TimeRange.new(actual_start_at, actual_end_at).duration_mins
+      when InstrumentPricePolicy::CHARGE_FOR.fetch(:overage)
+        end_time = [reserve_end_at, actual_end_at].max
+        TimeRange.new(reserve_start_at, end_time).duration_mins
+      end
     end
   end
 
