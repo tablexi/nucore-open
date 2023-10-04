@@ -76,8 +76,8 @@ module PriceDisplayment
   private
 
   def build_statement_quantity_presenter
-    quantity_to_display = if calculated_billable_minutes > 0
-                            calculated_billable_minutes
+    quantity_to_display = if reservation.billable_duration_mins > 0
+                            reservation.billable_duration_mins
                           elsif time_data.try(:duration_mins)
                             time_data.duration_mins
                           else
@@ -95,18 +95,6 @@ module PriceDisplayment
                             quantity
                           end
     QuantityPresenter.new(product, quantity_to_display)
-  end
-
-  def calculated_billable_minutes
-    case reservation.price_policy.charge_for
-    when InstrumentPricePolicy::CHARGE_FOR.fetch(:reservation)
-      TimeRange.new(reservation.reserve_start_at, reservation.reserve_end_at).duration_mins
-    when InstrumentPricePolicy::CHARGE_FOR.fetch(:usage)
-      TimeRange.new(reservation.actual_start_at, reservation.actual_end_at).duration_mins
-    when InstrumentPricePolicy::CHARGE_FOR.fetch(:overage)
-      end_time = [reservation.reserve_end_at, reservation.actual_end_at].max
-      TimeRange.new(reservation.reserve_start_at, reservation.end_time).duration_mins
-    end
   end
 
   def empty_display
