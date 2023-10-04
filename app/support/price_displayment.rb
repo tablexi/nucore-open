@@ -65,14 +65,18 @@ module PriceDisplayment
     build_quantity_presenter.html
   end
 
+  def wrapped_statement_quanity
+    build_statement_quantity_presenter.html
+  end
+
   def csv_quantity
     build_quantity_presenter.csv
   end
 
   private
 
-  def build_quantity_presenter
-    quantity_to_display = if time_data.try(:billable_minutes) && time_data.billable_minutes.to_i > 0
+  def build_statement_quantity_presenter
+    quantity_to_display = if calculated_billable_minutes > 0
                             calculated_billable_minutes
                           elsif time_data.try(:duration_mins)
                             time_data.duration_mins
@@ -82,11 +86,26 @@ module PriceDisplayment
     QuantityPresenter.new(product, quantity_to_display)
   end
 
+  def build_quantity_presenter
+    quantity_to_display = if time_data.try(:actual_duration_mins) && time_data.actual_duration_mins.to_i > 0
+                            time_data.actual_duration_mins
+                          elsif time_data.try(:duration_mins)
+                            time_data.duration_mins
+                          else
+                            quantity
+                          end
+    QuantityPresenter.new(product, quantity_to_display)
+  end
+
   def calculated_billable_minutes
-    if time_data.present? && time_data.respond_to?(:billable_minutes)
-      time_data.billable_minutes
-    else
-      quantity
+    case reservation.price_policy.charge_for
+    when InstrumentPricePolicy::CHARGE_FOR.fetch(:reservation)
+      TimeRange.new(reservation.reserve_start_at, reservation.reserve_end_at).duration_mins
+    when InstrumentPricePolicy::CHARGE_FOR.fetch(:usage)
+      TimeRange.new(reservation.actual_start_at, reservation.actual_end_at).duration_mins
+    when InstrumentPricePolicy::CHARGE_FOR.fetch(:overage)
+      end_time = [reservation.reserve_end_at, reservation.actual_end_at].max
+      TimeRange.new(reservation.reserve_start_at, reservation.end_time).duration_mins
     end
   end
 
