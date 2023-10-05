@@ -166,7 +166,7 @@ GEM
     axe-core-api (4.8.0)
       dumb_delegator
       virtus
-    axe-core-rspec (4.7.0)
+    axe-core-rspec (4.8.0)
       axe-core-api
       dumb_delegator
       virtus
