@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_07_173215) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_09_192347) do
   create_table "account_facility_joins", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "facility_id", null: false
     t.integer "account_id", null: false
@@ -51,6 +51,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_173215) do
     t.string "affiliate_other"
     t.string "outside_contact_info"
     t.string "ar_number"
+    t.index ["account_number"], name: "index_accounts_on_account_number"
     t.index ["affiliate_id"], name: "index_accounts_on_affiliate_id"
   end
 
@@ -200,7 +201,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_173215) do
     t.string "payment_url"
     t.boolean "kiosk_enabled"
     t.boolean "show_order_note", default: true, null: false
+    t.string "file_file_name"
+    t.string "file_content_type"
+    t.bigint "file_file_size"
+    t.datetime "file_updated_at", precision: nil
     t.index ["abbreviation"], name: "index_facilities_on_abbreviation", unique: true
+    t.index ["dashboard_token"], name: "index_facilities_on_dashboard_token"
     t.index ["is_active", "name"], name: "index_facilities_on_is_active_and_name"
     t.index ["name"], name: "index_facilities_on_name", unique: true
     t.index ["url_name"], name: "index_facilities_on_url_name", unique: true
@@ -259,6 +265,19 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_173215) do
     t.decimal "amount", precision: 9, scale: 2, null: false
     t.string "description", limit: 512
     t.integer "account_id"
+    t.string "business_unit", default: "UMAMH", null: false
+    t.string "speed_type"
+    t.string "fund"
+    t.string "dept_id"
+    t.string "program"
+    t.string "clazz"
+    t.string "project"
+    t.string "trans_ref"
+    t.string "name_reference"
+    t.datetime "trans_date", precision: nil
+    t.string "doc_ref"
+    t.string "ref_2"
+    t.string "trans_id"
     t.index ["account_id"], name: "index_journal_rows_on_account_id"
     t.index ["journal_id"], name: "index_journal_rows_on_journal_id"
     t.index ["order_detail_id"], name: "index_journal_rows_on_order_detail_id"
@@ -278,6 +297,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_173215) do
     t.integer "file_file_size"
     t.datetime "file_updated_at", precision: nil
     t.datetime "journal_date", precision: nil, null: false
+    t.integer "als_number"
+    t.datetime "fiscal_year", precision: nil
+    t.index ["als_number", "fiscal_year"], name: "index_journals_on_als_number_and_fiscal_year", unique: true
     t.index ["facility_id"], name: "index_journals_on_facility_id"
   end
 
@@ -473,6 +495,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_173215) do
     t.datetime "updated_at", precision: nil
     t.datetime "deleted_at", precision: nil
     t.index ["account_id"], name: "index_price_group_members_on_account_id"
+    t.index ["deleted_at"], name: "index_price_group_members_on_deleted_at"
     t.index ["price_group_id"], name: "fk_rails_0425013e5b"
     t.index ["user_id"], name: "index_price_group_members_on_user_id"
   end
@@ -496,6 +519,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_173215) do
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.datetime "deleted_at", precision: nil
+    t.boolean "highlighted", default: false, null: false
+    t.index ["deleted_at"], name: "index_price_groups_on_deleted_at"
     t.index ["facility_id", "name"], name: "index_price_groups_on_facility_id_and_name"
   end
 
@@ -590,6 +615,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_173215) do
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.datetime "deleted_at", precision: nil
+    t.index ["deleted_at"], name: "index_product_users_on_deleted_at"
     t.index ["product_access_group_id"], name: "index_product_users_on_product_access_group_id"
     t.index ["product_id"], name: "fk_products"
     t.index ["user_id"], name: "index_product_users_on_user_id"
@@ -886,6 +912,30 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_173215) do
     t.index ["user_id"], name: "index_training_requests_on_user_id"
   end
 
+  create_table "umass_corum_api_speed_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
+    t.string "speed_type", null: false
+    t.boolean "active", null: false
+    t.integer "version"
+    t.string "clazz"
+    t.string "dept_desc"
+    t.string "dept_id"
+    t.string "fund_code"
+    t.string "fund_desc"
+    t.string "manager_hr_emplid"
+    t.string "program_code"
+    t.string "project_desc"
+    t.string "project_id"
+    t.datetime "date_added", precision: nil
+    t.datetime "date_removed", precision: nil
+    t.string "error_desc"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "date_added_admin_override", precision: nil
+    t.datetime "project_start_date", precision: nil
+    t.datetime "project_end_date", precision: nil
+    t.index ["speed_type"], name: "index_umass_corum_api_speed_types_on_speed_type", unique: true
+  end
+
   create_table "user_preferences", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "user_id"
     t.string "name", null: false
@@ -902,6 +952,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_173215) do
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.datetime "deleted_at", precision: nil
+    t.index ["deleted_at"], name: "index_user_roles_on_deleted_at"
     t.index ["facility_id"], name: "fk_rails_dca27403dd"
     t.index ["user_id", "facility_id", "role"], name: "index_user_roles_on_user_id_and_facility_id_and_role"
   end
@@ -928,10 +979,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_173215) do
     t.string "card_number"
     t.datetime "expired_at", precision: nil
     t.string "expired_note"
+    t.string "umass_emplid"
+    t.string "phone_number"
     t.integer "failed_attempts", default: 0, null: false
     t.datetime "locked_at", precision: nil
     t.string "unlock_token"
     t.string "i_class_number"
+    t.boolean "subsidiary_account", default: false
     t.index ["card_number"], name: "index_users_on_card_number", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["expired_at"], name: "index_users_on_expired_at"
