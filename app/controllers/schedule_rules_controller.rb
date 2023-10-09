@@ -39,7 +39,7 @@ class ScheduleRulesController < ApplicationController
       end_min: 0,
     )
 
-    PriceGroup.globals.each do |price_group|
+    PriceGroup.reorder(display_order: :asc, name: :asc).globals.each do |price_group|
       @schedule_rule.price_group_discounts.build(price_group: price_group, discount_percent: 0)
     end
   end
