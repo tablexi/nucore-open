@@ -19,15 +19,15 @@
 
 %p= t("views.schedule_rules.discount_hint")
 
-= f.association :price_group_discounts do |pgd|
-  = pgd.label pgd.object.price_group.name
-  = pgd.number_field :discount_percent, size: 4
-  = pgd.hidden_field :price_group_id, value: pgd.object.price_group.id
-  = "%"
-  - if pgd.object.price_group == PriceGroup.base 
-    = pgd.hint :base_discount_hint
-  - elsif pgd.object.price_group == PriceGroup.external
-    = pgd.hint :external_discount_hint
+.well
+  %h4 Highlighted price groups
+  = f.association :price_group_discounts, collection: @highlighted_price_group_discounts do |pgd|
+    = render partial: "price_group_discount", locals: { pgd: pgd }
+
+.well
+  %h4 Other price groups
+  = f.association :price_group_discounts, collection: @non_highlighted_price_group_discounts do |pgd|
+    = render partial: "price_group_discount", locals: { pgd: pgd }
 
 - if @product.has_product_access_groups?
   = f.association :product_access_groups, as: :check_boxes, collection: @product.product_access_groups, wrapper_html: { class: "inline-checkbox-list" }
