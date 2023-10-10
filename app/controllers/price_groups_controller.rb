@@ -21,7 +21,7 @@ class PriceGroupsController < ApplicationController
 
   # GET /facilities/:facility_id/price_groups
   def index
-    @price_groups = current_facility.price_groups.reorder(display_order: :asc, name: :asc)
+    @price_groups = current_facility.price_groups.by_display_order
   end
 
   # GET /facilities/:facility_id/price_groups/:id
