@@ -39,19 +39,12 @@ class ScheduleRulesController < ApplicationController
       end_min: 0,
     )
 
-    @highlighted_price_group_discounts = []
-    @non_highlighted_price_group_discounts = []
-
     PriceGroup.reorder(display_order: :asc, name: :asc).globals.each do |price_group|
-      price_group_discount = PriceGroupDiscount.new(price_group: price_group, discount_percent: 0)
+      @schedule_rule.price_group_discounts.build(price_group: price_group, discount_percent: 0)
+    end
 
-      if price_group.highlighted
-        @highlighted_price_group_discounts << price_group_discount
-      else
-        @non_highlighted_price_group_discounts << price_group_discount
-      end
-
-      @schedule_rule.price_group_discounts << price_group_discount
+    @highlighted_price_group_discounts, @non_highlighted_price_group_discounts = @schedule_rule.price_group_discounts.partition do |pgd|
+      pgd.price_group.highlighted
     end
   end
 
