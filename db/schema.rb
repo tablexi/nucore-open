@@ -201,7 +201,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_09_192347) do
     t.boolean "kiosk_enabled"
     t.boolean "show_order_note", default: true, null: false
     t.index ["abbreviation"], name: "index_facilities_on_abbreviation", unique: true
-    t.index ["dashboard_token"], name: "index_facilities_on_dashboard_token"
     t.index ["is_active", "name"], name: "index_facilities_on_is_active_and_name"
     t.index ["name"], name: "index_facilities_on_name", unique: true
     t.index ["url_name"], name: "index_facilities_on_url_name", unique: true
@@ -474,7 +473,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_09_192347) do
     t.datetime "updated_at", precision: nil
     t.datetime "deleted_at", precision: nil
     t.index ["account_id"], name: "index_price_group_members_on_account_id"
-    t.index ["deleted_at"], name: "index_price_group_members_on_deleted_at"
     t.index ["price_group_id"], name: "fk_rails_0425013e5b"
     t.index ["user_id"], name: "index_price_group_members_on_user_id"
   end
@@ -499,7 +497,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_09_192347) do
     t.datetime "updated_at", precision: nil
     t.datetime "deleted_at", precision: nil
     t.boolean "highlighted", default: false, null: false
-    t.index ["deleted_at"], name: "index_price_groups_on_deleted_at"
     t.index ["facility_id", "name"], name: "index_price_groups_on_facility_id_and_name"
   end
 
@@ -594,7 +591,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_09_192347) do
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.datetime "deleted_at", precision: nil
-    t.index ["deleted_at"], name: "index_product_users_on_deleted_at"
     t.index ["product_access_group_id"], name: "index_product_users_on_product_access_group_id"
     t.index ["product_id"], name: "fk_products"
     t.index ["user_id"], name: "index_product_users_on_user_id"
@@ -907,7 +903,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_09_192347) do
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.datetime "deleted_at", precision: nil
-    t.index ["deleted_at"], name: "index_user_roles_on_deleted_at"
     t.index ["facility_id"], name: "fk_rails_dca27403dd"
     t.index ["user_id", "facility_id", "role"], name: "index_user_roles_on_user_id_and_facility_id_and_role"
   end
