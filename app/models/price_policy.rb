@@ -194,7 +194,7 @@ class PricePolicy < ApplicationRecord
 
   def expire_date_within_fiscal_year
     if expire_date.present? && start_date.present?
-      gen_exp_date = generate_expire_date(start_date)
+      gen_exp_date = SettingsHelper.fiscal_year_end(start_date)
       outside_fiscal_year = gen_exp_date < expire_date || expire_date <= start_date
 
       if outside_fiscal_year
