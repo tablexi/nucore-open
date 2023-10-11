@@ -3,3 +3,5 @@ en:
     schedule_rules:
       discount: Price Group Discounts
       discount_hint: During the period covered by this schedule rule, overall cost will be discounted by the following percentages.
+      highlighted_heading: Highlighted price groups
+      non_highlighted_heading: Other price groups
