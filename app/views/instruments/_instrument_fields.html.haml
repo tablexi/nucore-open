@@ -12,7 +12,7 @@
 
 = f.input :problems_resolvable_by_user, as: :boolean, label: false, inline_label: true
 
-= f.label :pricing_mode
+= f.label :pricing_mode, "Set Pricing By"
 - Instrument::PRICING_MODES.each do |option|
   - field_id = "pricing_mode_#{option.parameterize.underscore}".to_sym
   = f.label field_id do
