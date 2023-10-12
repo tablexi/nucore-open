@@ -9,8 +9,6 @@ module Products::ScheduleRuleSupport
     has_many :product_access_groups, foreign_key: :product_id, inverse_of: :product
   end
 
-  PRICING_MODES = ["Schedule Rule", "Duration"].freeze
-
   def can_purchase?(group_ids = nil)
     return false if schedule_rules.empty?
     super

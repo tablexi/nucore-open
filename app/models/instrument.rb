@@ -8,6 +8,7 @@ class Instrument < Product
   include EmailListAttribute
 
   RESERVE_INTERVALS = [1, 5, 10, 15, 30, 60].freeze
+  PRICING_MODES = ["Schedule Rule", "Duration"].freeze
 
   with_options foreign_key: "product_id" do |instrument|
     instrument.has_many :admin_reservations
