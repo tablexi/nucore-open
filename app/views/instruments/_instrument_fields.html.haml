@@ -12,12 +12,7 @@
 
 = f.input :problems_resolvable_by_user, as: :boolean, label: false, inline_label: true
 
-= f.label :pricing_mode, "Set Pricing By"
-- Instrument::PRICING_MODES.each do |option|
-  - field_id = "pricing_mode_#{option.parameterize.underscore}".to_sym
-  = f.label field_id do
-    = f.radio_button :pricing_mode, option, checked: option == f.object.pricing_mode
-    = option
+= f.input :pricing_mode, as: :radio_buttons, collection: Instrument::PRICING_MODES, "Set Pricing By", item_wrapper_class: :radio, item_wrapper_tag: :div
 
 .well
   %h3= text("instruments.instrument_fields.reservation.label.restrict")
