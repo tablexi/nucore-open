@@ -27,7 +27,10 @@
 
 - unless @non_highlighted_price_group_discounts&.empty?
   .well
-    %h4= t("views.schedule_rules.non_highlighted_heading")
+    - if !@highlighted_price_group_discounts.present? || @highlighted_price_group_discounts&.empty?
+      %h4= t("views.schedule_rules.price_groups_heading")
+    - else
+      %h4= t("views.schedule_rules.non_highlighted_heading")
     = f.association :price_group_discounts, collection: @non_highlighted_price_group_discounts do |pgd|
       = render partial: "price_group_discount", locals: { pgd: pgd }
 
