@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_07_173215) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_09_192347) do
   create_table "account_facility_joins", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "facility_id", null: false
     t.integer "account_id", null: false
@@ -496,6 +496,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_173215) do
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.datetime "deleted_at", precision: nil
+    t.boolean "highlighted", default: false, null: false
     t.index ["facility_id", "name"], name: "index_price_groups_on_facility_id_and_name"
   end
 
