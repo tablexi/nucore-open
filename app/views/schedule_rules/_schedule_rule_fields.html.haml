@@ -27,7 +27,7 @@
 
 - unless @non_highlighted_price_group_discounts&.empty?
   .well
-    - if !@highlighted_price_group_discounts.present? || @highlighted_price_group_discounts&.empty?
+    - if @highlighted_price_group_discounts.blank?
       %h4= t("views.schedule_rules.price_groups_heading")
     - else
       %h4= t("views.schedule_rules.non_highlighted_heading")
