@@ -1,0 +1,7 @@
+en:
+  views:
+    instrument_duration_rates:
+      edit:
+        min_duration: Reservations longer than (hrs)
+        rate: Hourly rate ($)
+        submit: Save

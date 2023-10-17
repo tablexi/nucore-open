@@ -17,8 +17,8 @@
   %table.table.table-striped.table-hover
     %thead
       %tr
-        %th Reservations longer than (hrs)
-        %th Hourly rate ($)
+        %th= t("views.instrument_duration_rates.edit.min_duration")
+        %th= t("views.instrument_duration_rates.edit.rate")
     %tbody
       - @product_duration_rates.each_with_index do |product_duration_rate, index|
         = fields_for :duration_rates_attributes, product_duration_rate, index: index do |pdr|
@@ -27,4 +27,4 @@
             %td= pdr.text_field :rate, value: number_to_currency(product_duration_rate.rate, unit: "", delimiter: ""), size: 8
             %td= pdr.hidden_field :id
 
-  = submit_tag "Save", class: :btn
+  = submit_tag t("views.instrument_duration_rates.edit.submit"), class: :btn
