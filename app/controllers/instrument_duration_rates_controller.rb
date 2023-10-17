@@ -23,6 +23,10 @@ class InstrumentDurationRatesController < ApplicationController
     @product.duration_rates = @product.duration_rates.reject { |dr| dr.rate.blank? && dr.min_duration.blank? }
 
     @product.update! instrument_duration_rate_params
+
+    set_product_duration_rates
+
+    render :edit
   end
 
   private
@@ -39,6 +43,10 @@ class InstrumentDurationRatesController < ApplicationController
   def init_instrument_duration_rates
     @product = Product.find_by!(url_name: params[:id])
 
+    set_product_duration_rates
+  end
+
+  def set_product_duration_rates
     @product_duration_rates = @product.duration_rates
 
     (MAX_DURATION_RATES - @product_duration_rates.length).times do
