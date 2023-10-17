@@ -15,8 +15,11 @@ class Instrument < Product
     instrument.has_many :instrument_price_policies
     instrument.has_many :offline_reservations
     instrument.has_many :current_offline_reservations, -> { current }, class_name: "OfflineReservation"
+    instrument.has_many :duration_rates
   end
   has_one :alert, dependent: :destroy, class_name: "InstrumentAlert"
+
+  accepts_nested_attributes_for :duration_rates
 
   email_list_attribute :cancellation_email_recipients
   email_list_attribute :issue_report_recipients
