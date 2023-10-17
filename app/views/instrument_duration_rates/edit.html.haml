@@ -9,7 +9,7 @@
 
 %h2= @product
 
--# TODO-161992: Tab explanation
+= t("views.instrument_duration_rates.edit.explanation")
 
 = form_for @product, url: facility_instrument_duration_rate_path(current_facility, @product), method: :put do |f|
   = error_messages_for @product

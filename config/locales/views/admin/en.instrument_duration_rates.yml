@@ -6,6 +6,7 @@ en:
   views:
     instrument_duration_rates:
       edit:
+        explanation: "Duration pricing rules determine the specific rate applied when using Duration pricing mode. You may define up to 4 duration rates, as long as the Reservations longer than are unique."
         min_duration: Reservations longer than (hrs)
         rate: Hourly rate ($)
         submit: Save
