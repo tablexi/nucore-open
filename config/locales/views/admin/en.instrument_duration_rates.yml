@@ -1,4 +1,8 @@
 en:
+  controllers:
+    instrument_duration_rates:
+      success: The duration rates have been updated
+
   views:
     instrument_duration_rates:
       edit:

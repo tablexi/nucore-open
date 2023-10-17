@@ -22,10 +22,11 @@ class InstrumentDurationRatesController < ApplicationController
 
     @product.duration_rates = @product.duration_rates.reject { |dr| dr.rate.blank? && dr.min_duration.blank? }
 
-    @product.update! instrument_duration_rate_params
+    if @product.update(instrument_duration_rate_params)
+      flash[:notice] = text("controllers.instrument_duration_rates.success")
+    end
 
     set_product_duration_rates
-
     render :edit
   end
 

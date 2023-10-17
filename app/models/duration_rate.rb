@@ -6,5 +6,4 @@ class DurationRate < ApplicationRecord
 
   validates :min_duration, numericality: { greater_than_or_equal_to: 0 }
   validates :rate, numericality: { greater_than_or_equal_to: 0 }
-
 end
