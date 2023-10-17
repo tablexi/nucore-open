@@ -38,6 +38,10 @@ class Instrument < Product
 
   validates :pricing_mode, presence: true, inclusion: { in: PRICING_MODES }
 
+  validate :duration_rates_only_for_duration_pricing_mode
+  validate :unique_duration_rates
+  validates :duration_rates, length: { maximum: 4 }
+
   # Callbacks
   # --------
 
@@ -122,6 +126,20 @@ class Instrument < Product
   def max_reservation_not_less_than_min
     if max_reserve_mins && min_reserve_mins && max_reserve_mins < min_reserve_mins
       errors.add :max_reserve_mins, :max_less_than_min
+    end
+  end
+
+  def unique_duration_rates
+    return unless duration_pricing_mode?
+
+    if duration_rates.pluck(:min_duration).uniq.length < duration_rates.length
+      errors.add(:duration_rates, "Reservations longer than values must be unique")
+    end
+  end
+
+  def duration_rates_only_for_duration_pricing_mode
+    if !duration_pricing_mode? && duration_rates.present?
+      errors.add(:duration_rates, "Can only be set for Instruments with Duration pricing mode")
     end
   end
 
