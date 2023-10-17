@@ -106,6 +106,10 @@ class Instrument < Product
     end
   end
 
+  def duration_pricing_mode?
+    pricing_mode == "Duration"
+  end
+
   private
 
   def minimum_reservation_is_multiple_of_interval
