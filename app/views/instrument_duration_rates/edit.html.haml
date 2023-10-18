@@ -13,8 +13,6 @@
 
 = form_for @product, url: facility_instrument_duration_rate_path(current_facility, @product), method: :put do |f|
   = error_messages_for @product
-  - @product_duration_rates.each do |product_duration_rate|
-    = error_messages_for product_duration_rate
 
   %table.table.table-striped.table-hover
     %thead

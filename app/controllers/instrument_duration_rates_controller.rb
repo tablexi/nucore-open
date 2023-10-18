@@ -53,5 +53,7 @@ class InstrumentDurationRatesController < ApplicationController
     (MAX_DURATION_RATES - @product_duration_rates.length).times do
       @product_duration_rates.build
     end
+
+    @product_duration_rates = @product_duration_rates.select(&:min_duration).sort_by(&:min_duration) + @product_duration_rates.reject(&:min_duration)
   end
 end
