@@ -17,7 +17,7 @@ class InstrumentDurationRatesController < ApplicationController
 
   def update
     params[:duration_rates_attributes].reject! do |key, duration_rate|
-      duration_rate['min_duration'].blank? && duration_rate['rate'].blank?
+      duration_rate["min_duration"].blank? && duration_rate["rate"].blank?
     end
 
     @product.transaction do
@@ -57,6 +57,6 @@ class InstrumentDurationRatesController < ApplicationController
       @product_duration_rates.build
     end
 
-    @product_duration_rates = @product_duration_rates.select(&:min_duration).sort_by(&:min_duration) + @product_duration_rates.reject(&:min_duration)
+    @product_duration_rates = @product_duration_rates.sort_by { |dr| dr.min_duration || 1_000 }
   end
 end
