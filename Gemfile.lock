@@ -264,7 +264,7 @@ GEM
       execjs
       json
     concurrent-ruby (1.2.2)
-    config (4.2.1)
+    config (5.0.0)
       deep_merge (~> 1.2, >= 1.2.1)
       dry-validation (~> 1.0, >= 1.0.0)
     crack (0.4.5)
