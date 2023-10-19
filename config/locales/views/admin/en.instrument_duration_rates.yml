@@ -6,7 +6,7 @@ en:
   views:
     instrument_duration_rates:
       edit:
-        explanation: "Duration pricing rules determine the specific rate applied when using Duration pricing mode. You may define up to 4 duration pricing rules, as long as Duration minimum are unique."
+        explanation: "Duration pricing rules determine the specific rate applied when using Duration pricing mode. You may define up to 4 duration pricing rules."
         min_duration: Minimum duration (hrs)
         rate: Hourly rate ($)
         submit: Save
