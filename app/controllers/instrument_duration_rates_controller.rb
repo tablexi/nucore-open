@@ -25,7 +25,7 @@ class InstrumentDurationRatesController < ApplicationController
       @product.update(instrument_duration_rate_params)
     end
 
-    if @product.errors
+    if @product.errors.blank?
       flash[:notice] = text("controllers.instrument_duration_rates.success")
     end
 

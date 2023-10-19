@@ -17,7 +17,7 @@ RSpec.describe "Instrument Duration Pricing Tab" do
     end
 
     it "renders the page" do
-      expect(page).to have_content("Duration pricing rules determine the specific rate applied when using Duration pricing mode. You may define up to 4 duration pricing rules, as long as Duration minimum are unique.")
+      expect(page).to have_content("Duration pricing rules determine the specific rate applied when using Duration pricing mode. You may define up to 4 duration pricing rules.")
     end
 
     context "adding new duration pricing rules" do
