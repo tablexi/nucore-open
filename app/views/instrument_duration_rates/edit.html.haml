@@ -9,21 +9,24 @@
 
 %h2= @product
 
-= t("views.instrument_duration_rates.edit.explanation")
+- if @product.duration_pricing_mode?
+  = t("views.instrument_duration_rates.edit.explanation")
 
-= form_for @product, url: facility_instrument_duration_rate_path(current_facility, @product), method: :put do |f|
-  = error_messages_for @product
+  = form_for @product, url: facility_instrument_duration_rate_path(current_facility, @product), method: :put do |f|
+    = error_messages_for @product
 
-  %table.table.table-striped.table-hover
-    %thead
-      %tr
-        %th= t("views.instrument_duration_rates.edit.min_duration")
-        %th= t("views.instrument_duration_rates.edit.rate")
-    %tbody
-      - @product_duration_rates.each_with_index do |product_duration_rate, index|
-        = fields_for :duration_rates_attributes, product_duration_rate, index: index do |pdr|
-          %tr
-            %td= pdr.number_field :min_duration, min: 0
-            %td= pdr.text_field :rate, value: number_to_currency(product_duration_rate.rate, unit: "", delimiter: ""), size: 8
+    %table.table.table-striped.table-hover
+      %thead
+        %tr
+          %th= t("views.instrument_duration_rates.edit.min_duration")
+          %th= t("views.instrument_duration_rates.edit.rate")
+      %tbody
+        - @product_duration_rates.each_with_index do |product_duration_rate, index|
+          = fields_for :duration_rates_attributes, product_duration_rate, index: index do |pdr|
+            %tr
+              %td= pdr.number_field :min_duration, min: 0
+              %td= pdr.text_field :rate, value: number_to_currency(product_duration_rate.rate, unit: "", delimiter: ""), size: 8
 
-  = submit_tag t("views.instrument_duration_rates.edit.submit"), class: :btn
+    = submit_tag t("views.instrument_duration_rates.edit.submit"), class: :btn
+- else
+  %p.notice= t("views.instrument_duration_rates.edit.message_for_non_duration_pricing_mode")
