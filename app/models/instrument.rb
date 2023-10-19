@@ -140,13 +140,13 @@ class Instrument < Product
     return unless duration_pricing_mode?
 
     if duration_rates.pluck(:min_duration).uniq.length < duration_rates.length
-      errors.add(:duration_pricing_rules, "Minimum duration values must be unique")
+      errors.add(:base, "Minimum duration values must be unique")
     end
   end
 
   def duration_rates_only_for_duration_pricing_mode
     if !duration_pricing_mode? && duration_rates.present?
-      errors.add(:duration_pricing_rules, "Can only be set for Instruments with Duration pricing mode")
+      errors.add(:base, "Can only be set for Instruments with Duration pricing mode")
     end
   end
 
