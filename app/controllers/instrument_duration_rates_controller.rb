@@ -20,9 +20,12 @@ class InstrumentDurationRatesController < ApplicationController
       duration_rate['min_duration'].blank? && duration_rate['rate'].blank?
     end
 
-    @product.duration_rates = @product.duration_rates.reject { |dr| dr.rate.blank? && dr.min_duration.blank? }
+    @product.transaction do
+      @product.duration_rates.destroy_all
+      @product.update(instrument_duration_rate_params)
+    end
 
-    if @product.update(instrument_duration_rate_params)
+    if @product.errors
       flash[:notice] = text("controllers.instrument_duration_rates.success")
     end
 
@@ -33,7 +36,7 @@ class InstrumentDurationRatesController < ApplicationController
   private
 
   def instrument_duration_rate_params
-    params.permit(duration_rates_attributes: [:id, :min_duration, :rate])
+    params.permit(duration_rates_attributes: [:min_duration, :rate])
   end
 
   def manage
