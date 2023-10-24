@@ -76,11 +76,8 @@ class InstrumentDurationRatesController < ApplicationController
 
     changes = false
 
-    previous_duration_rates.zip(@product.duration_rates).each do |previous_duration_rate, new_duration_rate|
-      unless previous_duration_rate.min_duration == new_duration_rate.min_duration && previous_duration_rate.rate == new_duration_rate.rate
-        changes = true
-        break
-      end
+    changes = previous_duration_rates.zip(@product.duration_rates).map do |previous_duration_rate, new_duration_rate|
+     previous_duration_rate.min_duration != new_duration_rate.min_duration || previous_duration_rate.rate != new_duration_rate.rate
     end
 
     LogEvent.log(@product, :duration_rates_change, current_user, metadata: { before: build_log_metadata(previous_duration_rates), after: build_log_metadata(new_duration_rates) }) if changes
