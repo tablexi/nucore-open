@@ -87,6 +87,6 @@ class InstrumentDurationRatesController < ApplicationController
   end
 
   def build_log_metadata(duration_rates)
-    duration_rates.map { |dr| "#{dr.min_duration}: #{dr.rate}" }.join(", ")
+    duration_rates.map { |dr| "#{dr.min_duration} min: $#{dr.rate}/hr" }.join(", ")
   end
 end
