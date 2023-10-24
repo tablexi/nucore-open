@@ -20,7 +20,7 @@ RSpec.describe "Instrument Scheduling Tab" do
         visit new_facility_instrument_schedule_rule_path(facility, instrument)
       end
 
-      it "shows common Schedule rule fields" do
+      it "shows common Schedule rule fields, but NOT Price Group Discounts" do
         expect(page).to have_content(instrument.name)
         expect(page).to have_content("Add Schedule Rule")
         expect(page).not_to have_content("Price Group Discounts")
