@@ -44,7 +44,7 @@ RSpec.describe "Instrument Scheduling Tab" do
         visit edit_facility_instrument_schedule_rule_path(facility, instrument, instrument.schedule_rules.first)
       end
 
-      it "shows common Schedule rule fields" do
+      it "shows common Schedule rule fields, but NOT Price Group Discounts" do
         expect(page).to have_content("Editing Schedule Rule")
         expect(page).not_to have_content("Price Group Discounts")
 
