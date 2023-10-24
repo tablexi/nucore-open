@@ -97,6 +97,7 @@ RSpec.describe "Instrument Scheduling Tab" do
       it "shows all Schedule rule fields" do
         expect(page).to have_content("Editing Schedule Rule")
         expect(page).to have_content("Price Group Discounts")
+        # As the instrument has no highlighted price groups, header should not be displayed
         expect(page).not_to have_content("Highlighted Price Groups")
         expect(page).to have_content("Price Groups")
       end
