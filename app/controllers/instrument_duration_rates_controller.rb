@@ -20,7 +20,7 @@ class InstrumentDurationRatesController < ApplicationController
       duration_rate["min_duration"].blank? && duration_rate["rate"].blank?
     end
 
-    duration_rates = @product.duration_rates.reject { |dr| dr.id.blank? }
+    previous_duration_rates = @product.duration_rates.reject { |dr| dr.id.blank? }
 
     @product.transaction do
       @product.duration_rates.destroy_all
@@ -29,7 +29,7 @@ class InstrumentDurationRatesController < ApplicationController
 
     if @product.errors.blank?
       flash[:notice] = text("controllers.instrument_duration_rates.success")
-      log_changes(duration_rates)
+      log_changes(previous_duration_rates)
     end
 
     set_product_duration_rates
@@ -66,33 +66,27 @@ class InstrumentDurationRatesController < ApplicationController
   end
 
   def log_changes(previous_duration_rates)
-    log_created(previous_duration_rates)
-    log_deleted(previous_duration_rates)
-    log_updated(previous_duration_rates)
-  end
+    previous_duration_rates.sort_by! { |dr| dr.min_duration || 1_000 }
+    new_duration_rates = @product.duration_rates.sort_by { |dr| dr.min_duration || 1_000 }
 
-  def log_created(previous_duration_rates)
-    @product.duration_rates.each do |duration_rate|
-      unless previous_duration_rates.find { |dr| dr.min_duration == duration_rate.min_duration }
-        LogEvent.log(duration_rate, :create, current_user, metadata: { min_duration: duration_rate.min_duration, rate: duration_rate.rate })
+    if previous_duration_rates.length != @product.duration_rates.length
+      LogEvent.log(@product, :duration_rates_change, current_user, metadata: { before: build_log_metadata(previous_duration_rates), after: build_log_metadata(new_duration_rates) })
+      return
+    end
+
+    changes = false
+
+    previous_duration_rates.zip(@product.duration_rates).each do |previous_duration_rate, new_duration_rate|
+      unless previous_duration_rate.min_duration == new_duration_rate.min_duration && previous_duration_rate.rate == new_duration_rate.rate
+        changes = true
+        break
       end
     end
+
+    LogEvent.log(@product, :duration_rates_change, current_user, metadata: { before: build_log_metadata(previous_duration_rates), after: build_log_metadata(new_duration_rates) }) if changes
   end
 
-  def log_deleted(previous_duration_rates)
-    previous_duration_rates.each do |duration_rate|
-      unless @product.duration_rates.find { |dr| dr.min_duration == duration_rate.min_duration }
-        LogEvent.log(duration_rate, :delete, current_user, metadata: { min_duration: duration_rate.min_duration, rate: duration_rate.rate })
-      end
-    end
-  end
-
-  def log_updated(previous_duration_rates)
-    @product.duration_rates.each do |duration_rate|
-      previous_duration_rate = previous_duration_rates.find { |dr| dr.min_duration == duration_rate.min_duration && dr.rate != duration_rate.rate }
-      if previous_duration_rate
-        LogEvent.log(duration_rate, :updated, current_user,  metadata: { min_duration: duration_rate.min_duration, previous_rate: previous_duration_rate.rate, new_rate: duration_rate.rate })
-      end
-    end
+  def build_log_metadata(duration_rates)
+    duration_rates.map { |dr| "#{dr.min_duration}: #{dr.rate}" }.join(", ")
   end
 end
