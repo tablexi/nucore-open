@@ -33,7 +33,7 @@ RSpec.describe "Instrument Duration Pricing Tab" do
           expect(page).to have_field("duration_rates_attributes_3_rate")
         end
 
-        it "saves new duration pricing rules" do
+        it "saves new duration pricing rules and logs it" do
           fill_in "duration_rates_attributes_0_min_duration", with: "3"
           fill_in "duration_rates_attributes_0_rate", with: "10.00"
 
@@ -45,6 +45,10 @@ RSpec.describe "Instrument Duration Pricing Tab" do
           expect(instrument.duration_rates.first.rate).to eq(10.00)
 
           expect(page).to have_content("The duration pricing rules have been updated")
+
+          log_event = LogEvent.find_by(loggable: instrument.duration_rates.first, event_type: :create)
+        expect(log_event).to be_present
+        expect(log_event.metadata).to eq("min_duration"=>3, "rate"=>"10.0")
         end
 
         context "two duration pricing with the same minimum duration" do
