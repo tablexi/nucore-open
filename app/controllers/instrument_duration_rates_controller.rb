@@ -47,6 +47,8 @@ class InstrumentDurationRatesController < ApplicationController
   def init_instrument_duration_rates
     @product = Product.find_by!(url_name: params[:id])
 
+    return unless @product.is_a?(Instrument)
+
     set_product_duration_rates
   end
 

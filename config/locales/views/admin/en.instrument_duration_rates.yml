@@ -7,6 +7,7 @@ en:
     instrument_duration_rates:
       edit:
         explanation: "Duration pricing rules determine the specific rate applied when using Duration pricing mode. You may define up to 4 duration pricing rules."
+        message_for_non_duration_pricing_mode: Duration pricing is disabled for this instrument.
         min_duration: Minimum duration (hrs)
         rate: Hourly rate ($)
         submit: Save
