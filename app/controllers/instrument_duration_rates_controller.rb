@@ -6,7 +6,7 @@ class InstrumentDurationRatesController < ApplicationController
   before_action :authenticate_user!
   before_action :check_acting_as
   before_action :init_product
-  before_action :ensure_is_intrument
+  before_action :ensure_is_instrument
   before_action :set_product_duration_rates
   before_action :manage
 
@@ -50,7 +50,7 @@ class InstrumentDurationRatesController < ApplicationController
     @product = Product.find_by!(url_name: params[:id])
   end
 
-  def ensure_is_intrument
+  def ensure_is_instrument
     redirect_to facility_instruments_path(current_facility) unless @product.is_a?(Instrument)
   end
 
