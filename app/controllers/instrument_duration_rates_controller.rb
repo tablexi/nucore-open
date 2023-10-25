@@ -69,18 +69,16 @@ class InstrumentDurationRatesController < ApplicationController
     previous_duration_rates.sort_by! { |dr| dr.min_duration || 1_000 }
     new_duration_rates = @product.duration_rates.sort_by { |dr| dr.min_duration || 1_000 }
 
-    if previous_duration_rates.length != @product.duration_rates.length
+    if previous_duration_rates.length != new_duration_rates.length
       LogEvent.log(@product, :duration_rates_change, current_user, metadata: { before: build_log_metadata(previous_duration_rates), after: build_log_metadata(new_duration_rates) })
       return
     end
 
-    changes = false
-
-    changes = previous_duration_rates.zip(@product.duration_rates).map do |previous_duration_rate, new_duration_rate|
+    changes = previous_duration_rates.zip(new_duration_rates).map do |previous_duration_rate, new_duration_rate|
      previous_duration_rate.min_duration != new_duration_rate.min_duration || previous_duration_rate.rate != new_duration_rate.rate
     end
 
-    LogEvent.log(@product, :duration_rates_change, current_user, metadata: { before: build_log_metadata(previous_duration_rates), after: build_log_metadata(new_duration_rates) }) if changes
+    LogEvent.log(@product, :duration_rates_change, current_user, metadata: { before: build_log_metadata(previous_duration_rates), after: build_log_metadata(new_duration_rates) }) if changes.any?
   end
 
   def build_log_metadata(duration_rates)
