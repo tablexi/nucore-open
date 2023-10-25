@@ -16,8 +16,15 @@ module PricePolicies
     def calculate(start_at, end_at)
       return if start_at > end_at
       duration_mins = TimeRange.new(start_at, end_at).duration_mins
+      # Check whether it's instrument and its pricing mode
+      # If pricing mode is schedule rule, leave as is
       discount_multiplier = calculate_discount(start_at, end_at)
       cost_and_subsidy(duration_mins, discount_multiplier)
+      # Otherwise, don't calculate discount
+      # Then call new method that looks like cost_and_subsidy except:
+      # - it doesn't take discount_multiplier
+      # - usage_rate depends on the interval
+      #   - iterate over product's duration_rates
     end
 
     def calculate_discount(start_at, end_at)
