@@ -606,7 +606,7 @@ GEM
       rubocop-factory_bot (~> 2.22)
     ruby-ole (1.2.12.2)
     ruby-progressbar (1.13.0)
-    ruby-saml (1.15.0)
+    ruby-saml (1.16.0)
       nokogiri (>= 1.13.10)
       rexml
     ruby-vips (2.2.0)
