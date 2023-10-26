@@ -5,7 +5,9 @@ class InstrumentDurationRatesController < ApplicationController
   admin_tab :all
   before_action :authenticate_user!
   before_action :check_acting_as
-  before_action :init_instrument_duration_rates
+  before_action :init_product
+  before_action :ensure_is_instrument
+  before_action :set_product_duration_rates
   before_action :manage
 
   layout "two_column"
@@ -44,12 +46,12 @@ class InstrumentDurationRatesController < ApplicationController
     @active_tab = "admin_products"
   end
 
-  def init_instrument_duration_rates
+  def init_product
     @product = Product.find_by!(url_name: params[:id])
+  end
 
-    return unless @product.is_a?(Instrument)
-
-    set_product_duration_rates
+  def ensure_is_instrument
+    redirect_to facility_instruments_path(current_facility) unless @product.is_a?(Instrument)
   end
 
   def set_product_duration_rates
