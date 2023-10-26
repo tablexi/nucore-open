@@ -5,7 +5,6 @@ on:
   workflow_run:
     workflows: [ "Run test suite" ]
     # branches: [ master ]
-    types: [ completed ]
 
   # Allow manually triggering this workflow by visiting
   # https://github.com/tablexi/nucore-open/actions/workflows/nucore-heroku-auto-deploy-staging.yml
