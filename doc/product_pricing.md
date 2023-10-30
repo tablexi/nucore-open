@@ -1,5 +1,18 @@
 # Product Pricing
 ## All products
+### Price rules
+Products have different price groups, that can either be internal or external. Based on the user's price group and the rate set for it in the product price rules, the final charge will be different.
+
+#### Internal
+For internal price groups there is a base rate. There can be adjustments set for other internal price groups.
+
+#### External
+External price groups have a different rate and adjustments cannot be set.
+
+### Manual adjustment by admin
+In case an order needs to be charged a different sum, an admin can navigate to the Billing section and update the Price manually. It's required to also enter a pricing note.
+
+In the Order Detail view there's a button to Recalculate pricing, which returns the expected price based on the pricing rules.
 
 ## Instrument Pricing
 
