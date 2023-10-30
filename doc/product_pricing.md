@@ -1,10 +1,13 @@
-# Instrument Pricing
+# Product Pricing
+## All products
+
+## Instrument Pricing
 
 Instruments are charged at a per-minute rate.
 
-## Charge for
+### Charge for
 
-### Reservation
+#### Reservation
 
 Users are charged for the length of their reservation.
 
@@ -14,7 +17,7 @@ Reservation 1-2pm
 
 Result: User will always be charged 60 minutes, no matter the actual usage.
 
-### Usage
+#### Usage
 
 Users are charged for the length of time they actually used the instrument.
 
@@ -34,7 +37,7 @@ Result: User is charged for 75 minutes
 Usage: 1:15-2:15pm
 Result: User is charged for 60 minutes
 
-### Overage
+#### Overage
 
 Users are charged for the length of their reservation plus any additional time spent
 using the instrument after the end of the reservation.
