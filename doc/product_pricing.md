@@ -70,3 +70,44 @@ Result: User is charged for 75 minutes (reservation plus 15 minutes of overage)
 
 Usage: 1:15-2:15pm
 Result: User is charged for 75 minutes (reservation plus 15 minutes of overage)
+
+### Pricing mode
+#### Schedule rule/price group based
+Schedule rules state what days and times an instrument is available for reservation.
+
+When using this Priicng mode, the user will pay an hourly rate defined by the price group they belong to.
+
+#### Duration based
+In this mode, there are up to 4 rates for each price policy. These rates apply to a given step, which is defined by setting a Rate start (hr).
+
+The amount of hours the user should be charged for are split in these steps.
+
+_Example_
+|                 | Initial Rate | Step 2              | Step 3             | Step 4             |
+|-----------------|--------------|---------------------|--------------------|--------------------|
+| Price Group     | 0	           | Rate Start (hr): 2	 | Rate Start (hr): 5	| Rate Start (hr): 7 |
+|-----------------|--------------|---------------------|--------------------|--------------------|
+| Base Rate       | 50	         | Rate per hr: 45     | Rate per hr: 40    |	Rate per hr: 39    |
+| Other internal  | 5 (adj)	     | Adjustment: 8	     | Adjustment: 10	    |                    |
+| External        | 65           | Rate per hr: 62	   | Rate per hr: 60    |                    |
+| Other External  | 70           | Rate per hr: 64	   | Rate per hr: 62	  |                    |
+
+In this example, users that are in the Base Rate Price Group will pay $50/hr for the first 2 hours, $45/hr for the next 3 hours (2-5), $40/hr for the next 2 hours (5-7), and $39/hr for all the rest (7+ hours).
+
+Reservation for 10 hours:
+  2 * 50
++ 3 * 45
++ 2 * 40
++ 3 * 39
+= 100 + 135 + 80 + 117 = 432
+
+On the other hand, users in Other Internal Price Group will have an adjustment of $5/hr for the first 2 hours, $8/hr for the next 3 hours (2-5), and $10/hr for the rest (5+ hours).
+
+Reservation for 10 hours:
+  2 * (50 - 5)
++ 3 * (45 - 3)
++ 5 * (40 - 2)
+= 90 + 126 + 190 = 406
+
+### Cancel/reservation charges
+Reservations have a Reservation Cost, that is only invoked if user fail to cancel it within a set time window. For some instruments, there may not be a window, so there are charges when cancelling, regardless of the closeness to the reservation start time.
