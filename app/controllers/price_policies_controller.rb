@@ -37,6 +37,8 @@ class PricePoliciesController < ApplicationController
 
     @price_policies = PricePolicyBuilder.get_new_policies_based_on_most_recent(@product, @start_date)
     raise ActiveRecord::RecordNotFound if @price_policies.blank?
+
+    Instrument::MAX_RATE_STARTS.times { @product.rate_starts.build }
   end
 
   # POST /facilities/:facility_id/{product_type}/:product_id/price_policies
@@ -62,6 +64,8 @@ class PricePoliciesController < ApplicationController
   # GET /facilities/:facility_id/{product_type}/:product_id/price_policies/:id/edit
   def edit
     raise ActiveRecord::RecordNotFound if @price_policies.blank?
+
+    (Instrument::MAX_RATE_STARTS - @product.rate_starts.length).times { @product.rate_starts.build }
   end
 
   # DELETE /facilities/:facility_id/{product_type}/:product_id/price_policies/:id
@@ -124,6 +128,7 @@ class PricePoliciesController < ApplicationController
 
   def update_policies_from_params
     PricePolicyUpdater.update_all(
+      @product,
       @price_policies,
       parse_usa_date(params[:start_date])&.beginning_of_day,
       parse_usa_date(params[:expire_date])&.end_of_day,

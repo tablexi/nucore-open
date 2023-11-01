@@ -2,17 +2,18 @@
 
 class PricePolicyUpdater
 
-  def self.update_all(price_policies, start_date, expire_date, params)
-    new(price_policies, start_date, expire_date, params).update_all
+  def self.update_all(product, price_policies, start_date, expire_date, params)
+    new(product, price_policies, start_date, expire_date, params).update_all
   end
 
   def self.destroy_all_for_product!(product, start_date)
     price_policies = product.price_policies.for_date(start_date)
     raise ActiveRecord::RecordNotFound if price_policies.none?
-    new(price_policies, start_date).destroy_all!
+    new(product, price_policies, start_date).destroy_all!
   end
 
-  def initialize(price_policies, start_date, expire_date = nil, params = nil)
+  def initialize(product, price_policies, start_date, expire_date = nil, params = nil)
+    @product = product
     @price_policies = price_policies
     @start_date = start_date
     @expire_date = expire_date
@@ -39,8 +40,25 @@ class PricePolicyUpdater
 
   def save
     ActiveRecord::Base.transaction do
-      @price_policies.all?(&:save) || raise(ActiveRecord::Rollback)
+      (@price_policies.all?(&:save) && save_product) || raise(ActiveRecord::Rollback)
     end
+  end
+
+  def save_product
+    keys_from_built_rate_starts = []
+
+    rate_starts_params = permitted_product_params[:rate_starts_attributes].clone
+    rate_starts_params.values.each_with_index do |dr, index|
+      if dr[:min_duration].blank?
+        if dr[:id].present?
+          rate_starts_params["#{index}"].merge! ({ _destroy: '1' })
+        else
+          keys_from_built_rate_starts << "#{index}"
+        end
+      end
+    end
+
+    @product.update({ rate_starts_attributes: rate_starts_params.except(*keys_from_built_rate_starts) })
   end
 
   def price_group_attributes(price_group)
@@ -56,6 +74,10 @@ class PricePolicyUpdater
 
   def permitted_common_params
     @params.permit(:charge_for, :note, :created_by_id)
+  end
+
+  def permitted_product_params
+    @params[:product].permit(rate_starts_attributes: [:min_duration, :id])
   end
 
   def permitted_params

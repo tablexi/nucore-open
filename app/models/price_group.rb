@@ -13,6 +13,8 @@ class PriceGroup < ApplicationRecord
   has_many   :price_group_discounts, dependent: :destroy
   has_many   :duration_rates, dependent: :destroy
 
+  accepts_nested_attributes_for :duration_rates
+
   validates_presence_of   :facility_id, unless: :global?
   validates_presence_of   :name
   validates_uniqueness_of :name, scope: :facility_id, case_sensitive: false, unless: :deleted_at?

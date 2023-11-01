@@ -1,1 +1,15 @@
 = render "time_based_price_policies/price_policy_fields", f: f, cancellation: true, minimum_cost: true, charge_for_collection: charge_for_options(@price_policies.first.product)
+
+%table.table.table-striped.table-hover.price-policy-table
+  %thead
+    %tr
+      %th= "Initial Rate"
+      %th= "Step 2"
+      %th= "Step 3"
+      %th= "Step 4"
+  %tbody
+    %tr
+      %td= 0
+      = fields_for :product, @product do |p|
+        = p.fields_for :rate_starts do |rs|
+          %td= rs.number_field :min_duration, min: 1
