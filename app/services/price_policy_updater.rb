@@ -44,7 +44,7 @@ class PricePolicyUpdater
 
   def save
     ActiveRecord::Base.transaction do
-      (assign_attributes && @price_policies.all?(&:save)) || raise(ActiveRecord::Rollback)
+      @price_policies.all?(&:save) || raise(ActiveRecord::Rollback)
     end
   end
 
