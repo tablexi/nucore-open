@@ -13,12 +13,12 @@ RSpec.describe InstrumentPricePoliciesController do
   let(:external_price_group) { PriceGroup.external }
   let!(:cancer_center) { create(:price_group, :cancer_center) }
 
-  context "Schedule Rule pricing mode" do
-    before do
-      login_as director
-      facility.price_groups.destroy_all # get rid of the price groups created by the factories
-    end
+  before do
+    login_as director
+    facility.price_groups.destroy_all # get rid of the price groups created by the factories
+  end
 
+  context "Schedule Rule pricing mode" do
     it "can set up the price policies", :js, feature_setting: { facility_directors_can_manage_price_groups: true } do
       visit facility_instruments_path(facility, instrument)
       click_link instrument.name
@@ -164,8 +164,8 @@ RSpec.describe InstrumentPricePoliciesController do
       click_link "Add Pricing Rules"
 
       fill_in "product[rate_starts_attributes][0][min_duration]", with: "2"
-      fill_in "product[rate_starts_attributes][0][min_duration]", with: "3"
-      fill_in "product[rate_starts_attributes][0][min_duration]", with: "4"
+      fill_in "product[rate_starts_attributes][1][min_duration]", with: "3"
+      fill_in "product[rate_starts_attributes][2][min_duration]", with: "4"
 
       fill_in "price_policy_#{base_price_group.id}[usage_rate]", with: "60"
       fill_in "price_policy_#{base_price_group.id}[minimum_cost]", with: "120"
