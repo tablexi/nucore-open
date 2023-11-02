@@ -12,7 +12,7 @@ class PriceGroup < ApplicationRecord
   has_many   :account_price_group_members, class_name: "AccountPriceGroupMember"
   has_many   :price_group_discounts, dependent: :destroy
 
-  validates_presence_of   :facility_id # enforce facility constraint here, though it's not always required
+  validates_presence_of   :facility_id, unless: :global?
   validates_presence_of   :name
   validates_uniqueness_of :name, scope: :facility_id, case_sensitive: false, unless: :deleted_at?
 
@@ -49,10 +49,6 @@ class PriceGroup < ApplicationRecord
 
   def is_not_global?
     !global?
-  end
-
-  def global?
-    facility.nil?
   end
 
   def can_manage_price_group_members?
@@ -136,10 +132,11 @@ class PriceGroup < ApplicationRecord
         is_internal:,
         admin_editable:,
         facility_id: nil,
+        global: true,
         display_order: display_order || (global_price_groups.count + 1)
       )
 
-      pg.save(validate: false)
+      pg.save
 
       puts("Created global price group '#{name}'") unless Rails.env.test?
 
