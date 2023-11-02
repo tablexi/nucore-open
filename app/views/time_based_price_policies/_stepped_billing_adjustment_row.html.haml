@@ -22,6 +22,7 @@
   = pp.hidden_field :usage_rate, value: display_usage_rate(price_group, price_policy),
     class: "js--usageRate"
   = pp.label :usage_subsidy, t("price_policies.adjustment"), class: "normal-weight"
+  %span="-"
   = pp.text_field :usage_subsidy, value: display_usage_subsidy(price_group, price_policy),
     size: 8,
     class: "usage_adjustment"

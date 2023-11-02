@@ -63,4 +63,5 @@
               - else
                 %td
                   = dr.label :subsidy, "Adjustment:", class: "normal-weight"
+                  %span="-"
                   = dr.text_field :subsidy, value: number_to_currency(dr.object.subsidy, unit: "", delimiter: ""), size: 8
