@@ -3,7 +3,7 @@
 class DurationRate < ApplicationRecord
 
   belongs_to :price_group
-  belongs_to :rate_start
+  belongs_to :rate_start, required: true
 
   validate :rate_or_subsidy
   validates :rate, numericality: { greater_than_or_equal_to: 0, allow_blank: true }

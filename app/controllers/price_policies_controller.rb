@@ -39,6 +39,9 @@ class PricePoliciesController < ApplicationController
     raise ActiveRecord::RecordNotFound if @price_policies.blank?
 
     Instrument::MAX_RATE_STARTS.times { @product.rate_starts.build }
+    @price_policies.each do |price_policy|
+      Instrument::MAX_RATE_STARTS.times { price_policy.price_group.duration_rates.build }
+    end
   end
 
   # POST /facilities/:facility_id/{product_type}/:product_id/price_policies
@@ -66,6 +69,9 @@ class PricePoliciesController < ApplicationController
     raise ActiveRecord::RecordNotFound if @price_policies.blank?
 
     (Instrument::MAX_RATE_STARTS - @product.rate_starts.length).times { @product.rate_starts.build }
+    @price_policies.each do |price_policy|
+      (Instrument::MAX_RATE_STARTS - price_policy.price_group.duration_rates.length).times { price_policy.price_group.duration_rates.build }
+    end
   end
 
   # DELETE /facilities/:facility_id/{product_type}/:product_id/price_policies/:id

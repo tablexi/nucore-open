@@ -27,12 +27,26 @@ class PricePolicyUpdater
   end
 
   def update_all
-    assign_attributes && save
+    save
   end
 
   private
 
   def assign_attributes
+    @price_policies.each do |price_policy|
+      price_group_id = price_policy.price_group.id
+      duration_rates = @params["price_policy_#{price_group_id}"]["price_group_attributes"]["duration_rates_attributes"]
+      duration_rates.values.each_with_index do |dr, index|
+        if dr["rate"].present? || dr["subsidy"].present?
+          rate_start_id = dr["rate_start_id"] || @product.rate_starts[index]&.id
+
+          duration_rates["#{index}"].merge! ({ rate_start_id: rate_start_id, price_group_id: price_group_id })
+        else
+          duration_rates.delete(index.to_s)
+        end
+      end
+    end
+
     @price_policies.each do |price_policy|
       price_policy.assign_attributes(price_group_attributes(price_policy.price_group))
     end
@@ -40,7 +54,7 @@ class PricePolicyUpdater
 
   def save
     ActiveRecord::Base.transaction do
-      (@price_policies.all?(&:save) && save_product) || raise(ActiveRecord::Rollback)
+      (save_product && assign_attributes && @price_policies.all?(&:save)) || raise(ActiveRecord::Rollback)
     end
   end
 
@@ -89,6 +103,16 @@ class PricePolicyUpdater
       :cancellation_cost,
       :unit_cost,
       :unit_subsidy,
+      price_group_attributes: [
+        :id,
+        duration_rates_attributes: [
+          :id,
+          :subsidy,
+          :rate,
+          :price_group_id,
+          :rate_start_id
+        ]
+      ]
     ].tap do |attributes|
       attributes << :full_price_cancellation if SettingsHelper.feature_on?(:charge_full_price_on_cancellation)
     end
