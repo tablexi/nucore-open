@@ -1,8 +1,10 @@
 GIT
   remote: https://github.com/payrollhero/dynamic_form
-  revision: 072a58fb706ef65ea2e2eeddd12cacf47e77ae76
+  revision: 6227859157b2c982b2b607756605f9b094dc7d06
   specs:
-    dynamic_form (1.2.0)
+    dynamic_form (1.3.0)
+      actionview (> 5.2.0)
+      activemodel (> 5.2.0)
 
 PATH
   remote: vendor/engines/bulk_email
