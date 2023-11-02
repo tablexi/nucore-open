@@ -27,12 +27,28 @@ class PricePolicyUpdater
   end
 
   def update_all
-    save
+    if @product.is_a?(Instrument) && @product.duration_pricing_mode?
+      save_for_stepped_billing
+    else
+      assign_attributes && save
+    end
   end
 
   private
 
   def assign_attributes
+    @price_policies.each do |price_policy|
+      price_policy.assign_attributes(price_group_attributes(price_policy.price_group))
+    end
+  end
+
+  def save
+    ActiveRecord::Base.transaction do
+      (assign_attributes && @price_policies.all?(&:save)) || raise(ActiveRecord::Rollback)
+    end
+  end
+
+  def assign_attributes_for_stepped_billing
     @price_policies.each do |price_policy|
       price_group_id = price_policy.price_group.id
       duration_rates = @params["price_policy_#{price_group_id}"]["price_group_attributes"]["duration_rates_attributes"]
@@ -46,16 +62,10 @@ class PricePolicyUpdater
         end
       end
     end
-
-    @price_policies.each do |price_policy|
-      price_policy.assign_attributes(price_group_attributes(price_policy.price_group))
-    end
   end
 
-  def save
-    ActiveRecord::Base.transaction do
-      (save_product && assign_attributes && @price_policies.all?(&:save)) || raise(ActiveRecord::Rollback)
-    end
+  def save_for_stepped_billing
+    (save_product && assign_attributes_for_stepped_billing && @price_policies.all?(&:save)) || raise(ActiveRecord::Rollback)
   end
 
   def save_product

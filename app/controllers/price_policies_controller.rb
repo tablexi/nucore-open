@@ -38,8 +38,7 @@ class PricePoliciesController < ApplicationController
     @price_policies = PricePolicyBuilder.get_new_policies_based_on_most_recent(@product, @start_date)
     raise ActiveRecord::RecordNotFound if @price_policies.blank?
 
-    build_rate_starts
-    build_duration_rates
+    build_instrument_stepped_billing_fields
   end
 
   # POST /facilities/:facility_id/{product_type}/:product_id/price_policies
@@ -47,8 +46,8 @@ class PricePoliciesController < ApplicationController
     if update_policies_from_params
       redirect_to facility_product_price_policies_path, notice: text("create.success")
     else
-      build_rate_starts
-      build_duration_rates
+      build_instrument_stepped_billing_fields
+
       flash.now[:error] = text("errors.save")
       render :new
     end
@@ -59,8 +58,8 @@ class PricePoliciesController < ApplicationController
     if update_policies_from_params
       redirect_to facility_product_price_policies_path, notice: text("update.success")
     else
-      build_rate_starts
-      build_duration_rates
+      build_instrument_stepped_billing_fields
+
       flash.now[:error] = text("errors.save")
       render :edit
     end
@@ -70,8 +69,7 @@ class PricePoliciesController < ApplicationController
   def edit
     raise ActiveRecord::RecordNotFound if @price_policies.blank?
 
-    build_rate_starts
-    build_duration_rates
+    build_instrument_stepped_billing_fields
   end
 
   # DELETE /facilities/:facility_id/{product_type}/:product_id/price_policies/:id
@@ -149,6 +147,13 @@ class PricePoliciesController < ApplicationController
   def build_duration_rates
     @price_policies.each do |price_policy|
       (Instrument::MAX_RATE_STARTS - price_policy.price_group.duration_rates.length).times { price_policy.price_group.duration_rates.build }
+    end
+  end
+
+  def build_instrument_stepped_billing_fields
+    if @product.is_a?(Instrument) && @product.duration_pricing_mode?
+      build_rate_starts
+      build_duration_rates
     end
   end
 
