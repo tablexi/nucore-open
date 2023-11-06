@@ -56,7 +56,7 @@ class PricePolicyUpdater
       if duration_rates.present?
         duration_rates.values.each_with_index do |dr, index|
           if dr["rate"].present? || dr["subsidy"].present?
-            rate_start_id = dr["rate_start_id"] || @product.rate_starts[index]&.id
+            rate_start_id = dr["rate_start_id"].present? ? dr["rate_start_id"] : @product.rate_starts[index]&.id
 
             duration_rates["#{index}"].merge! ({ rate_start_id: rate_start_id, price_group_id: price_group_id })
           else
