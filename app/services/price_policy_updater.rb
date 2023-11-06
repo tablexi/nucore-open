@@ -102,7 +102,11 @@ class PricePolicyUpdater
   end
 
   def permitted_price_group_attributes(price_group)
-    @params["price_policy_#{price_group.id}"]&.permit(*permitted_params) || { can_purchase: false }
+    price_policy_params = @params["price_policy_#{price_group.id}"]&.permit(*permitted_params)
+
+    return { can_purchase: false } if price_policy_params.nil? || price_policy_params.keys.empty? || price_policy_params.keys == ["price_group_attributes"]
+
+    price_policy_params
   end
 
   def permitted_common_params
