@@ -16,8 +16,8 @@ RSpec.describe OrderRowImporter do
     let(:chart_string) { account.account_number }
     let(:product_name) { service.name }
     let(:quantity) { "1" }
-    let(:order_date) { "1/1/2015" }
-    let(:fulfillment_date) { "1/2/2015" }
+    let(:order_date) { I18n.l(1.day.ago.to_date, format: :usa) }
+    let(:fulfillment_date) { I18n.l(Time.current.to_date, format: :usa) }
     let(:reference_id) { "123456" }
 
     before(:each) do
@@ -90,6 +90,34 @@ RSpec.describe OrderRowImporter do
 
       it "has the error message '#{message}'" do
         expect(subject.errors).to include(match /#{message}/)
+      end
+    end
+
+    context "when the account is expired" do
+      include_context "valid row values"
+
+      let!(:account) do
+        a = build(:nufs_account, :with_account_owner, :expired, owner: user)
+        a.save(validate: false)
+        a
+      end
+
+      context "when the order occured before the account expires" do
+        let(:order_date) { I18n.l(50.days.ago.to_date, format: :usa) }
+        let(:fulfillment_date) { I18n.l(45.days.ago.to_date, format: :usa) }
+
+        it "creates an order" do
+          expect { subject.import }.to change(Order, :count)
+        end
+      end
+
+      context "when the order occred after the account expires" do
+        let(:order_date) { I18n.l(1.day.ago.to_date, format: :usa) }
+        let(:fulfillment_date) { I18n.l(Time.current.to_date, format: :usa) }
+
+        it "does not create an order" do
+          expect { subject.import }.not_to change(Order, :count)
+        end
       end
     end
 
@@ -393,8 +421,8 @@ RSpec.describe OrderRowImporter do
 
     context "when the user has an account for the product's facility" do
       let(:chart_string) { account.account_number }
-      let(:fulfillment_date) { "1/1/1999" }
-      let(:order_date) { "1/1/1999" }
+      let(:order_date) { I18n.l(Time.current.to_date, format: :usa) }
+      let(:fulfillment_date) { I18n.l(Time.current.to_date, format: :usa) }
       let(:product) { service }
       let(:product_name) { product.name }
       let(:username) { user.username }
@@ -495,8 +523,6 @@ RSpec.describe OrderRowImporter do
       let(:chart_string) { account.account_number }
       let(:product_name) { service.name }
       let(:quantity) { 1 }
-      let(:order_date) { "1/1/2015" }
-      let(:fulfillment_date) { "1/2/2015" }
 
       before(:each) do
         allow_any_instance_of(Product).to receive(:can_purchase?).and_return(true)
