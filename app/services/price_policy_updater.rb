@@ -28,7 +28,7 @@ class PricePolicyUpdater
 
   def update_all
     if @product.is_a?(Instrument) && @product.duration_pricing_mode?
-      save_for_stepped_billing
+      validate_steps_and_rates && save_for_stepped_billing
     else
       assign_attributes && save
     end
@@ -69,6 +69,26 @@ class PricePolicyUpdater
     @price_policies.each do |price_policy|
       price_policy.assign_attributes(price_group_attributes(price_policy.price_group))
     end
+  end
+
+  def validate_steps_and_rates
+    rate_starts_params = permitted_product_params[:rate_starts_attributes]
+
+    rate_starts_length = rate_starts_params ? rate_starts_params.values.filter { |rs| rs[:min_duration].present? }.length : 0
+
+    valid_duration_rates = @price_policies.all? do |price_policy|
+                              price_group_id = price_policy.price_group.id
+                              duration_rates = @params.dig("price_policy_#{price_group_id}", "duration_rates_attributes")
+                              duration_rates_length = duration_rates.present? ? duration_rates.values.filter { |dr| dr[:rate].present? || dr[:subsidy].present? }.length : 0
+
+                              duration_rates_length <= rate_starts_length
+                            end
+
+    unless valid_duration_rates
+      @product.errors.add(:base, :missing_rate_starts, message: "Some rates or adjustments are missing Rate starts")
+    end
+
+    valid_duration_rates
   end
 
   def save_for_stepped_billing
