@@ -2,7 +2,7 @@
 
 class RateStart < ApplicationRecord
 
-  has_many :duration_rates
+  has_many :duration_rates, dependent: :destroy
   belongs_to :instrument, foreign_key: :product_id
 
   validates :min_duration, presence: true
