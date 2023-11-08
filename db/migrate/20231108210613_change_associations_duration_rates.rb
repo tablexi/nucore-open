@@ -1,6 +1,8 @@
 class ChangeAssociationsDurationRates < ActiveRecord::Migration[7.0]
   def up
-    DurationRate.destroy_all
+    execute <<-SQL
+      DELETE FROM duration_rates
+    SQL
 
     change_table :duration_rates do |t|
       t.references :price_policy
