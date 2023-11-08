@@ -51,7 +51,7 @@ class PricePolicyUpdater
   def assign_attributes_for_stepped_billing
     @price_policies.each do |price_policy|
       price_group_id = price_policy.price_group.id
-      duration_rates = @params["price_policy_#{price_group_id}"]["duration_rates_attributes"]
+      duration_rates = @params.dig("price_policy_#{price_group_id}", "duration_rates_attributes")
 
       if duration_rates.present?
         duration_rates.values.each_with_index do |dr, index|
