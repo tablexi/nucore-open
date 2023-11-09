@@ -168,7 +168,7 @@ class PricePoliciesController < ApplicationController
         duration_rate = price_policy.duration_rates.select { |dr| dr.rate_start_index == rs_index.to_s }.first
 
         if duration_rate.nil?
-          dr = price_policy.duration_rates.build rate_start_index: rs_index
+          dr = price_policy.duration_rates.build rate_start_index: rs_index, rate_start_id: rate_start.id
           sorted_duration_rates << dr
         else
           sorted_duration_rates << duration_rate
