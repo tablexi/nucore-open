@@ -28,6 +28,9 @@ class PricePoliciesController < ApplicationController
     @current_start_date = @current_price_policies.first.try(:start_date)
     @past_price_policies_by_date = @product.past_price_policies_grouped_by_start_date
     @next_price_policies_by_date = @product.upcoming_price_policies_grouped_by_start_date
+    @rate_starts = @product.rate_starts.to_a
+    (Instrument::MAX_RATE_STARTS - @product.rate_starts.length).times { @rate_starts << nil }
+
     render "price_policies/index"
   end
 
@@ -152,11 +155,25 @@ class PricePoliciesController < ApplicationController
 
   def build_rate_starts
     (Instrument::MAX_RATE_STARTS - @product.rate_starts.length).times { @product.rate_starts.build }
+
+    @rate_starts = @product.rate_starts.sort_by { |rs| rs.min_duration || 1_000 }
   end
 
   def build_duration_rates
+    @duration_rates = {}
+
     @price_policies.each do |price_policy|
-      (Instrument::MAX_RATE_STARTS - price_policy.duration_rates.length).times { price_policy.duration_rates.build }
+      @rate_starts.each do |rate_start|
+        @duration_rates[price_policy.price_group.id] = {}
+        duration_rate = price_policy.duration_rates.find_by rate_start_id: rate_start.id
+
+        if duration_rate.nil? || rate_start.id.nil?
+          price_policy.duration_rates.build rate_start_id: rate_start.id
+          @duration_rates[price_policy.price_group.id] = price_policy.duration_rates.last
+        else
+          @duration_rates[price_policy.price_group.id] = duration_rate
+        end
+      end
     end
   end
 

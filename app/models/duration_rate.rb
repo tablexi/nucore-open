@@ -11,6 +11,8 @@ class DurationRate < ApplicationRecord
   validates :subsidy, numericality: { greater_than: 0, allow_blank: true }
   validate :subsidy_lesser_than_or_equal_to_base_rate
 
+  scope :by_rate_start, -> { includes(:rate_start).order(Arel.sql("rate_starts.min_duration: asc")) }
+
   private
   def rate_or_subsidy
     if rate.blank? && subsidy.blank?

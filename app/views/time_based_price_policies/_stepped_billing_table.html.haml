@@ -22,8 +22,7 @@
       - if local_assigns[:cancellation]
         %td
       %td{ style: "text-align: center" }= 0
-      - (0..Instrument::MAX_RATE_STARTS-1).each do |index|
-        - rate_start = product.rate_starts[index]
+      - @rate_starts.each do |rate_start|
         %td
           = "Rate Start (hr):"
           - if rate_start.present?
@@ -74,15 +73,15 @@
                 - price_per_minute = (price_policy.subsidized_hourly_usage_cost / 60)
                 = number_to_currency price_per_minute, precision: 4
                 \/ minute
-          - duration_rates = price_policy.duration_rates
-          - (0..Instrument::MAX_RATE_STARTS-1).each do |index|
-            - duration_rate = duration_rates[index]
+          - @rate_starts.each do |rate_start|
             %td.currency
-              - if duration_rate.present?
-                - if duration_rate.rate.present?
-                  .rate= number_to_currency duration_rate.rate
-                - if duration_rate.subsidy.present?
-                  .subsidy= "- #{number_to_currency duration_rate.subsidy}"
+              - if rate_start.present?
+                - duration_rate = price_policy.duration_rates.find { |dr| dr.rate_start_id == rate_start.id }
+                - if duration_rate.present?
+                  - if duration_rate.rate.present?
+                    .rate= number_to_currency duration_rate.rate
+                  - if duration_rate.subsidy.present?
+                    .subsidy= "- #{number_to_currency duration_rate.subsidy}"
 
         - else
           %td.centered{ colspan: 5 }

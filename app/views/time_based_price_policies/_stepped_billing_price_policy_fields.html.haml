@@ -36,7 +36,7 @@
         %td
       %td= 0
       = fields_for :product, @product do |p|
-        = p.fields_for :rate_starts do |rs|
+        = p.fields_for :rate_starts, @rate_starts do |rs|
           %td
             = rs.label :min_duration, "Rate Start (hr):", class: "normal-weight"
             = rs.number_field :min_duration, min: 1, class: "half-width"
@@ -54,7 +54,7 @@
             = render "time_based_price_policies/stepped_billing_amount_row", price_group: price_group, price_policy: price_policy, pp: pp, cancellation: cancellation, minimum_cost: minimum_cost
           - else
             = render "time_based_price_policies/stepped_billing_adjustment_row", price_group: price_group, price_policy: price_policy, pp: pp, cancellation: cancellation, minimum_cost: minimum_cost
-          = pp.fields_for :duration_rates do |dr|
+          = pp.fields_for :duration_rates, @duration_rates[price_group.id] do |dr|
             - if price_group.external? || price_group.master_internal?
               %td
                 = dr.label :rate, "Rate per hr:", class: "normal-weight"
