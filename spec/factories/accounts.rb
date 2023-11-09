@@ -17,14 +17,6 @@ FactoryBot.define do
     end
   end
 
-  trait :expired do
-    transient do
-      expired_date { 1.month.ago }
-    end
-
-    expires_at { expired_date }
-  end
-
   trait :with_account_owner do
     transient do
       owner { FactoryBot.create(:user) }
