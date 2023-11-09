@@ -368,8 +368,9 @@ class Reservation < ApplicationRecord
     when InstrumentPricePolicy::CHARGE_FOR.fetch(:usage)
       TimeRange.new(actual_start_at, actual_end_at).duration_mins
     when InstrumentPricePolicy::CHARGE_FOR.fetch(:overage)
+      start_time = [reserve_start_at, actual_start_at].min
       end_time = [reserve_end_at, actual_end_at].max
-      TimeRange.new(reserve_start_at, end_time).duration_mins
+      TimeRange.new(start_time, end_time).duration_mins
     end
   end
 
