@@ -165,10 +165,10 @@ class PricePoliciesController < ApplicationController
     @price_policies.each_with_index do |price_policy, pp_index|
       sorted_duration_rates = []
       @rate_starts.each_with_index do |rate_start, rs_index|
-        duration_rate = price_policy.duration_rates.find_by rate_start_id: rate_start.id
+        duration_rate = price_policy.duration_rates.select { |dr| dr.rate_start_index == rs_index.to_s }.first
 
-        if duration_rate.nil? || rate_start.id.nil?
-          dr = price_policy.duration_rates.build rate_start_id: rate_start.id
+        if duration_rate.nil?
+          dr = price_policy.duration_rates.build rate_start_id: rate_start.id, rate_start_index: rs_index
           sorted_duration_rates << dr
         else
           sorted_duration_rates << duration_rate

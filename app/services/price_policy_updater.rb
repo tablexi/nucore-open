@@ -151,7 +151,8 @@ class PricePolicyUpdater
         :subsidy,
         :rate,
         :price_policy_id,
-        :rate_start_id
+        :rate_start_id,
+        :rate_start_index
       ]
     ].tap do |attributes|
       attributes << :full_price_cancellation if SettingsHelper.feature_on?(:charge_full_price_on_cancellation)

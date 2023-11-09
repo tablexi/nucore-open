@@ -11,9 +11,10 @@ class DurationRate < ApplicationRecord
   validates :subsidy, numericality: { greater_than: 0, allow_blank: true }
   validate :subsidy_lesser_than_or_equal_to_base_rate
 
-  scope :by_rate_start, -> { includes(:rate_start).order(Arel.sql("rate_starts.min_duration: asc")) }
+  attr_accessor :rate_start_index
 
   private
+
   def rate_or_subsidy
     if rate.blank? && subsidy.blank?
       errors.add(:base, "Either Rate or Adjustment must be provided")
@@ -22,6 +23,7 @@ class DurationRate < ApplicationRecord
 
   def rate_lesser_than_or_equal_to_base_rate
     return unless price_group.external? || price_group.master_internal?
+    return unless price_policy.usage_rate
 
     if rate / 60.0 > price_policy.usage_rate
       errors.add(:base, "Rate must be lesser than or equal to Base rate")
