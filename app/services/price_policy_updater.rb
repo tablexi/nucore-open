@@ -56,7 +56,11 @@ class PricePolicyUpdater
       if duration_rates.present?
         duration_rates.values.each_with_index do |dr, index|
           if dr["rate"].present? || dr["subsidy"].present?
-            rate_start_id = dr["rate_start_id"].present? ? dr["rate_start_id"] : @product.rate_starts[index]&.id
+            # There is no rate_start_id in the params when rate starts are first being added.
+            # In that case we need to use the rate_start_index to grab the rate_start_id,
+            # which should have been persisted as part of the call to save_product.
+            fallback_rate_start = @product.rate_starts[dr["rate_start_index"].to_i]&.id
+            rate_start_id = dr["rate_start_id"].present? ? dr["rate_start_id"] : fallback_rate_start
 
             duration_rates["#{index}"].merge! ({ rate_start_id: rate_start_id, price_policy_id: price_policy.id })
           else
