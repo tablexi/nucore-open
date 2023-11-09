@@ -58,7 +58,7 @@ class PricePolicyUpdater
           if dr["rate"].present? || dr["subsidy"].present?
             rate_start_id = dr["rate_start_id"].present? ? dr["rate_start_id"] : @product.rate_starts[index]&.id
 
-            duration_rates["#{index}"].merge! ({ rate_start_id: rate_start_id, price_group_id: price_group_id })
+            duration_rates["#{index}"].merge! ({ rate_start_id: rate_start_id, price_policy_id: price_policy.id })
           else
             duration_rates.delete(index.to_s)
           end
