@@ -45,6 +45,7 @@ validator:
     helper: 'spec/validator_helper' # relative to Rails.root
 
 testing:
+  account_class_name: NufsAccount
   account_factory: "nufs_account"
   api_account_factory: ~
 
