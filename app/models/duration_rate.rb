@@ -23,7 +23,7 @@ class DurationRate < ApplicationRecord
 
   def rate_lesser_than_or_equal_to_base_rate
     return unless price_group.external? || price_group.master_internal?
-    return unless price_policy.usage_rate
+    return unless price_policy.usage_rate && rate
 
     if rate / 60.0 > price_policy.usage_rate
       errors.add(:base, "Rate must be lesser than or equal to Base rate")
@@ -32,6 +32,7 @@ class DurationRate < ApplicationRecord
 
   def subsidy_lesser_than_or_equal_to_base_rate
     return if price_group.external? || price_group.master_internal?
+    return unless price_policy.usage_rate && subsidy
 
     if subsidy / 60.0 > price_policy.usage_rate
       errors.add(:base, "Subsidy must be lesser than or equal to Base rate")
