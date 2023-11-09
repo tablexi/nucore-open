@@ -162,18 +162,19 @@ class PricePoliciesController < ApplicationController
   def build_duration_rates
     @duration_rates = {}
 
-    @price_policies.each do |price_policy|
-      @rate_starts.each do |rate_start|
-        @duration_rates[price_policy.price_group.id] = {}
+    @price_policies.each_with_index do |price_policy, pp_index|
+      sorted_duration_rates = []
+      @rate_starts.each_with_index do |rate_start, rs_index|
         duration_rate = price_policy.duration_rates.find_by rate_start_id: rate_start.id
 
         if duration_rate.nil? || rate_start.id.nil?
-          price_policy.duration_rates.build rate_start_id: rate_start.id
-          @duration_rates[price_policy.price_group.id] = price_policy.duration_rates.last
+          dr = price_policy.duration_rates.build rate_start_id: rate_start.id
+          sorted_duration_rates << dr
         else
-          @duration_rates[price_policy.price_group.id] = duration_rate
+          sorted_duration_rates << duration_rate
         end
       end
+      @duration_rates[pp_index] = sorted_duration_rates
     end
   end
 
