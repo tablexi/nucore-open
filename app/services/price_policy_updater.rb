@@ -63,6 +63,8 @@ class PricePolicyUpdater
             rate_start_id = dr["rate_start_id"].present? ? dr["rate_start_id"] : fallback_rate_start
 
             duration_rates["#{index}"].merge! ({ rate_start_id: rate_start_id, price_policy_id: price_policy.id })
+          elsif dr[:id].present? && DurationRate.where(id: dr[:id]).present?
+            duration_rates[index.to_s].merge! ({ _destroy: '1' })
           else
             duration_rates.delete(index.to_s)
           end
@@ -156,7 +158,8 @@ class PricePolicyUpdater
         :rate,
         :price_policy_id,
         :rate_start_id,
-        :rate_start_index
+        :rate_start_index,
+        :_destroy
       ]
     ].tap do |attributes|
       attributes << :full_price_cancellation if SettingsHelper.feature_on?(:charge_full_price_on_cancellation)

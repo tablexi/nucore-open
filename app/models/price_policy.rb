@@ -11,7 +11,7 @@ class PricePolicy < ApplicationRecord
   has_many :duration_rates, dependent: :destroy
 
   accepts_nested_attributes_for :product
-  accepts_nested_attributes_for :duration_rates
+  accepts_nested_attributes_for :duration_rates, allow_destroy: true
 
   validates :start_date, :expire_date, presence: true
   validates :price_group_id, :type, presence: true
