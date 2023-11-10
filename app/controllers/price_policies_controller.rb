@@ -28,7 +28,7 @@ class PricePoliciesController < ApplicationController
     @current_start_date = @current_price_policies.first.try(:start_date)
     @past_price_policies_by_date = @product.past_price_policies_grouped_by_start_date
     @next_price_policies_by_date = @product.upcoming_price_policies_grouped_by_start_date
-    @rate_starts = @product.rate_starts.to_a
+    @rate_starts = @product.rate_starts.to_a.sort_by { |rs| rs.min_duration }
     (Instrument::MAX_RATE_STARTS - @product.rate_starts.length).times { @rate_starts << nil }
 
     render "price_policies/index"
