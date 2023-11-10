@@ -176,7 +176,7 @@ en:
 
           %{errors}
         failure_count: |
-          %{count} failed. Contact %{support_email}
+          %{count} errors occurred while importing. Contact %{support_email}
         success:
           zero: No new approved users were added.
           one: |
