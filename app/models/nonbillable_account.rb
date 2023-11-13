@@ -10,7 +10,7 @@ class NonbillableAccount < Account
     first || create
   end
 
-  def account_open?(_account_number)
+  def account_open?(_account_number, fulfillment_time: nil)
     true
   end
 
