@@ -15,7 +15,12 @@ class PricePolicyBuilder
 
     return existing_price_policies unless force_new_policies
 
-    existing_price_policies.map { |pp| pp.dup }
+    existing_price_policies.map do |pp|
+      price_policy = pp.dup
+      price_policy.duration_rates = pp.duration_rates.map(&:dup)
+
+      price_policy
+    end
   end
 
   def self.create_skip_review_for(product, price_groups = nil)
