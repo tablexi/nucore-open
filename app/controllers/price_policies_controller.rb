@@ -38,7 +38,12 @@ class PricePoliciesController < ApplicationController
   def new
     @start_date = active_policies? ? Date.tomorrow : Date.today
 
-    @price_policies = PricePolicyBuilder.get_new_policies_based_on_most_recent(@product, @start_date)
+    @price_policies = PricePolicyBuilder.get_new_policies_based_on_most_recent(
+      @product,
+      @start_date,
+      force_new_policies = @product.is_a?(Instrument) && @product.duration_pricing_mode?
+    )
+
     raise ActiveRecord::RecordNotFound if @price_policies.blank?
 
     build_instrument_stepped_billing_fields
