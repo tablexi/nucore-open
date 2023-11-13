@@ -277,6 +277,67 @@ RSpec.describe InstrumentPricePoliciesController do
         expect(page).to have_content("Some rates or adjustments are missing Rate starts")
       end
     end
-  end
 
+    it "can edit price policies", :js, feature_setting: { facility_directors_can_manage_price_groups: true } do
+      visit new_facility_instrument_price_policy_path(facility, instrument)
+
+      fill_in "product[rate_starts_attributes][0][min_duration]", with: "2"
+      fill_in "product[rate_starts_attributes][1][min_duration]", with: "3"
+      fill_in "product[rate_starts_attributes][2][min_duration]", with: "4"
+
+      fill_in "price_policy_#{base_price_group.id}[usage_rate]", with: "60"
+      fill_in "price_policy_#{base_price_group.id}[minimum_cost]", with: "120"
+      fill_in "price_policy_#{base_price_group.id}[cancellation_cost]", with: "15"
+
+      fill_in "price_policy_#{base_price_group.id}[duration_rates_attributes][0][rate]", with: "50"
+      fill_in "price_policy_#{base_price_group.id}[duration_rates_attributes][1][rate]", with: "40"
+      fill_in "price_policy_#{base_price_group.id}[duration_rates_attributes][2][rate]", with: "30"
+
+      fill_in "price_policy_#{cancer_center.id}[usage_subsidy]", with: "30"
+
+      fill_in "price_policy_#{external_price_group.id}[usage_rate]", with: "120.11"
+      fill_in "price_policy_#{external_price_group.id}[minimum_cost]", with: "122"
+      fill_in "price_policy_#{external_price_group.id}[cancellation_cost]", with: "31"
+
+      fill_in "price_policy_#{external_price_group.id}[duration_rates_attributes][0][rate]", with: "110"
+      fill_in "price_policy_#{external_price_group.id}[duration_rates_attributes][1][rate]", with: "100"
+      fill_in "price_policy_#{external_price_group.id}[duration_rates_attributes][2][rate]", with: "90"
+
+      uncheck "price_policy_#{cannot_purchase_group.id}[can_purchase]"
+
+      fill_in "note", with: "This is my note"
+
+      click_button "Add Pricing Rules"
+
+      expect(page).to have_content("Price Rules were successfully created.")
+
+      visit edit_facility_instrument_price_policy_path(facility, instrument, instrument.price_policies.last)
+
+      expect(page).to have_field("product[rate_starts_attributes][0][min_duration]", with: "2")
+      expect(page).to have_field("product[rate_starts_attributes][1][min_duration]", with: "3")
+      expect(page).to have_field("product[rate_starts_attributes][2][min_duration]", with: "4")
+
+      expect(page).to have_field("price_policy_#{base_price_group.id}[duration_rates_attributes][0][rate]", with: "50.00")
+      expect(page).to have_field("price_policy_#{base_price_group.id}[duration_rates_attributes][1][rate]", with: "40.00")
+      expect(page).to have_field("price_policy_#{base_price_group.id}[duration_rates_attributes][2][rate]", with: "30.00")
+
+      fill_in "product[rate_starts_attributes][2][min_duration]", with: "5"
+      fill_in "price_policy_#{base_price_group.id}[duration_rates_attributes][2][rate]", with: "20"
+
+      click_button "Save Rules"
+
+      expect(page).to have_content("Price Rules were successfully updated.")
+
+      expect(page).to have_content("Rate Start (hr): 5")
+      expect(page).not_to have_content("Rate Start (hr): 4")
+
+      # Base price group - Duration rates
+      expect(page).to have_content("$50.00")
+      expect(page).to have_content("$40.00")
+      expect(page).to have_content("$20.00")
+
+      # Only Cancer Center subsidy
+      expect(page).to have_content("$30.00", count: 1)
+    end
+  end
 end
