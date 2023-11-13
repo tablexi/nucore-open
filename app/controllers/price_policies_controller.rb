@@ -28,8 +28,8 @@ class PricePoliciesController < ApplicationController
     @current_start_date = @current_price_policies.first.try(:start_date)
     @past_price_policies_by_date = @product.past_price_policies_grouped_by_start_date
     @next_price_policies_by_date = @product.upcoming_price_policies_grouped_by_start_date
-    @rate_starts = @product.rate_starts.to_a.sort_by { |rs| rs.min_duration }
-    (Instrument::MAX_RATE_STARTS - @product.rate_starts.length).times { @rate_starts << nil }
+
+    set_rate_starts
 
     render "price_policies/index"
   end
@@ -187,6 +187,13 @@ class PricePoliciesController < ApplicationController
     if @product.is_a?(Instrument) && @product.duration_pricing_mode?
       build_rate_starts
       build_duration_rates
+    end
+  end
+
+  def set_rate_starts
+    if @product.is_a?(Instrument) && @product.duration_pricing_mode?
+      @rate_starts = @product.rate_starts.to_a.sort_by { |rs| rs.min_duration }
+      (Instrument::MAX_RATE_STARTS - @product.rate_starts.length).times { @rate_starts << nil }
     end
   end
 
