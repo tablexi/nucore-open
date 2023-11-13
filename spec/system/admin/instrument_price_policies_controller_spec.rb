@@ -49,6 +49,8 @@ RSpec.describe InstrumentPricePoliciesController do
       expect(page).to have_content("$31.00")
 
       expect(page).to have_content("This is my note")
+
+      expect(page).not_to have_content("Rate Start (hr):")
     end
 
     it "can only allow some to purchase", :js, feature_setting: { facility_directors_can_manage_price_groups: true } do
@@ -200,6 +202,21 @@ RSpec.describe InstrumentPricePoliciesController do
       expect(page).to have_content("$120.11")
       expect(page).to have_content("$122.00")
       expect(page).to have_content("$31.00")
+
+      # Rate starts
+      expect(page).to have_content("Rate Start (hr): 2")
+      expect(page).to have_content("Rate Start (hr): 3")
+      expect(page).to have_content("Rate Start (hr): 4")
+
+      # Base price group - Duration rates
+      expect(page).to have_content("$50.00")
+      expect(page).to have_content("$40.00")
+      expect(page).to have_content("$30.00", count: 2) # Also Cancer Center subsidy
+
+      # External price group - Duration rates
+      expect(page).to have_content("$110.00")
+      expect(page).to have_content("$100.00")
+      expect(page).to have_content("$90.00")
 
       expect(page).to have_content("This is my note")
     end
