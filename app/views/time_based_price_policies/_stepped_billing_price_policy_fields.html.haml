@@ -60,11 +60,11 @@
                 = dr.label :rate, "Rate per hr:", class: "normal-weight"
                 = dr.text_field :rate, value: number_to_currency(dr.object.rate, unit: "", delimiter: ""), size: 8
                 = dr.hidden_field :rate_start_id
-                = dr.hidden_field :rate_start_index, value: dr.object.rate_start_index || index
+                = dr.hidden_field :rate_start_index, value: dr.index
             - else
               %td
                 = dr.label :subsidy, "Adjustment:", class: "normal-weight"
                 %span="-"
                 = dr.text_field :subsidy, value: number_to_currency(dr.object.subsidy, unit: "", delimiter: ""), size: 8
                 = dr.hidden_field :rate_start_id
-                = dr.hidden_field :rate_start_index, value: dr.object.rate_start_index || index
+                = dr.hidden_field :rate_start_index, value: dr.index

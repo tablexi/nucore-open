@@ -176,6 +176,7 @@ class PricePoliciesController < ApplicationController
           dr = price_policy.duration_rates.build rate_start_index: rs_index, rate_start_id: rate_start.id
           sorted_duration_rates << dr
         else
+          duration_rate.rate_start_index = rs_index
           sorted_duration_rates << duration_rate
         end
       end

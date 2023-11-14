@@ -51,10 +51,10 @@ class PricePolicyUpdater
   def assign_attributes_for_stepped_billing
     @price_policies.each do |price_policy|
       price_group_id = price_policy.price_group.id
-      duration_rates = @params.dig("price_policy_#{price_group_id}", "duration_rates_attributes")
+      duration_rate_params = @params.dig("price_policy_#{price_group_id}", "duration_rates_attributes")
 
-      if duration_rates.present?
-        duration_rates.values.each_with_index do |dr, index|
+      if duration_rate_params.present?
+        duration_rate_params.values.each_with_index do |dr, index|
           if dr["rate"].present? || dr["subsidy"].present?
             # There is no rate_start_id in the params when rate starts are first being added.
             # In that case we need to use the rate_start_index to grab the rate_start_id,
@@ -62,11 +62,11 @@ class PricePolicyUpdater
             fallback_rate_start = @product.rate_starts[dr["rate_start_index"].to_i]&.id
             rate_start_id = dr["rate_start_id"].present? ? dr["rate_start_id"] : fallback_rate_start
 
-            duration_rates["#{index}"].merge! ({ rate_start_id: rate_start_id, price_policy_id: price_policy.id })
+            duration_rate_params["#{index}"].merge! ({ rate_start_id: rate_start_id, price_policy_id: price_policy.id })
           elsif dr[:id].present? && DurationRate.where(id: dr[:id]).present?
-            duration_rates[index.to_s].merge! ({ _destroy: '1' })
+            duration_rate_params[index.to_s].merge! ({ _destroy: '1' })
           else
-            duration_rates.delete(index.to_s)
+            duration_rate_params.delete(index.to_s)
           end
         end
       end
