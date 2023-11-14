@@ -28,7 +28,7 @@ class PricePolicyUpdater
 
   def update_all
     if @product.is_a?(Instrument) && @product.duration_pricing_mode?
-      save_for_stepped_billing
+      assign_attributes_for_stepped_billing && save
     else
       assign_attributes && save
     end
@@ -69,12 +69,6 @@ class PricePolicyUpdater
 
     @price_policies.each do |price_policy|
       price_policy.assign_attributes(price_group_attributes(price_policy.price_group))
-    end
-  end
-
-  def save_for_stepped_billing
-    ActiveRecord::Base.transaction do
-      (assign_attributes_for_stepped_billing && @price_policies.all?(&:save)) || raise(ActiveRecord::Rollback)
     end
   end
 
