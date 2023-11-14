@@ -274,7 +274,7 @@ RSpec.describe InstrumentPricePoliciesController do
 
         click_button "Add Pricing Rules"
 
-        expect(page).to have_content("Some rates or adjustments are missing Rate starts")
+        expect(page).to have_content("Duration rates min duration hours may not be blank")
       end
     end
 

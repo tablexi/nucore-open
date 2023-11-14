@@ -28,7 +28,7 @@ class PricePolicyUpdater
 
   def update_all
     if @product.is_a?(Instrument) && @product.duration_pricing_mode?
-      validate_steps_and_rates && save_for_stepped_billing
+      save_for_stepped_billing
     else
       assign_attributes && save
     end
@@ -54,15 +54,10 @@ class PricePolicyUpdater
       duration_rate_params = @params.dig("price_policy_#{price_group_id}", "duration_rates_attributes")
 
       if duration_rate_params.present?
+        # TO DO: can we remove this and use reject_if instead?
         duration_rate_params.values.each_with_index do |dr, index|
           if dr["rate"].present? || dr["subsidy"].present?
-            # There is no rate_start_id in the params when rate starts are first being added.
-            # In that case we need to use the rate_start_index to grab the rate_start_id,
-            # which should have been persisted as part of the call to save_product.
-            fallback_rate_start = @product.rate_starts[dr["rate_start_index"].to_i]&.id
-            rate_start_id = dr["rate_start_id"].present? ? dr["rate_start_id"] : fallback_rate_start
-
-            duration_rate_params["#{index}"].merge! ({ rate_start_id: rate_start_id, price_policy_id: price_policy.id })
+            duration_rate_params["#{index}"].merge! ({ price_policy_id: price_policy.id })
           elsif dr[:id].present? && DurationRate.where(id: dr[:id]).present?
             duration_rate_params[index.to_s].merge! ({ _destroy: '1' })
           else
@@ -77,56 +72,10 @@ class PricePolicyUpdater
     end
   end
 
-  def validate_steps_and_rates
-    rate_starts_params = permitted_product_params[:rate_starts_attributes]
-    valid_duration_rates = true
-
-    if rate_starts_params.present?
-      valid_duration_rates = rate_starts_params.keys.all? do |key|
-        @price_policies.all? do |price_policy|
-          is_valid = true
-          if rate_starts_params[key][:min_duration].blank?
-            price_group_id = price_policy.price_group.id
-            duration_rate = @params.dig("price_policy_#{price_group_id}", "duration_rates_attributes", key)
-
-            is_valid = false if duration_rate.present? && (duration_rate[:rate].present? || duration_rate[:subsidy].present?)
-          end
-
-          is_valid
-        end
-      end
-    else
-      valid_duration_rates = false
-    end
-
-    unless valid_duration_rates
-      @product.errors.add(:base, :missing_rate_starts, message: "Some rates or adjustments are missing Rate starts")
-    end
-
-    valid_duration_rates
-  end
-
   def save_for_stepped_billing
     ActiveRecord::Base.transaction do
-      (save_product && assign_attributes_for_stepped_billing && @price_policies.all?(&:save)) || raise(ActiveRecord::Rollback)
+      (assign_attributes_for_stepped_billing && @price_policies.all?(&:save)) || raise(ActiveRecord::Rollback)
     end
-  end
-
-  def save_product
-    keys_from_built_rate_starts = []
-
-    rate_starts_params = permitted_product_params[:rate_starts_attributes].clone
-    rate_starts_params.values.each_with_index do |dr, index|
-      if dr[:min_duration].blank?
-        if dr[:id].present?
-          rate_starts_params["#{index}"].merge! ({ _destroy: '1' })
-        else
-          keys_from_built_rate_starts << "#{index}"
-        end
-      end
-    end
-
-    @product.update({ rate_starts_attributes: rate_starts_params.except(*keys_from_built_rate_starts) })
   end
 
   def price_group_attributes(price_group)
@@ -148,10 +97,6 @@ class PricePolicyUpdater
     @params.permit(:charge_for, :note, :created_by_id)
   end
 
-  def permitted_product_params
-    @params[:product].permit(rate_starts_attributes: [:min_duration, :id])
-  end
-
   def permitted_params
     [
       :can_purchase,
@@ -166,8 +111,7 @@ class PricePolicyUpdater
         :subsidy,
         :rate,
         :price_policy_id,
-        :rate_start_id,
-        :rate_start_index,
+        :min_duration_hours,
         :_destroy
       ]
     ].tap do |attributes|

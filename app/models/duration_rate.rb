@@ -3,15 +3,14 @@
 class DurationRate < ApplicationRecord
 
   belongs_to :price_policy
-  belongs_to :rate_start, required: true
 
   validate :rate_or_subsidy
   validates :rate, numericality: { greater_than_or_equal_to: 0, allow_blank: true }
-  validate :rate_lesser_than_or_equal_to_base_rate
   validates :subsidy, numericality: { greater_than: 0, allow_blank: true }
+  validates :min_duration_hours, presence: true
+  validates :min_duration_hours, numericality: { greater_than: 0, allow_blank: true }
+  validate :rate_lesser_than_or_equal_to_base_rate
   validate :subsidy_lesser_than_or_equal_to_base_rate
-
-  attr_accessor :rate_start_index
 
   private
 
