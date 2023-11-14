@@ -26,7 +26,7 @@
         %td
           = "Rate Start (hr):"
           - if rate_start.present?
-            = rate_start.min_duration
+            = rate_start
     - price_policies_to_show = price_policies.select(&:can_purchase?)
     - price_policies_to_show.each do |price_policy|
       %tr
@@ -73,15 +73,12 @@
                 - price_per_minute = (price_policy.subsidized_hourly_usage_cost / 60)
                 = number_to_currency price_per_minute, precision: 4
                 \/ minute
-          - @rate_starts.each do |rate_start|
+          - price_policy.duration_rates.each do |duration_rate|
             %td.currency
-              - if rate_start.present?
-                - duration_rate = price_policy.duration_rates.find { |dr| dr.rate_start_id == rate_start.id }
-                - if duration_rate.present?
-                  - if duration_rate.rate.present?
-                    .rate= number_to_currency duration_rate.rate
-                  - if duration_rate.subsidy.present?
-                    .subsidy= "- #{number_to_currency duration_rate.subsidy}"
+              - if duration_rate.rate.present?
+                .rate= number_to_currency duration_rate.rate
+              - if duration_rate.subsidy.present?
+                .subsidy= "- #{number_to_currency duration_rate.subsidy}"
 
         - else
           %td.centered{ colspan: 5 }

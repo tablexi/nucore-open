@@ -159,28 +159,21 @@ class PricePoliciesController < ApplicationController
   end
 
   def build_rate_starts
-    (Instrument::MAX_RATE_STARTS - @product.rate_starts.length).times { @product.rate_starts.build }
+    min_durations = @price_policies.flat_map { |pp| pp.duration_rates.map(&:min_duration_hours) }.uniq
+    (Instrument::MAX_RATE_STARTS - min_durations.length).times { min_durations << nil }
+    @rate_starts = min_durations # sort by min_duration_hours
+  end
 
-    @rate_starts = @product.rate_starts.sort_by { |rs| rs.min_duration || 1_000 }
+  def set_rate_starts
+    policies = @current_price_policies || @price_policies
+    @rate_starts = policies.flat_map { |pp| pp.duration_rates.map(&:min_duration_hours) }.uniq
   end
 
   def build_duration_rates
     @duration_rates = {}
 
-    @price_policies.each_with_index do |price_policy, pp_index|
-      sorted_duration_rates = []
-      @rate_starts.each_with_index do |rate_start, rs_index|
-        duration_rate = price_policy.duration_rates.select { |dr| dr.rate_start_index == rs_index.to_s || dr.rate_start_id == rate_start.id }.first
-
-        if duration_rate.nil?
-          dr = price_policy.duration_rates.build rate_start_index: rs_index, rate_start_id: rate_start.id
-          sorted_duration_rates << dr
-        else
-          duration_rate.rate_start_index = rs_index
-          sorted_duration_rates << duration_rate
-        end
-      end
-      @duration_rates[pp_index] = sorted_duration_rates
+    @price_policies.each_with_index do |price_policy|
+      (Instrument::MAX_RATE_STARTS - price_policy.duration_rates.length).times { price_policy.duration_rates.build }
     end
   end
 
@@ -188,13 +181,6 @@ class PricePoliciesController < ApplicationController
     if @product.is_a?(Instrument) && @product.duration_pricing_mode?
       build_rate_starts
       build_duration_rates
-    end
-  end
-
-  def set_rate_starts
-    if @product.is_a?(Instrument) && @product.duration_pricing_mode?
-      @rate_starts = @product.rate_starts.to_a.sort_by { |rs| rs.min_duration }
-      (Instrument::MAX_RATE_STARTS - @product.rate_starts.length).times { @rate_starts << nil }
     end
   end
 
