@@ -35,10 +35,10 @@
       - if local_assigns[:cancellation]
         %td
       %td= 0
-      - @rate_starts.each_with_index do |min_duration, rate_start_index|
+      - @min_durations.each_with_index do |min_duration, column_index|
         %td
           = label :min_duration, "Rate Start (hr):", class: "normal-weight"
-          = number_field :min_duration, rate_start_index, min: 1, value: min_duration, class: "half-width js--minDuration", data: { index: rate_start_index }
+          = number_field :min_duration, column_index, min: 1, value: min_duration, class: "half-width js--minDuration", data: { index: column_index }
     - @price_policies.each_with_index do |price_policy, index|
       - price_group = price_policy.price_group
       = fields_for "price_policy_#{price_group.id}", price_policy do |pp|

@@ -29,7 +29,7 @@ class PricePoliciesController < ApplicationController
     @past_price_policies_by_date = @product.past_price_policies_grouped_by_start_date
     @next_price_policies_by_date = @product.upcoming_price_policies_grouped_by_start_date
 
-    set_rate_starts
+    set_min_durations
 
     render "price_policies/index"
   end
@@ -158,20 +158,19 @@ class PricePoliciesController < ApplicationController
     )
   end
 
-  def build_rate_starts
+  def build_min_durations
     return unless @product.is_a?(Instrument) && @product.duration_pricing_mode?
 
     min_durations = @price_policies.flat_map { |pp| pp.duration_rates.map(&:min_duration_hours) }.uniq
     (Instrument::MAX_RATE_STARTS - min_durations.length).times { min_durations << nil }
-    @rate_starts = min_durations.sort_by { |d| d || 1_000 }
+    @min_durations = min_durations.sort_by { |d| d || 1_000 }
   end
 
-  def set_rate_starts
+  def set_min_durations
     return unless @product.is_a?(Instrument) && @product.duration_pricing_mode?
 
-    policies = @current_price_policies || @price_policies
-    min_durations = policies.flat_map { |pp| pp.duration_rates.map(&:min_duration_hours) }.uniq
-    @rate_starts = min_durations.sort_by { |d| d || 1_000 }
+    min_durations = @current_price_policies.flat_map { |pp| pp.duration_rates.map(&:min_duration_hours) }.uniq
+    @min_durations = min_durations.sort_by { |d| d || 1_000 }
   end
 
   def build_duration_rates
@@ -182,7 +181,7 @@ class PricePoliciesController < ApplicationController
 
   def build_instrument_stepped_billing_fields
     if @product.is_a?(Instrument) && @product.duration_pricing_mode?
-      build_rate_starts
+      build_min_durations
       build_duration_rates
     end
   end

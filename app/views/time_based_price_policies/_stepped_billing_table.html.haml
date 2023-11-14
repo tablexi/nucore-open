@@ -22,11 +22,11 @@
       - if local_assigns[:cancellation]
         %td
       %td{ style: "text-align: center" }= 0
-      - @rate_starts.each do |rate_start|
+      - @min_durations.each do |min_duration|
         %td
           = "Rate Start (hr):"
-          - if rate_start.present?
-            = rate_start
+          - if min_duration.present?
+            = min_duration
     - price_policies_to_show = price_policies.select(&:can_purchase?)
     - price_policies_to_show.each do |price_policy|
       %tr
