@@ -61,7 +61,7 @@ $(document).ready(function() {
 
   $(".js--masterInternalRow input[type=text]").keyup(evt => updateAdjustmentFields($(evt.target))).trigger("keyup");
 
-  return $(".js--price-policy-note-select").on("change", function(event) {
+  $(".js--price-policy-note-select").on("change", function(event) {
     const selectedOption = event.target.options[event.target.selectedIndex];
     const noteTextField = $(".js--price-policy-note");
     if (selectedOption.value === "Other") {
@@ -70,5 +70,11 @@ $(document).ready(function() {
       noteTextField.attr("hidden", true);
       return noteTextField.val(selectedOption.value);
     }
+  });
+
+  $(".js--minDuration").on("change", function (event) {
+    const columnIndex = event.target.dataset.index;
+    const minDuration = event.target.value;
+    $(`input[name*='duration_rates_attributes][${columnIndex}][min_duration_hours]']`).val(minDuration);
   });
 });
