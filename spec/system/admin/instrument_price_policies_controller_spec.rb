@@ -219,6 +219,19 @@ RSpec.describe InstrumentPricePoliciesController do
       expect(page).to have_content("$90.00")
 
       expect(page).to have_content("This is my note")
+
+      log_event = LogEvent.find_by(loggable: instrument, event_type: :duration_rates_change)
+      expect(log_event).to be_present
+      expect(log_event.metadata).to eq(
+        <<~EXPECTED
+          #{base_price_group.name} - Created rate for 2+ hrs: $50.0/hr
+          #{base_price_group.name} - Created rate for 3+ hrs: $40.0/hr
+          #{base_price_group.name} - Created rate for 4+ hrs: $30.0/hr
+          #{external_price_group.name} - Created rate for 2+ hrs: $110.0/hr
+          #{external_price_group.name} - Created rate for 3+ hrs: $100.0/hr
+          #{external_price_group.name} - Created rate for 4+ hrs: $90.0/hr
+        EXPECTED
+      )
     end
 
     context "validations" do
@@ -339,6 +352,15 @@ RSpec.describe InstrumentPricePoliciesController do
 
       # Cancer Center subsidy
       expect(page).to have_content("$25.00")
+
+      log_event = LogEvent.find_by(loggable: instrument, event_type: :duration_rates_change)
+      expect(log_event).to be_present
+      expect(log_event.metadata).to eq(
+        <<~EXPECTED
+          #{instrument.name} - Updated rate start from 4+ hrs to 5+ hrs
+          #{base_price_group.name} - Updated rate for 5+ hrs: from $30.0/hr to $20.0/hr
+        EXPECTED
+      )
     end
   end
 end
