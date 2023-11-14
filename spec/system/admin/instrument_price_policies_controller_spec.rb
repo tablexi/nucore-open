@@ -166,9 +166,9 @@ RSpec.describe InstrumentPricePoliciesController do
       click_link "Pricing"
       click_link "Add Pricing Rules"
 
-      fill_in "product[rate_starts_attributes][0][min_duration]", with: "2"
-      fill_in "product[rate_starts_attributes][1][min_duration]", with: "3"
-      fill_in "product[rate_starts_attributes][2][min_duration]", with: "4"
+      fill_in "min_duration_0", with: "2"
+      fill_in "min_duration_1", with: "3"
+      fill_in "min_duration_2", with: "4"
 
       fill_in "price_policy_#{base_price_group.id}[usage_rate]", with: "60"
       fill_in "price_policy_#{base_price_group.id}[minimum_cost]", with: "120"
@@ -225,7 +225,7 @@ RSpec.describe InstrumentPricePoliciesController do
       it "fails to save when duration rate is higher than base rate", :js, feature_setting: { facility_directors_can_manage_price_groups: true } do
         visit new_facility_instrument_price_policy_path(facility, instrument)
 
-        fill_in "product[rate_starts_attributes][0][min_duration]", with: "2"
+        fill_in "min_duration_0", with: "2"
 
         fill_in "price_policy_#{base_price_group.id}[usage_rate]", with: "60"
         fill_in "price_policy_#{base_price_group.id}[duration_rates_attributes][0][rate]", with: "70"
@@ -244,7 +244,7 @@ RSpec.describe InstrumentPricePoliciesController do
       it "fails to save when duration subsidy is higher than base rate", :js, feature_setting: { facility_directors_can_manage_price_groups: true } do
         visit new_facility_instrument_price_policy_path(facility, instrument)
 
-        fill_in "product[rate_starts_attributes][0][min_duration]", with: "2"
+        fill_in "min_duration_0", with: "2"
 
         fill_in "price_policy_#{base_price_group.id}[usage_rate]", with: "60"
 
@@ -281,9 +281,9 @@ RSpec.describe InstrumentPricePoliciesController do
     it "can edit price policies", :js, feature_setting: { facility_directors_can_manage_price_groups: true } do
       visit new_facility_instrument_price_policy_path(facility, instrument)
 
-      fill_in "product[rate_starts_attributes][0][min_duration]", with: "2"
-      fill_in "product[rate_starts_attributes][1][min_duration]", with: "3"
-      fill_in "product[rate_starts_attributes][2][min_duration]", with: "4"
+      fill_in "min_duration_0", with: "2"
+      fill_in "min_duration_1", with: "3"
+      fill_in "min_duration_2", with: "4"
 
       fill_in "price_policy_#{base_price_group.id}[usage_rate]", with: "60"
       fill_in "price_policy_#{base_price_group.id}[minimum_cost]", with: "120"
@@ -313,15 +313,15 @@ RSpec.describe InstrumentPricePoliciesController do
 
       click_link "Edit"
 
-      expect(page).to have_field("product[rate_starts_attributes][0][min_duration]", with: "2")
-      expect(page).to have_field("product[rate_starts_attributes][1][min_duration]", with: "3")
-      expect(page).to have_field("product[rate_starts_attributes][2][min_duration]", with: "4")
+      expect(page).to have_field("min_duration_0", with: "2")
+      expect(page).to have_field("min_duration_1", with: "3")
+      expect(page).to have_field("min_duration_2", with: "4")
 
       expect(page).to have_field("price_policy_#{base_price_group.id}[duration_rates_attributes][0][rate]", with: "50.00")
       expect(page).to have_field("price_policy_#{base_price_group.id}[duration_rates_attributes][1][rate]", with: "40.00")
       expect(page).to have_field("price_policy_#{base_price_group.id}[duration_rates_attributes][2][rate]", with: "30.00")
 
-      fill_in "product[rate_starts_attributes][2][min_duration]", with: "5"
+      fill_in "min_duration_2", with: "5"
       fill_in "price_policy_#{base_price_group.id}[duration_rates_attributes][2][rate]", with: "20"
 
       click_button "Save Rules"
