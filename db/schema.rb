@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_08_210613) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_14_205802) do
   create_table "account_facility_joins", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "facility_id", null: false
     t.integer "account_id", null: false
@@ -142,6 +142,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_08_210613) do
     t.decimal "subsidy", precision: 16, scale: 8
     t.bigint "rate_start_id"
     t.bigint "price_policy_id"
+    t.integer "min_duration_hours", null: false
     t.index ["price_policy_id"], name: "index_duration_rates_on_price_policy_id"
     t.index ["rate_start_id"], name: "index_duration_rates_on_rate_start_id"
   end
