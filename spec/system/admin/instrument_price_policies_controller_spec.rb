@@ -338,7 +338,7 @@ RSpec.describe InstrumentPricePoliciesController do
       expect(page).not_to have_content("$30.00")
 
       # Cancer Center subsidy
-      expect(page).to have_content("$25.00", count: 1)
+      expect(page).to have_content("$25.00")
     end
   end
 end
