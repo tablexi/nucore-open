@@ -159,19 +159,22 @@ class PricePoliciesController < ApplicationController
   end
 
   def build_rate_starts
+    return unless @product.is_a?(Instrument) && @product.duration_pricing_mode?
+
     min_durations = @price_policies.flat_map { |pp| pp.duration_rates.map(&:min_duration_hours) }.uniq
     (Instrument::MAX_RATE_STARTS - min_durations.length).times { min_durations << nil }
-    @rate_starts = min_durations # sort by min_duration_hours
+    @rate_starts = min_durations.sort_by { |d| d || 1_000 }
   end
 
   def set_rate_starts
+    return unless @product.is_a?(Instrument) && @product.duration_pricing_mode?
+
     policies = @current_price_policies || @price_policies
-    @rate_starts = policies.flat_map { |pp| pp.duration_rates.map(&:min_duration_hours) }.uniq
+    min_durations = policies.flat_map { |pp| pp.duration_rates.map(&:min_duration_hours) }.uniq
+    @rate_starts = min_durations.sort_by { |d| d || 1_000 }
   end
 
   def build_duration_rates
-    @duration_rates = {}
-
     @price_policies.each_with_index do |price_policy|
       (Instrument::MAX_RATE_STARTS - price_policy.duration_rates.length).times { price_policy.duration_rates.build }
     end
