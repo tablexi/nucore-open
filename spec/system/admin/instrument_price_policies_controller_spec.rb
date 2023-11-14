@@ -293,7 +293,7 @@ RSpec.describe InstrumentPricePoliciesController do
       fill_in "price_policy_#{base_price_group.id}[duration_rates_attributes][1][rate]", with: "40"
       fill_in "price_policy_#{base_price_group.id}[duration_rates_attributes][2][rate]", with: "30"
 
-      fill_in "price_policy_#{cancer_center.id}[usage_subsidy]", with: "30"
+      fill_in "price_policy_#{cancer_center.id}[usage_subsidy]", with: "25"
 
       fill_in "price_policy_#{external_price_group.id}[usage_rate]", with: "120.11"
       fill_in "price_policy_#{external_price_group.id}[minimum_cost]", with: "122"
@@ -311,7 +311,7 @@ RSpec.describe InstrumentPricePoliciesController do
 
       expect(page).to have_content("Price Rules were successfully created.")
 
-      visit edit_facility_instrument_price_policy_path(facility, instrument, instrument.price_policies.last)
+      click_link "Edit"
 
       expect(page).to have_field("product[rate_starts_attributes][0][min_duration]", with: "2")
       expect(page).to have_field("product[rate_starts_attributes][1][min_duration]", with: "3")
@@ -335,9 +335,10 @@ RSpec.describe InstrumentPricePoliciesController do
       expect(page).to have_content("$50.00")
       expect(page).to have_content("$40.00")
       expect(page).to have_content("$20.00")
+      expect(page).not_to have_content("$30.00")
 
-      # Only Cancer Center subsidy
-      expect(page).to have_content("$30.00", count: 1)
+      # Cancer Center subsidy
+      expect(page).to have_content("$25.00", count: 1)
     end
   end
 end
