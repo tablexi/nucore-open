@@ -54,15 +54,10 @@ class PricePolicyUpdater
       duration_rate_params = @params.dig("price_policy_#{price_group_id}", "duration_rates_attributes")
 
       if duration_rate_params.present?
-        # TO DO: can we remove this and use reject_if instead?
-        duration_rate_params.values.each_with_index do |dr, index|
-          if dr["rate"].present? || dr["subsidy"].present?
-            duration_rate_params["#{index}"].merge! ({ price_policy_id: price_policy.id })
-          elsif dr[:id].present? && DurationRate.where(id: dr[:id]).present?
-            duration_rate_params[index.to_s].merge! ({ _destroy: '1' })
-          else
-            duration_rate_params.delete(index.to_s)
-          end
+        duration_rate_params.each do |key, dr|
+          values_are_blank = dr["rate"].blank? && dr["subsidy"].blank?
+          rate_exists = DurationRate.where(id: dr[:id]).present?
+          duration_rate_params[key].merge! ({ _destroy: '1' }) if values_are_blank && rate_exists
         end
       end
     end

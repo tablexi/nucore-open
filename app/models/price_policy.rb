@@ -9,7 +9,12 @@ class PricePolicy < ApplicationRecord
   belongs_to :created_by, class_name: "User"
   has_many :order_details
   has_many :duration_rates, dependent: :destroy
-  accepts_nested_attributes_for :duration_rates, allow_destroy: true
+
+  accepts_nested_attributes_for :duration_rates, allow_destroy: true, reject_if: :reject_duration_rates
+
+  def reject_duration_rates(attributes)
+    attributes["rate"].blank? && attributes["subsidy"].blank?
+  end
 
   validates :start_date, :expire_date, presence: true
   validates :price_group_id, :type, presence: true
