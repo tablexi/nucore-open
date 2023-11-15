@@ -357,8 +357,7 @@ RSpec.describe InstrumentPricePoliciesController do
       expect(log_event).to be_present
       expect(log_event.metadata).to eq(
         <<~EXPECTED
-          #{instrument.name} - Updated rate start from 4+ hrs to 5+ hrs
-          #{base_price_group.name} - Updated rate for 5+ hrs: from $30.0/hr to $20.0/hr
+          #{base_price_group.name} - Updated rate for 4+ hrs (now 5+ hrs): from $30.0/hr to $20.0/hr
         EXPECTED
       )
     end
