@@ -158,9 +158,8 @@ class PricePoliciesController < ApplicationController
     )
   end
 
+  # TO DO: consider moving this to InstrumentPricePolicyController
   def build_min_durations
-    return unless @product.is_a?(Instrument) && @product.duration_pricing_mode?
-
     min_durations = @price_policies.flat_map { |pp| pp.duration_rates.map(&:min_duration_hours) }.uniq
     (Instrument::MAX_RATE_STARTS - min_durations.length).times { min_durations << nil }
     @min_durations = min_durations.sort_by { |d| d || 1_000 }
