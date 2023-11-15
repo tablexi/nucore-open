@@ -73,8 +73,16 @@ $(document).ready(function() {
   });
 
   $(".js--minDuration").on("change", function (event) {
-    const columnIndex = event.target.dataset.index;
-    const minDuration = event.target.value;
-    $(`input[name*='duration_rates_attributes][${columnIndex}][min_duration_hours]']`).val(minDuration);
+    setMinDurationHours(event.target)
   });
+
+  $(".js--minDuration").each(function (index, element) {
+    setMinDurationHours(element)
+  });
+
+  function setMinDurationHours(params) {
+    const columnIndex = params.dataset.index;
+    const minDuration = params.value;
+    $(`input[name*='duration_rates_attributes][${columnIndex}][min_duration_hours]']`).val(minDuration);
+  }
 });
