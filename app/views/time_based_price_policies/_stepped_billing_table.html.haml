@@ -79,6 +79,8 @@
                 .rate= number_to_currency duration_rate.rate
               - if duration_rate.subsidy.present?
                 .subsidy= "- #{number_to_currency duration_rate.subsidy}"
+          - (PricePolicy::MAX_RATE_STARTS - price_policy.duration_rates.length).times do
+            %td.currency
 
         - else
           %td.centered{ colspan: 5 }
