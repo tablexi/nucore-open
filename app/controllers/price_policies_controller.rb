@@ -58,10 +58,6 @@ class PricePoliciesController < ApplicationController
 
       flash.now[:error] = text("errors.save")
 
-      if @product.errors.any? { |e| e.type == :missing_rate_starts }
-        flash.now[:error] << "<br>#{@product.errors.full_messages.to_sentence}".html_safe
-      end
-
       render :new
     end
   end
@@ -74,10 +70,6 @@ class PricePoliciesController < ApplicationController
       build_instrument_stepped_billing_fields
 
       flash.now[:error] = text("errors.save")
-
-      if @product.errors.any? { |e| e.type == :missing_rate_starts }
-        flash.now[:error] << "<br>#{@product.errors.full_messages.to_sentence}".html_safe
-      end
 
       render :edit
     end
