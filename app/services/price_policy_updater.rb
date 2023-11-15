@@ -90,6 +90,10 @@ class PricePolicyUpdater
 
             @data_to_log << "#{pp.price_group.name} - Deleted rate for #{dr.min_duration_hours}+ hrs: $#{value}/hr"
           elsif dr.changed?
+            if dr.changes[:min_duration_hours].present?
+              @data_to_log << "#{pp.product.name} - Updated rate start from #{dr.changes[:min_duration_hours].first}+ hrs to #{dr.changes[:min_duration_hours].last}+ hrs"
+            end
+
             old_value = dr.changes[:rate]&.first || dr.changes[:subsidy]&.first
             new_value = dr.changes[:rate]&.last || dr.changes[:subsidy]&.last
 
