@@ -2,8 +2,10 @@
 
 class PricePolicyUpdater
 
-  def self.update_all(product, price_policies, start_date, expire_date, params)
-    new(product, price_policies, start_date, expire_date, params).update_all
+  attr_reader :data_to_log
+
+  def self.update_all(product, price_policies, start_date, expire_date, params, current_user)
+    new(product, price_policies, start_date, expire_date, params, current_user).update_all
   end
 
   def self.destroy_all_for_product!(product, start_date)
@@ -12,12 +14,14 @@ class PricePolicyUpdater
     new(product, price_policies, start_date).destroy_all!
   end
 
-  def initialize(product, price_policies, start_date, expire_date = nil, params = nil)
+  def initialize(product, price_policies, start_date, expire_date = nil, params = nil, current_user = nil)
     @product = product
     @price_policies = price_policies
     @start_date = start_date
     @expire_date = expire_date
     @params = params
+    @current_user = current_user
+    @data_to_log = []
   end
 
   def destroy_all!
@@ -28,7 +32,16 @@ class PricePolicyUpdater
 
   def update_all
     if @product.is_a?(Instrument) && @product.duration_pricing_mode?
-      assign_attributes_for_stepped_billing && save
+      assign_attributes_for_stepped_billing && store_changes_data_to_log && save
+
+      if data_to_log.any?
+        LogEvent.log(
+          @product,
+          :duration_rates_change,
+          @current_user,
+          metadata: data_to_log.join("\n")
+        )
+      end
     else
       assign_attributes && save
     end
@@ -66,6 +79,25 @@ class PricePolicyUpdater
       price_policy.assign_attributes(price_group_attributes(price_policy.price_group))
     end
   end
+
+    def store_changes_data_to_log
+      @price_policies.each do |pp|
+        pp.duration_rates.each do |dr|
+          if dr.new_record?
+            @data_to_log << "#{pp.price_group.name} - Created rate for #{dr.min_duration_hours}+ hrs: $#{dr.rate}/hr"
+          elsif dr.marked_for_destruction?
+            value = dr.changes[:rate]&.first || dr.changes[:subsidy]&.first
+
+            @data_to_log << "#{pp.price_group.name} - Deleted rate for #{dr.min_duration_hours}+ hrs: $#{value}/hr"
+          elsif dr.changed?
+            old_value = dr.changes[:rate]&.first || dr.changes[:subsidy]&.first
+            new_value = dr.changes[:rate]&.last || dr.changes[:subsidy]&.last
+
+            @data_to_log << "#{pp.price_group.name} - Updated rate for #{dr.min_duration_hours}+ hrs: from $#{old_value}/hr to $#{new_value}/hr"
+          end
+        end
+      end
+    end
 
   def price_group_attributes(price_group)
     permitted_price_group_attributes(price_group).merge(

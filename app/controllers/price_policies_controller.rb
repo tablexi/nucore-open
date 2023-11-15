@@ -147,6 +147,7 @@ class PricePoliciesController < ApplicationController
       parse_usa_date(params[:start_date])&.beginning_of_day,
       parse_usa_date(params[:expire_date])&.end_of_day,
       params.merge(created_by_id: current_user.id),
+      current_user
     )
   end
 
