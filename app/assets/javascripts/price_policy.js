@@ -94,8 +94,8 @@ $(document).ready(function() {
       var minDurationValue = $(ele).val();
       if (found.includes(minDurationValue)) {
         duplicate.push(minDurationValue)
-      } else {
-        found.push(minDurationValue)
+      } else if (minDurationValue) {
+        found.push(minDurationValue);
       }
     });
 
