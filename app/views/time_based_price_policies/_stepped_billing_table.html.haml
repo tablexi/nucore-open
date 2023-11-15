@@ -23,7 +23,7 @@
         %td
       %td{ style: "text-align: center" }= 0
       - @min_durations.each do |min_duration|
-        %td
+        %td{ style: "padding: 7px" }
           = "Rate Start (hr):"
           - if min_duration.present?
             = min_duration
