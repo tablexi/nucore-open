@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_14_205802) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_15_142252) do
   create_table "account_facility_joins", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "facility_id", null: false
     t.integer "account_id", null: false
@@ -675,14 +675,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_14_205802) do
     t.index ["facility_id"], name: "index_projects_on_facility_id"
   end
 
-  create_table "rate_starts", charset: "utf8mb3", force: :cascade do |t|
-    t.integer "min_duration"
-    t.integer "product_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["product_id"], name: "index_rate_starts_on_product_id"
-  end
-
   create_table "relays", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "instrument_id"
     t.string "ip"
@@ -1057,7 +1049,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_14_205802) do
   add_foreign_key "products", "facility_accounts", name: "fk_facility_accounts"
   add_foreign_key "products", "schedules", name: "fk_instruments_schedule"
   add_foreign_key "projects", "facilities"
-  add_foreign_key "rate_starts", "products"
   add_foreign_key "reservations", "order_details"
   add_foreign_key "reservations", "products", name: "reservations_instrument_id_fk"
   add_foreign_key "reservations", "users", column: "created_by_id"
