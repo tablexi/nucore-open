@@ -98,7 +98,7 @@ class PricePolicyUpdater
             new_min_duration_hours = dr.changes[:min_duration_hours].last
 
             if old_value.present? || new_value.present?
-              @data_to_log << "#{pp.price_group.name} - Updated rate for #{min_duration_hours}+ hrs (now #{new_min_duration_hours}+ hrs): from $#{old_value}/hr to $#{new_value}/hr"
+              @data_to_log << "#{pp.price_group.name} - Updated rate for #{old_min_duration_hours}+ hrs (now #{new_min_duration_hours}+ hrs): from $#{old_value}/hr to $#{new_value}/hr"
             end
           elsif old_value.present? || new_value.present?
             @data_to_log << "#{pp.price_group.name} - Updated rate for #{dr.min_duration_hours}+ hrs: from $#{old_value}/hr to $#{new_value}/hr"
