@@ -2,7 +2,7 @@
 
 class DurationRate < ApplicationRecord
 
-  belongs_to :price_policy
+  belongs_to :price_policy, required: true
 
   validate :rate_or_subsidy
   validates :rate, numericality: { greater_than_or_equal_to: 0, allow_blank: true }
@@ -11,6 +11,8 @@ class DurationRate < ApplicationRecord
   validates :min_duration_hours, numericality: { greater_than: 0, allow_blank: true }
   validate :rate_lesser_than_or_equal_to_base_rate
   validate :subsidy_lesser_than_or_equal_to_base_rate
+
+  scope :sorted, -> { order(min_duration_hours: :asc) }
 
   private
 

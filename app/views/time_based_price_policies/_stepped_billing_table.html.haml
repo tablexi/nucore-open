@@ -73,7 +73,7 @@
                 - price_per_minute = (price_policy.subsidized_hourly_usage_cost / 60)
                 = number_to_currency price_per_minute, precision: 4
                 \/ minute
-          - price_policy.duration_rates.each do |duration_rate|
+          - price_policy.duration_rates.sorted.each do |duration_rate|
             %td.currency
               - if duration_rate.rate.present?
                 .rate= number_to_currency duration_rate.rate
