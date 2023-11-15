@@ -74,6 +74,7 @@ $(document).ready(function() {
 
   $(".js--minDuration").on("change", function (event) {
     setMinDurationHours(event.target)
+    preventDuplicateMinDurations()
   });
 
   $(".js--minDuration").each(function (index, element) {
@@ -84,5 +85,43 @@ $(document).ready(function() {
     const columnIndex = params.dataset.index;
     const minDuration = params.value;
     $(`input[name*='duration_rates_attributes][${columnIndex}][min_duration_hours]']`).val(minDuration);
+  }
+
+  function preventDuplicateMinDurations(params) {
+    var found = [];
+    var duplicate = [];
+    $(".js--minDuration").each(function (idx, ele) {
+      var minDurationValue = $(ele).val();
+      if (found.includes(minDurationValue)) {
+        duplicate.push(minDurationValue)
+      } else {
+        found.push(minDurationValue)
+      }
+    });
+
+    if (duplicate.length > 0) {
+      var dupes = $(".js--minDuration").filter(function (i, element) {
+        return $(element).val() == duplicate[0] // since there are only 3 inputs, there can only be 1 duplicate value
+      })
+      // reset all borders
+      $(".js--minDuration").each(function (i, element) {
+        $(element).css("border", "1px solid #ccc");
+      })
+      // set border to red for duplicate values
+      dupes.each(function (i, element) {
+        $(element).css("border", "2px solid red");
+      })
+      // disable submit button
+      $("input[type=submit]").attr("disabled", "disabled");
+      $("form").bind("submit", function (e) { e.preventDefault(); });
+    } else {
+      // reset all borders
+      $(".js--minDuration").each(function (i, element) {
+        $(element).css("border", "1px solid #ccc");
+      })
+      // enable submit button
+      $("input[type=submit]").removeAttr("disabled", "disabled");
+      $("form").unbind("submit");
+    }
   }
 });
