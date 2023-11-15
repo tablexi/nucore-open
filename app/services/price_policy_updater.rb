@@ -88,16 +88,21 @@ class PricePolicyUpdater
         elsif dr.marked_for_destruction?
           value = dr.changes[:rate]&.first || dr.changes[:subsidy]&.first
 
-          @data_to_log << "#{pp.price_group.name} - Deleted rate for #{dr.min_duration_hours}+ hrs: $#{value}/hr"
+          @data_to_log << "#{pp.price_group.name} - Deleted rate for #{dr.changes[:min_duration_hours].first}+ hrs: $#{value}/hr"
         elsif dr.changed?
+          min_duration_hours = dr.min_duration_hours
+
           if dr.changes[:min_duration_hours].present?
             @data_to_log << "#{pp.product.name} - Updated rate start from #{dr.changes[:min_duration_hours].first}+ hrs to #{dr.changes[:min_duration_hours].last}+ hrs"
+            min_duration_hours = dr.changes[:min_duration_hours].last
           end
 
           old_value = dr.changes[:rate]&.first || dr.changes[:subsidy]&.first
           new_value = dr.changes[:rate]&.last || dr.changes[:subsidy]&.last
 
-          @data_to_log << "#{pp.price_group.name} - Updated rate for #{dr.min_duration_hours}+ hrs: from $#{old_value}/hr to $#{new_value}/hr"
+          if old_value.present? || new_value.present?
+            @data_to_log << "#{pp.price_group.name} - Updated rate for #{min_duration_hours}+ hrs: from $#{old_value}/hr to $#{new_value}/hr"
+          end
         end
       end
     end
