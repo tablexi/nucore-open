@@ -9,6 +9,7 @@ class DurationRate < ApplicationRecord
   validates :subsidy, numericality: { greater_than: 0, allow_blank: true }
   validates :min_duration_hours, presence: true
   validates :min_duration_hours, numericality: { greater_than: 0, allow_blank: true }
+  validates :min_duration_hours, uniqueness: { scope: :price_policy_id }
   validate :rate_lesser_than_or_equal_to_base_rate
   validate :subsidy_lesser_than_or_equal_to_base_rate
 
