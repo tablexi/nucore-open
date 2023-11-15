@@ -80,28 +80,28 @@ class PricePolicyUpdater
     end
   end
 
-    def store_changes_data_to_log
-      @price_policies.each do |pp|
-        pp.duration_rates.each do |dr|
-          if dr.new_record?
-            @data_to_log << "#{pp.price_group.name} - Created rate for #{dr.min_duration_hours}+ hrs: $#{dr.rate}/hr"
-          elsif dr.marked_for_destruction?
-            value = dr.changes[:rate]&.first || dr.changes[:subsidy]&.first
+  def store_changes_data_to_log
+    @price_policies.each do |pp|
+      pp.duration_rates.each do |dr|
+        if dr.new_record?
+          @data_to_log << "#{pp.price_group.name} - Created rate for #{dr.min_duration_hours}+ hrs: $#{dr.rate}/hr"
+        elsif dr.marked_for_destruction?
+          value = dr.changes[:rate]&.first || dr.changes[:subsidy]&.first
 
-            @data_to_log << "#{pp.price_group.name} - Deleted rate for #{dr.min_duration_hours}+ hrs: $#{value}/hr"
-          elsif dr.changed?
-            if dr.changes[:min_duration_hours].present?
-              @data_to_log << "#{pp.product.name} - Updated rate start from #{dr.changes[:min_duration_hours].first}+ hrs to #{dr.changes[:min_duration_hours].last}+ hrs"
-            end
-
-            old_value = dr.changes[:rate]&.first || dr.changes[:subsidy]&.first
-            new_value = dr.changes[:rate]&.last || dr.changes[:subsidy]&.last
-
-            @data_to_log << "#{pp.price_group.name} - Updated rate for #{dr.min_duration_hours}+ hrs: from $#{old_value}/hr to $#{new_value}/hr"
+          @data_to_log << "#{pp.price_group.name} - Deleted rate for #{dr.min_duration_hours}+ hrs: $#{value}/hr"
+        elsif dr.changed?
+          if dr.changes[:min_duration_hours].present?
+            @data_to_log << "#{pp.product.name} - Updated rate start from #{dr.changes[:min_duration_hours].first}+ hrs to #{dr.changes[:min_duration_hours].last}+ hrs"
           end
+
+          old_value = dr.changes[:rate]&.first || dr.changes[:subsidy]&.first
+          new_value = dr.changes[:rate]&.last || dr.changes[:subsidy]&.last
+
+          @data_to_log << "#{pp.price_group.name} - Updated rate for #{dr.min_duration_hours}+ hrs: from $#{old_value}/hr to $#{new_value}/hr"
         end
       end
     end
+  end
 
   def price_group_attributes(price_group)
     permitted_price_group_attributes(price_group).merge(
