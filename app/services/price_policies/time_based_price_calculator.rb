@@ -56,8 +56,8 @@ module PricePolicies
         time_to_charge = [time_left, interval_length].min
 
         acc[:time_left] -= time_to_charge
-        acc[:cost] += interval_data[:step_rate] ? interval_data[:step_rate] * time_to_charge : 0
-        acc[:subsidy] += interval_data[:step_subsidy] ? interval_data[:step_subsidy] * time_to_charge : 0
+        acc[:cost] += (interval_data[:step_rate] || 0) * time_to_charge
+        acc[:subsidy] += (interval_data[:step_subsidy] || 0) * time_to_charge
 
         acc
       end
