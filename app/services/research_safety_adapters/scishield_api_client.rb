@@ -35,12 +35,15 @@ module ResearchSafetyAdapters
     end
 
     def certifications_for(email)
+      api_request(email).body
+    end
+
+    def api_request(email)
       uri = URI(api_endpoint(email))
       req = Net::HTTP::Get.new(uri)
       req["accept"] = "application/json"
       req["authorization"] = "UsersJwt #{token}"
-      response = Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(req) }
-      response.body
+      Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(req) }
     end
 
     def api_endpoint(email)
