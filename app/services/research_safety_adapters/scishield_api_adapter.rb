@@ -17,6 +17,10 @@ module ResearchSafetyAdapters
     end
 
     def certified_course_names
+      courses = ScishieldTraining.where(user_id: @user.id)
+
+      return courses.map(&:course_name) unless courses.empty?
+
       certification_data["data"].map do |training_record|
         course_id = training_record["relationships"]["course_id"]["data"]["id"]
         course = certification_data["included"].select { |course| course["id"] == course_id }.first
