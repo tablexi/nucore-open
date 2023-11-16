@@ -275,20 +275,40 @@ RSpec.describe PricePolicies::TimeBasedPriceCalculator do
         context "multiple of them" do
           context "and not rounded to hour time range" do
             context "which is above highest duration rate minimum duration" do
-              let(:options) { { usage_rate: 120 } }
-              let(:start_at) { Time.zone.local(2017, 4, 27, 12, 0) }
-              let(:end_at) { start_at + 5.hour + 15.minute }
+              context "and has subsidy set" do
+                let(:options) { { usage_rate: 120, usage_subsidy: 30 } }
+                let(:start_at) { Time.zone.local(2017, 4, 27, 12, 0) }
+                let(:end_at) { start_at + 5.hour + 15.minute }
 
-              it "uses both usage rate and duration rates" do
-                create(:duration_rate, price_policy: price_policy, min_duration_hours: 1, rate: 90)
-                create(:duration_rate, price_policy: price_policy, min_duration_hours: 3)
-                create(:duration_rate, price_policy: price_policy, min_duration_hours: 5, rate: 30)
+                it "uses usage rate, usage subsidy and duration rates" do
+                  create(:duration_rate, price_policy: price_policy, min_duration_hours: 1, subsidy: 45)
+                  create(:duration_rate, price_policy: price_policy, min_duration_hours: 3, rate: nil, subsidy: 60)
+                  create(:duration_rate, price_policy: price_policy, min_duration_hours: 5, subsidy: 90)
 
-                # 1 hours       @ $120 = $120 Usage rate
-                # 2 hours       @ $90  = $180 Duration rate - Minimum duration: 1 hour
-                # 2 hours       @ $60  = $120 Duration rate - Minimum duration: 3 hours
-                # 0.25 hours    @ $30  = $7.5 Duration rate - Minimum duration: 5 hours
-                is_expected.to eq(cost: 427.5, subsidy: 0)
+                  # 1 hours       @ $120  - $30   = $90   Usage rate - Usage subsidy
+                  # 2 hours       @ $120  - $45   = $150  Duration rate - Minimum duration: 1 hour
+                  # 2 hours       @ $120  - $60   = $120  Duration rate - Minimum duration: 3 hours
+                  # 0.25 hours    @ $120  - $90   = $7.5  Duration rate - Minimum duration: 5 hours
+                  is_expected.to eq(cost: 630, subsidy: 367.5)
+                end
+              end
+
+              context "and has rate set" do
+                let(:options) { { usage_rate: 120 } }
+                let(:start_at) { Time.zone.local(2017, 4, 27, 12, 0) }
+                let(:end_at) { start_at + 5.hour + 15.minute }
+
+                it "uses both usage rate and duration rates" do
+                  create(:duration_rate, price_policy: price_policy, min_duration_hours: 1, rate: 90)
+                  create(:duration_rate, price_policy: price_policy, min_duration_hours: 3)
+                  create(:duration_rate, price_policy: price_policy, min_duration_hours: 5, rate: 30)
+
+                  # 1 hours       @ $120 = $120 Usage rate
+                  # 2 hours       @ $90  = $180 Duration rate - Minimum duration: 1 hour
+                  # 2 hours       @ $60  = $120 Duration rate - Minimum duration: 3 hours
+                  # 0.25 hours    @ $30  = $7.5 Duration rate - Minimum duration: 5 hours
+                  is_expected.to eq(cost: 427.5, subsidy: 0)
+                end
               end
             end
           end
