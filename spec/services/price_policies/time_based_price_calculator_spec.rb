@@ -281,19 +281,19 @@ RSpec.describe PricePolicies::TimeBasedPriceCalculator do
                 let(:end_at) { start_at + 5.hour + 15.minute }
 
                 it "uses usage rate, usage subsidy and duration rates" do
-                  create(:duration_rate, price_policy: price_policy, min_duration_hours: 1, rate: nil, subsidy: 45)
-                  create(:duration_rate, price_policy: price_policy, min_duration_hours: 3, rate: nil, subsidy: 60)
-                  create(:duration_rate, price_policy: price_policy, min_duration_hours: 5, rate: nil, subsidy: 90)
+                  create(:duration_rate, price_policy: price_policy, min_duration_hours: 1, rate: nil, subsidy: 10)
+                  create(:duration_rate, price_policy: price_policy, min_duration_hours: 3, rate: nil, subsidy: 15)
+                  create(:duration_rate, price_policy: price_policy, min_duration_hours: 5, rate: nil, subsidy: 30)
 
                   # Cost
                   # 5.25 hours    @ $120   = $630   Usage rate
 
                   # Subsidy
-                  # 1 hours       @ $30   = $30     Usage subsidy
-                  # 2 hours       @ $45   = $90     Duration rate - Minimum duration: 1 hour
-                  # 2 hours       @ $60   = $120    Duration rate - Minimum duration: 3 hours
-                  # 0.25 hours    @ $90   = $22.5   Duration rate - Minimum duration: 5 hours
-                  is_expected.to eq(cost: 630, subsidy: 262.5)
+                  # 1 hours       @ $30                     = $30       Usage subsidy
+                  # 2 hours       @ $30 + $10               = $80       Duration rate - Minimum duration: 1 hour
+                  # 2 hours       @ $30 + $10 + $15         = $110      Duration rate - Minimum duration: 3 hours
+                  # 0.25 hours    @ $30 + $10 + $15 + $30   = $21.25    Duration rate - Minimum duration: 5 hours
+                  is_expected.to eq(cost: 630, subsidy: 241.25)
                 end
               end
 

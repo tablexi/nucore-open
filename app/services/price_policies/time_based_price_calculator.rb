@@ -67,6 +67,8 @@ module PricePolicies
 
     def build_intervals
       sorted_duration_rates = price_policy.duration_rates.sorted
+      sorted_subsidies = sorted_duration_rates.map { |dr| dr.subsidy || 0 }
+
       default_rate = usage_rate * 60
       default_subsidy = usage_subsidy * 60
 
@@ -85,7 +87,8 @@ module PricePolicies
           hourly_subsidy = nil
         else
           hourly_rate = default_rate
-          hourly_subsidy = duration_rate.subsidy
+          # The subsidy for the current interval is the sum of the subsidies of all the previous intervals
+          hourly_subsidy = sorted_subsidies.slice(0, index+1).sum(default_subsidy)
         end
 
         interval_start = duration_rate.min_duration_hours
