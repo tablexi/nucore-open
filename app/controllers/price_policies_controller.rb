@@ -29,7 +29,7 @@ class PricePoliciesController < ApplicationController
     @past_price_policies_by_date = @product.past_price_policies_grouped_by_start_date
     @next_price_policies_by_date = @product.upcoming_price_policies_grouped_by_start_date
 
-    set_min_durations
+    init_min_durations_for_index
 
     render "price_policies/index"
   end
@@ -150,14 +150,26 @@ class PricePoliciesController < ApplicationController
     )
   end
 
-  # TO DO: consider moving this to InstrumentPricePolicyController
+  # TO DO: consider moving the methods below to InstrumentPricePolicyController
+  ## Durate Rates methods start here
+  ## These only apply to instruments with duration pricing mode
+  
+  # Builds a collection of unique min duration hrs values
+  # from price policies in memory,
+  # adding nil values as needed to reach a total of MAX_RATE_STARTS (3),
+  # in ascending order with nil values at the end.
+  # Used to prefill values in the form.
   def build_min_durations
     min_durations = @price_policies.flat_map { |pp| pp.duration_rates.map(&:min_duration_hours) }.uniq
     (PricePolicy::MAX_RATE_STARTS - min_durations.length).times { min_durations << nil }
     @min_durations = min_durations.sort_by { |d| d || 1_000 }
   end
 
-  def set_min_durations
+  # Builds a collection of unique min duration hrs values
+  # for the current set of price policies,
+  # in ascending order with nil values at the end.
+  # Used to build the column sub-headers in the price policy table.
+  def init_min_durations_for_index
     return unless @product.is_a?(Instrument) && @product.duration_pricing_mode?
 
     min_durations = @current_price_policies.flat_map { |pp| pp.duration_rates.map(&:min_duration_hours) }.uniq
@@ -165,7 +177,7 @@ class PricePoliciesController < ApplicationController
   end
 
   def build_duration_rates
-    @price_policies.each_with_index do |price_policy|
+    @price_policies.each do |price_policy|
       (PricePolicy::MAX_RATE_STARTS - price_policy.duration_rates.length).times { price_policy.duration_rates.build }
     end
   end
