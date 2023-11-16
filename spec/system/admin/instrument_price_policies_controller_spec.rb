@@ -204,9 +204,9 @@ RSpec.describe InstrumentPricePoliciesController do
       expect(page).to have_content("$31.00")
 
       # Rate starts
-      expect(page).to have_content("Rate Start (hr): 2")
-      expect(page).to have_content("Rate Start (hr): 3")
-      expect(page).to have_content("Rate Start (hr): 4")
+      expect(page).to have_content("Over 2 hrs")
+      expect(page).to have_content("Over 3 hrs")
+      expect(page).to have_content("Over 4 hrs")
 
       # Base price group - Duration rates
       expect(page).to have_content("$50.00")
@@ -328,8 +328,8 @@ RSpec.describe InstrumentPricePoliciesController do
 
       expect(page).to have_content("Price Rules were successfully updated.")
 
-      expect(page).to have_content("Rate Start (hr): 5")
-      expect(page).not_to have_content("Rate Start (hr): 4")
+      expect(page).to have_content("Over 5 hrs")
+      expect(page).not_to have_content("Over 4 hrs")
 
       # Base price group - Duration rates
       expect(page).to have_content("$50.00")

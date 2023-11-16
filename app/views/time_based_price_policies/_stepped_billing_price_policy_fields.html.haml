@@ -21,10 +21,10 @@
         %th= price_policy.class.human_attribute_name(:minimum_cost)
       - if local_assigns[:cancellation]
         %th= price_policy.class.human_attribute_name(:cancellation_cost)
-      %th= "Initial Rate"
-      %th= "Step 2"
-      %th= "Step 3"
-      %th= "Step 4"
+      %th{ scope: "col" }= "Initial Rate"
+      %th{ scope: "col" }= "Step 2"
+      %th{ scope: "col" }= "Step 3"
+      %th{ scope: "col" }= "Step 4"
   %tbody
     %tr
       %td
@@ -34,9 +34,9 @@
         %td
       - if local_assigns[:cancellation]
         %td
-      %td= 0
+      %th{ scope: "col" }= "Rate Start (hr): 0"
       - @min_durations.each_with_index do |min_duration, column_index|
-        %td
+        %th{ scope: "col" }
           .control-group
             = label :min_duration, "Rate Start (hr):", class: "normal-weight"
             = number_field :min_duration, column_index, min: 1, value: min_duration, class: "half-width js--minDuration", data: { index: column_index }
@@ -47,7 +47,7 @@
         - row_class << "js--masterInternalRow" if price_group.master_internal?
         - row_class << "js--adjustmentRow" unless price_group.external? || price_group.master_internal?
         %tr{class: row_class}
-          %td= price_group.name
+          %th{ scope: "row" }= price_group.name
           %td= price_group.type_string
           %td= pp.check_box :can_purchase, class: "js--canPurchase"
           - if price_group.external? || price_group.master_internal?

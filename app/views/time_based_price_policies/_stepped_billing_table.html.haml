@@ -1,52 +1,49 @@
 %div{ style: "display: flex; flex-direction: row-reverse" }
   %h4.half-width= "Stepped Billing Rates"
+
+- if price_policies.all?(&:editable?) && can?(:edit, PricePolicy) && !@product.skip_order_review?
+  %div
+    %p{ aria_label: "Edit Price Policies" }
+      = link_to "Edit Pricing Rules",
+        [:edit, current_facility, product, :price_policy, id: url_date]
+    %p
+      = link_to "Remove Pricing Rules",
+        [current_facility, product, :price_policy, id: url_date],
+        data: { confirm: t("shared.confirm_message") },
+        method: :delete
+- else
+  %p.muted= t("shared.edit")
+  %p.muted= t("shared.remove")
 %table.table
   %thead
     %tr
-      %th.actions{ rowspan: 2 }
       %th{ rowspan: 2 }= "#{PriceGroup.model_name.human} (#{PricePolicy.human_attribute_name(:type)})"
       - if local_assigns[:minimum_cost]
         %th.currency{ rowspan: 2 }= PricePolicy.human_attribute_name(:minimum_cost)
       - if local_assigns[:cancellation]
         %th.currency{ rowspan: 2 }= PricePolicy.human_attribute_name(:cancellation_cost)
-      %th.currency= "Initial Rate"
-      %th.currency= "Step 2"
-      %th.currency= "Step 3"
-      %th.currency= "Step 4"
+      %th.currency{ scope: "col" }= "Initial Rate"
+      %th.currency{ scope: "col" }= "Step 2"
+      %th.currency{ scope: "col" }= "Step 3"
+      %th.currency{ scope: "col" }= "Step 4"
   %tbody
     %tr
-      %td
       %td
       - if local_assigns[:minimum_cost]
         %td
       - if local_assigns[:cancellation]
         %td
-      %td{ style: "text-align: center" }= 0
+      %th.currency{ scope: "col" }= "Over 0 hrs"
       - @min_durations.each do |min_duration|
-        %td{ style: "padding: 7px" }
-          = "Rate Start (hr):"
-          - if min_duration.present?
-            = min_duration
+        - if min_duration.present?
+          %th.currency{ scope: "col" }= "Over #{min_duration} hrs"
+        - else
+          %th.currency
     - price_policies_to_show = price_policies.select(&:can_purchase?)
     - price_policies_to_show.each do |price_policy|
       %tr
         - price_group = price_policy.price_group
-        - if price_policies_to_show.first == price_policy
-          %td.centered{ rowspan: price_policies_to_show.length }
-            - if price_policies.all?(&:editable?) && can?(:edit, PricePolicy) && !@product.skip_order_review?
-              %p
-                = link_to t("shared.edit"),
-                  [:edit, current_facility, product, :price_policy, id: url_date]
-              %p
-                = link_to t("shared.remove"),
-                  [current_facility, product, :price_policy, id: url_date],
-                  data: { confirm: t("shared.confirm_message") },
-                  method: :delete
-            - else
-              %p.muted= t("shared.edit")
-              %p.muted= t("shared.remove")
-
-        %td= "#{price_group.name} (#{price_group.type_string})"
+        %th{ scope: "row" }= "#{price_group.name} (#{price_group.type_string})"
 
         - if price_policy.valid?
           - if local_assigns[:minimum_cost]
