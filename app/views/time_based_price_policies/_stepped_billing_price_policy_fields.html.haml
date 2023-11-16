@@ -35,9 +35,8 @@
       - if local_assigns[:cancellation]
         %td
       %th{ scope: "col" }
-        %p
-          = t(".rate_start")
-          = 0
+        = label :default_min_duration, t(".rate_start"), class: "normal-weight"
+        = number_field :default_min_duration, "default", value: 0, readonly: true, disabled:true, class: "half-width"
       - @min_durations.each_with_index do |min_duration, column_index|
         %th{ scope: "col" }
           .control-group
