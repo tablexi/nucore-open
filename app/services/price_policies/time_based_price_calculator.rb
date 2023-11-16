@@ -46,12 +46,10 @@ module PricePolicies
     end
 
     def duration_pricing_cost_and_subsidy(duration_mins)
-      duration_in_hours = duration_mins / 60.0
-
-      result = build_intervals.reduce({ time_left: duration_in_hours, cost: 0, subsidy: 0 }) do |acc, interval_data|
+      result = build_intervals.reduce({ time_left: duration_mins, cost: 0, subsidy: 0 }) do |acc, interval_data|
         time_left = acc[:time_left]
 
-        interval_length = interval_data[:interval_end] - interval_data[:interval_start]
+        interval_length = (interval_data[:interval_end] - interval_data[:interval_start]) * 60
 
         time_to_charge = [time_left, interval_length].min
 
@@ -69,8 +67,8 @@ module PricePolicies
       sorted_duration_rates = price_policy.duration_rates.sorted
       sorted_subsidies = sorted_duration_rates.map { |dr| dr.subsidy || 0 }
 
-      default_rate = usage_rate * 60
-      default_subsidy = usage_subsidy * 60
+      default_rate = usage_rate
+      default_subsidy = usage_subsidy
 
       intervals = [
         {

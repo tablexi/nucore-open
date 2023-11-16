@@ -2,8 +2,6 @@
 
 class DurationRate < ApplicationRecord
 
-  SIXTY_MIN = 60.0
-
   belongs_to :price_policy, required: true
 
   validate :rate_or_subsidy
@@ -14,6 +12,24 @@ class DurationRate < ApplicationRecord
   validate :subsidy_lesser_than_or_equal_to_base_rate
 
   scope :sorted, -> { order(min_duration_hours: :asc) }
+
+  def rate=(hourly_rate)
+    super
+    self[:rate] /= 60.0 if self[:rate].respond_to? :/
+  end
+
+  def subsidy=(hourly_subsidy)
+    super
+    self[:subsidy] /= 60.0 if self[:subsidy].respond_to? :/
+  end
+
+  def hourly_rate
+    rate.try :*, 60
+  end
+
+  def hourly_subsidy
+    subsidy.try :*, 60
+  end
 
   private
 
@@ -27,7 +43,7 @@ class DurationRate < ApplicationRecord
     return unless price_group.external? || price_group.master_internal?
     return unless price_policy.usage_rate && rate
 
-    if rate / SIXTY_MIN > price_policy.usage_rate
+    if rate > price_policy.usage_rate
       errors.add(:base, "Rate must be lesser than or equal to Base rate")
     end
   end
@@ -36,7 +52,7 @@ class DurationRate < ApplicationRecord
     return if price_group.external? || price_group.master_internal?
     return unless price_policy.usage_rate && subsidy
 
-    if subsidy / SIXTY_MIN > price_policy.usage_rate
+    if subsidy > price_policy.usage_rate
       errors.add(:base, "Subsidy must be lesser than or equal to Base rate")
     end
   end

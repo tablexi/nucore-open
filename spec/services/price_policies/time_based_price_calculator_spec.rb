@@ -293,7 +293,8 @@ RSpec.describe PricePolicies::TimeBasedPriceCalculator do
                   # 2 hours       @ $30 + $10               = $80       Duration rate - Minimum duration: 1 hour
                   # 2 hours       @ $30 + $10 + $15         = $110      Duration rate - Minimum duration: 3 hours
                   # 0.25 hours    @ $30 + $10 + $15 + $30   = $21.25    Duration rate - Minimum duration: 5 hours
-                  is_expected.to eq(cost: 630, subsidy: 241.25)
+                  expect(calculator.calculate(start_at, end_at)[:cost]).to eq(630)
+                  expect(calculator.calculate(start_at, end_at)[:subsidy].round(4)).to eq(241.25)
                 end
               end
 
