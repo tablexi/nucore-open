@@ -66,7 +66,7 @@ module PricePolicies
     end
 
     def build_intervals
-      sorted_duration_rates = price_policy.duration_rates.sort_by { |dr| dr.min_duration_hours || 1_000 }
+      sorted_duration_rates = price_policy.duration_rates.sorted
 
       intervals = [{ interval_start: 0, interval_end: sorted_duration_rates[0]&.min_duration_hours || Float::INFINITY, rate: usage_rate * 60, subsidy: usage_subsidy * 60 }]
 
