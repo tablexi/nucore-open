@@ -2,6 +2,8 @@
 
 class DurationRate < ApplicationRecord
 
+  SIXTY_MIN = 60.0
+
   belongs_to :price_policy, required: true
 
   validate :rate_or_subsidy
@@ -15,20 +17,20 @@ class DurationRate < ApplicationRecord
 
   def rate=(hourly_rate)
     super
-    self[:rate] /= 60.0 if self[:rate].respond_to? :/
+    self[:rate] /= SIXTY_MIN if self[:rate].respond_to? :/
   end
 
   def subsidy=(hourly_subsidy)
     super
-    self[:subsidy] /= 60.0 if self[:subsidy].respond_to? :/
+    self[:subsidy] /= SIXTY_MIN if self[:subsidy].respond_to? :/
   end
 
   def hourly_rate
-    rate.try :*, 60
+    rate.try :*, SIXTY_MIN
   end
 
   def hourly_subsidy
-    subsidy.try :*, 60
+    subsidy.try :*, SIXTY_MIN
   end
 
   private
