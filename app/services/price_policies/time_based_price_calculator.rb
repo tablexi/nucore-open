@@ -67,15 +67,17 @@ module PricePolicies
 
     def build_intervals
       sorted_duration_rates = price_policy.duration_rates.sorted
+      default_rate = usage_rate * 60
+      default_subsidy = usage_subsidy * 60
 
-      intervals = [{ interval_start: 0, interval_end: sorted_duration_rates[0]&.min_duration_hours || Float::INFINITY, step_rate: usage_rate * 60, step_subsidy: usage_subsidy * 60 }]
+      intervals = [{ interval_start: 0, interval_end: sorted_duration_rates[0]&.min_duration_hours || Float::INFINITY, step_rate: default_rate, step_subsidy: default_subsidy }]
 
       sorted_duration_rates.each_with_index do |duration_rate, index|
         if duration_rate.rate.present?
           hourly_rate = duration_rate.rate
-          hourly_subsidy = 0
+          hourly_subsidy = default_subsidy
         else
-          hourly_rate = 0
+          hourly_rate = default_rate
           hourly_subsidy = duration_rate.subsidy
         end
 
