@@ -82,7 +82,7 @@ module PricePolicies
       sorted_duration_rates.each_with_index do |duration_rate, index|
         if duration_rate.rate.present?
           hourly_rate = duration_rate.rate
-          hourly_subsidy = default_subsidy
+          hourly_subsidy = nil
         else
           hourly_rate = default_rate
           hourly_subsidy = duration_rate.subsidy
