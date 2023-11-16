@@ -153,7 +153,7 @@ class PricePoliciesController < ApplicationController
   # TO DO: consider moving the methods below to InstrumentPricePolicyController
   ## Durate Rates methods start here
   ## These only apply to instruments with duration pricing mode
-  
+
   # Builds a collection of unique min duration hrs values
   # from price policies in memory,
   # adding nil values as needed to reach a total of MAX_RATE_STARTS (3),
@@ -167,12 +167,14 @@ class PricePoliciesController < ApplicationController
 
   # Builds a collection of unique min duration hrs values
   # for the current set of price policies,
+  # adding nil values as needed to reach a total of MAX_RATE_STARTS (3),
   # in ascending order with nil values at the end.
   # Used to build the column sub-headers in the price policy table.
   def init_min_durations_for_index
     return unless @product.is_a?(Instrument) && @product.duration_pricing_mode?
 
     min_durations = @current_price_policies.flat_map { |pp| pp.duration_rates.map(&:min_duration_hours) }.uniq
+    (PricePolicy::MAX_RATE_STARTS - min_durations.length).times { min_durations << nil }
     @min_durations = min_durations.sort_by { |d| d || 1_000 }
   end
 
