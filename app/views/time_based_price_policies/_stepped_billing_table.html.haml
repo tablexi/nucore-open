@@ -1,13 +1,13 @@
 %div{ style: "display: flex; flex-direction: row-reverse" }
-  %h4.half-width= "Stepped Billing Rates"
+  %h4.half-width= t(".title")
 
 - if price_policies.all?(&:editable?) && can?(:edit, PricePolicy) && !@product.skip_order_review?
   %div
     %p{ aria_label: "Edit Price Policies" }
-      = link_to "Edit Pricing Rules",
+      = link_to t(".edit"),
         [:edit, current_facility, product, :price_policy, id: url_date]
     %p
-      = link_to "Remove Pricing Rules",
+      = link_to t(".remove"),
         [current_facility, product, :price_policy, id: url_date],
         data: { confirm: t("shared.confirm_message") },
         method: :delete
@@ -22,10 +22,10 @@
         %th.currency{ rowspan: 2 }= PricePolicy.human_attribute_name(:minimum_cost)
       - if local_assigns[:cancellation]
         %th.currency{ rowspan: 2 }= PricePolicy.human_attribute_name(:cancellation_cost)
-      %th.currency{ scope: "col" }= "Initial Rate"
-      %th.currency{ scope: "col" }= "Step 2"
-      %th.currency{ scope: "col" }= "Step 3"
-      %th.currency{ scope: "col" }= "Step 4"
+      %th.currency{ scope: "col" }= t(".initial_rate")
+      %th.currency{ scope: "col" }= t(".step_1")
+      %th.currency{ scope: "col" }= t(".step_2")
+      %th.currency{ scope: "col" }= t(".step_3")
   %tbody
     %tr
       %td
@@ -33,10 +33,10 @@
         %td
       - if local_assigns[:cancellation]
         %td
-      %th.currency{ scope: "col" }= "Over 0 hrs"
+      %th.currency{ scope: "col" }= t(".over_hrs", hrs: 0)
       - @min_durations.each do |min_duration|
         - if min_duration.present?
-          %th.currency{ scope: "col" }= "Over #{min_duration} hrs"
+          %th.currency{ scope: "col" }= t(".over_hrs", hrs: min_duration)
         - else
           %th.currency
     - price_policies_to_show = price_policies.select(&:can_purchase?)

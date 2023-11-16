@@ -10,7 +10,7 @@
     selected: price_policy.charge_for
 
 %div{ style: "display: flex; flex-direction: row-reverse" }
-  %h4.half-width= "Stepped Billing Rates"
+  %h4.half-width= t(".title")
 %table.table.table-striped.table-hover.price-policy-table
   %thead
     %tr
@@ -21,10 +21,10 @@
         %th= price_policy.class.human_attribute_name(:minimum_cost)
       - if local_assigns[:cancellation]
         %th= price_policy.class.human_attribute_name(:cancellation_cost)
-      %th{ scope: "col" }= "Initial Rate"
-      %th{ scope: "col" }= "Step 2"
-      %th{ scope: "col" }= "Step 3"
-      %th{ scope: "col" }= "Step 4"
+      %th{ scope: "col" }= t(".initial_rate")
+      %th{ scope: "col" }= t(".step_1")
+      %th{ scope: "col" }= t(".step_2")
+      %th{ scope: "col" }= t(".step_3")
   %tbody
     %tr
       %td
@@ -34,11 +34,14 @@
         %td
       - if local_assigns[:cancellation]
         %td
-      %th{ scope: "col" }= "Rate Start (hr): 0"
+      %th{ scope: "col" }
+        %p
+          = t(".rate_start")
+          = 0
       - @min_durations.each_with_index do |min_duration, column_index|
         %th{ scope: "col" }
           .control-group
-            = label :min_duration, "Rate Start (hr):", class: "normal-weight"
+            = label :min_duration, t(".rate_start"), class: "normal-weight"
             = number_field :min_duration, column_index, min: 1, value: min_duration, class: "half-width js--minDuration", data: { index: column_index }
     - @price_policies.each_with_index do |price_policy, index|
       - price_group = price_policy.price_group
@@ -58,12 +61,12 @@
           = pp.fields_for :duration_rates, duration_rates do |dr|
             - if price_group.external? || price_group.master_internal?
               %td
-                = dr.label :rate, "Rate per hr:", class: "normal-weight"
+                = dr.label :rate, t(".rate_per_hr"), class: "normal-weight"
                 = dr.text_field :rate, value: number_to_currency(dr.object.rate, unit: "", delimiter: ""), size: 8
                 = dr.hidden_field :min_duration_hours
             - else
               %td
-                = dr.label :subsidy, "Adjustment:", class: "normal-weight"
+                = dr.label :subsidy, t(".adjustment"), class: "normal-weight"
                 %span="-"
                 = dr.text_field :subsidy, value: number_to_currency(dr.object.subsidy, unit: "", delimiter: ""), size: 8
                 = dr.hidden_field :min_duration_hours
