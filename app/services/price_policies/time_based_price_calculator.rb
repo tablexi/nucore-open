@@ -56,8 +56,8 @@ module PricePolicies
         time_to_charge = [time_left, interval_length].min
 
         acc[:time_left] -= time_to_charge
-        acc[:cost] += interval_data[:rate] ? interval_data[:rate] * time_to_charge : 0
-        acc[:subsidy] += interval_data[:subsidy] ? interval_data[:subsidy] * time_to_charge : 0
+        acc[:cost] += interval_data[:step_rate] ? interval_data[:step_rate] * time_to_charge : 0
+        acc[:subsidy] += interval_data[:step_subsidy] ? interval_data[:step_subsidy] * time_to_charge : 0
 
         acc
       end
@@ -68,7 +68,7 @@ module PricePolicies
     def build_intervals
       sorted_duration_rates = price_policy.duration_rates.sorted
 
-      intervals = [{ interval_start: 0, interval_end: sorted_duration_rates[0]&.min_duration_hours || Float::INFINITY, rate: usage_rate * 60, subsidy: usage_subsidy * 60 }]
+      intervals = [{ interval_start: 0, interval_end: sorted_duration_rates[0]&.min_duration_hours || Float::INFINITY, step_rate: usage_rate * 60, step_subsidy: usage_subsidy * 60 }]
 
       sorted_duration_rates.each_with_index do |duration_rate, index|
         if duration_rate.rate.present?
@@ -82,7 +82,7 @@ module PricePolicies
         interval_start = duration_rate.min_duration_hours
         interval_end = sorted_duration_rates[index + 1]&.min_duration_hours || Float::INFINITY
 
-        intervals << { interval_start: , interval_end:, rate: hourly_rate, subsidy: hourly_subsidy }
+        intervals << { interval_start: , interval_end:, step_rate: hourly_rate, step_subsidy: hourly_subsidy }
       end
 
       intervals
