@@ -67,23 +67,25 @@ module PricePolicies
 
     def build_intervals
       sorted_duration_rates = price_policy.duration_rates.sort_by { |dr| dr.min_duration_hours || 1_000 }
-      lower_intervals = sorted_duration_rates.dup
-      higher_intervals = sorted_duration_rates.dup
 
-      if sorted_duration_rates.first.min_duration_hours > 0
-        lower_intervals.prepend nil
-      else
-        higher_intervals.shift
+      intervals = [{ interval_start: 0, interval_end: sorted_duration_rates[0]&.min_duration_hours || Float::INFINITY, rate: usage_rate * 60, subsidy: usage_subsidy * 60 }]
+
+      sorted_duration_rates.each_with_index do |duration_rate, index|
+        if duration_rate.rate.present?
+          hourly_rate = duration_rate.rate
+          hourly_subsidy = 0
+        else
+          hourly_rate = 0
+          hourly_subsidy = duration_rate.subsidy
+        end
+
+        interval_start = duration_rate.min_duration_hours
+        interval_end = sorted_duration_rates[index + 1]&.min_duration_hours || Float::INFINITY
+
+        intervals << { interval_start: , interval_end:, rate: hourly_rate, subsidy: hourly_subsidy }
       end
 
-      lower_intervals.zip(higher_intervals).map do |lower, higher|
-        hourly_rate = lower ? lower.rate : usage_rate * 60
-        hourly_subsidy = lower ? lower.subsidy : usage_subsidy * 60
-        interval_start = lower&.min_duration_hours || 0
-        interval_end = higher&.min_duration_hours || Float::INFINITY
-
-        { interval_start: , interval_end:, rate: hourly_rate, subsidy: hourly_subsidy }
-      end
+      intervals
     end
 
   end
