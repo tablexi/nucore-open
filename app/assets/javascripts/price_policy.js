@@ -88,40 +88,32 @@ $(document).ready(function() {
   }
 
   function preventDuplicateMinDurations(params) {
-    var found = [];
-    var duplicate = [];
-    $(".js--minDuration").each(function (idx, ele) {
-      var minDurationValue = $(ele).val();
-      if (found.includes(minDurationValue)) {
-        duplicate.push(minDurationValue)
-      } else if (minDurationValue) {
-        found.push(minDurationValue);
-      }
-    });
+    var counts = {}
+    var duplicates = $(".js--minDuration").each(function (_, el) {
+      var value = el.value
+      // var minDurationValue = $(ele).val();
+      counts[value] = (counts[value] || 0) + 1
+    }).filter(function (_, el) {
+      return counts[el.value] > 1 && el.value !== ""
+    })
 
-    if (duplicate.length > 0) {
-      var dupes = $(".js--minDuration").filter(function (i, element) {
-        return $(element).val() == duplicate[0] // since there are only 3 inputs, there can only be 1 duplicate value
-      })
-      // reset all borders
-      $(".js--minDuration").each(function (i, element) {
-        $(element).css("border", "1px solid #ccc");
-      })
-      // set border to red for duplicate values
-      dupes.each(function (i, element) {
-        $(element).css("border", "2px solid red");
+    // reset error states
+    $(".js--minDuration").each(function (i, element) {
+      $(element).parent().removeClass("error");
+    })
+
+    if (duplicates.length > 0) {
+      // set error state duplicate values
+      duplicates.each(function (i, element) {
+        $(element).parent().addClass("error");
       })
       // disable submit button
-      $("input[type=submit]").attr("disabled", "disabled");
-      $("form").bind("submit", function (e) { e.preventDefault(); });
+      $("input[type=submit]").prop("disabled", true);
+      $("form").on("submit", function (e) { e.preventDefault(); });
     } else {
-      // reset all borders
-      $(".js--minDuration").each(function (i, element) {
-        $(element).css("border", "1px solid #ccc");
-      })
       // enable submit button
-      $("input[type=submit]").removeAttr("disabled", "disabled");
-      $("form").unbind("submit");
+      $("input[type=submit]").prop("disabled", false);
+      $("form").off("submit");
     }
   }
 });
