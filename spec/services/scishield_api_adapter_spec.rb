@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe ResearchSafetyAdapters::ScishieldApiAdapter do
   subject(:adapter) { described_class.new(user) }
-  let(:user) { build(:user, email: "research@osu.edu") }
+  let(:user) { create(:user, email: "research@osu.edu") }
   let(:api_endpoint) { adapter.client.api_endpoint(user.email) }
 
   describe "with a successful response" do
@@ -83,4 +83,17 @@ RSpec.describe ResearchSafetyAdapters::ScishieldApiAdapter do
     end
   end
 
+  describe "Scishield training exists in database" do
+    before do
+      3.times { create(:scishield_training, user_id: user.id) }
+    end
+
+    it "gets course names from database" do
+      expect(adapter.certified_course_names).to contain_exactly(
+        "Scishield Course Name 1",
+        "Scishield Course Name 2",
+        "Scishield Course Name 3"
+      )
+    end
+  end
 end

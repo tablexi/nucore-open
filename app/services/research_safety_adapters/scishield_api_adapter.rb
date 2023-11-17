@@ -17,7 +17,7 @@ module ResearchSafetyAdapters
     end
 
     def certified_course_names
-      certified_course_names_from_db.present? || certified_course_names_from_api
+      (certified_course_names_from_db.presence || certified_course_names_from_api)
     end
 
     def certified_course_names_from_db
