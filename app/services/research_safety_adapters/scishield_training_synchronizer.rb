@@ -12,17 +12,16 @@ module ResearchSafetyAdapters
       return unless api_available?
 
       ScishieldTraining.transaction do
-        begin
-          ScishieldTraining.delete_all
+        ScishieldTraining.delete_all
 
-          @users.each do |user|
-            adapter = ScishieldApiAdapter.new(user)
-            cert_names = adapter.certified_course_names_from_api
+        @users.each do |user|
+          adapter = ScishieldApiAdapter.new(user)
+          cert_names = adapter.certified_course_names_from_api
 
-            cert_names.each { |cert_name| ScishieldTraining.create(user_id: user.id, course_name: cert_name) }
-          end
-        rescue  
+          cert_names.each { |cert_name| ScishieldTraining.create(user_id: user.id, course_name: cert_name) }
         end
+      rescue StandardError
+        raise ActiveRecord::Rollback
       end
     end
 
