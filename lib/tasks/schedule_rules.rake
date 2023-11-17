@@ -25,7 +25,7 @@ namespace :schedule_rule do
   end
 
   desc "Adds missing global price groups to existing schedule rules"
-  taks add_missing_price_group_discounts: :environment do |_t, _args|
+  task add_missing_price_group_discounts: :environment do |_t, _args|
     ScheduleRule.all.find_each do |schedule_rule|
       PriceGroup.globals.each do |price_group|
         next if schedule_rule.price_group_discounts.find_by(price_group_id: price_group.id)
