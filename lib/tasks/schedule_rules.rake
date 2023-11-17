@@ -26,17 +26,6 @@ namespace :schedule_rule do
 
   desc "Adds missing global price groups to existing schedule rules"
   task add_missing_price_group_discounts: :environment do |_t, _args|
-    ScheduleRule.all.find_each do |schedule_rule|
-      PriceGroup.globals.each do |price_group|
-        next if schedule_rule.price_group_discounts.find_by(price_group_id: price_group.id)
-
-        schedule_rule.price_group_discounts.create(
-          price_group:,
-          discount_percent: schedule_rule.discount_percent
-        )
-
-        puts "Created price_group_discount for price group #{price_group.name} and schedule rule #{schedule_rule.id}"
-      end
-    end
+    PriceGroup.globals.each(&:setup_schedule_rules)
   end
 end
