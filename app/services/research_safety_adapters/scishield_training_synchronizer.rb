@@ -5,7 +5,6 @@ module ResearchSafetyAdapters
   class ScishieldTrainingSynchronizer
     def initialize
       @users = User.select(:id, :email)
-      @client = ScishieldApiClient.new
     end
 
     def synchronize
@@ -27,15 +26,18 @@ module ResearchSafetyAdapters
 
     def api_available?
       error_count = 0
-      acceptable_codes = ["200", "404"] # do unacceptable instead, 5xx & 403
 
+      # Test API responses for 10 random users
       @users.sample(10).each do |user|
-        response = @client.api_request(user.email)
+        client = ScishieldApiClient.new
+        response = client.api_request(user.email)
         http_status = response.code
-        error_count += 1 unless acceptable_codes.include? http_status
+
+        # Increment errors if http status is 5xx or 403
+        error_count += 1 if http_status.match?(/5|403/)
       end
 
-      # Assume the API is down if there are more than 9 errors
+      # Assume the API is up if there are less than 10 errors
       error_count < 10
     end
   end
