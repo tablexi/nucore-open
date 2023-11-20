@@ -35,10 +35,10 @@ module ResearchSafetyAdapters
     end
 
     def certifications_for(email)
-      api_request(email).body
+      training_api_request(email).body
     end
 
-    def api_request(email)
+    def training_api_request(email)
       uri = URI(api_endpoint(email))
       req = Net::HTTP::Get.new(uri)
       req["accept"] = "application/json"
