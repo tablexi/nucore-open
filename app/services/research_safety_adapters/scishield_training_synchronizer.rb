@@ -30,7 +30,7 @@ module ResearchSafetyAdapters
       # Test API responses for 10 random users
       @users.sample(10).each do |user|
         client = ScishieldApiClient.new
-        response = client.api_request(user.email)
+        response = client.training_api_request(user.email)
         http_status = response.code
 
         # Increment errors if http status is 5xx or 403
