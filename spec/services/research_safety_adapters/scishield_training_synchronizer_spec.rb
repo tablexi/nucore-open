@@ -6,6 +6,7 @@ RSpec.describe ResearchSafetyAdapters::ScishieldTrainingSynchronizer do
   let(:synchronizer) { described_class.new }
   let(:response) { File.expand_path("../../fixtures/scishield/success.json", __dir__) }
   let(:course_names) { ["Lab Safety Training for Lab Workers", "OSU Fire Extinguisher Course (in person)", "Hazardous Waste Awareness Training"] }
+  let(:satus_code) { nil }
 
   before do
     stub_request(:get, "https://test-university.scishield.com/jsonapi/raft_training_record/raft_training_record?filter%5Bstatus%5D=1&filter%5Buser%5D%5Bcondition%5D%5Boperator%5D==&filter%5Buser%5D%5Bcondition%5D%5Bpath%5D=user_id.mail&filter%5Buser%5D%5Bcondition%5D%5Bvalue%5D=#{email}&include=course_id")
@@ -17,13 +18,27 @@ RSpec.describe ResearchSafetyAdapters::ScishieldTrainingSynchronizer do
           "Host" => "test-university.scishield.com",
           "User-Agent" => "Ruby",
         })
-      .to_return(status: 200, body: File.new(response), headers: {})
+      .to_return(status: status_code, body: File.new(response), headers: {})
   end
 
-  it "fills db" do
-    expect(ScishieldTraining.count).to eq 0
-    synchronizer.synchronize
-    expect(ScishieldTraining.count).to eq 3
-    expect(ScishieldTraining.all.map(&:course_name)).to include(*course_names)
+  context "when the API responses without error" do
+    let(:status_code) { "200" }
+
+    it "adds courses to database" do
+      expect(ScishieldTraining.count).to eq 0
+      synchronizer.synchronize
+      expect(ScishieldTraining.count).to eq 3
+      expect(ScishieldTraining.all.map(&:course_name)).to include(*course_names)
+    end
+  end
+
+  context "when the API reponses with error" do
+    let(:status_code) { 500 }
+
+    it "does not add courses to database" do
+      expect(ScishieldTraining.count).to eq 0
+      synchronizer.synchronize
+      expect(ScishieldTraining.count).to eq 0
+    end
   end
 end

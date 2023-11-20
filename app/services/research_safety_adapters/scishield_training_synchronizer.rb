@@ -8,7 +8,7 @@ module ResearchSafetyAdapters
     end
 
     def synchronize
-      return unless api_available?
+      return if api_unavailable?
 
       ScishieldTraining.transaction do
         ScishieldTraining.delete_all
@@ -24,21 +24,16 @@ module ResearchSafetyAdapters
       end
     end
 
-    def api_available?
-      error_count = 0
-
+    def api_unavailable?
       # Test API responses for 10 random users
-      @users.sample(10).each do |user|
+      @users.sample(10).map do |user|
         client = ScishieldApiClient.new
         response = client.training_api_request(user.email)
         http_status = response.code
 
-        # Increment errors if http status is 5xx or 403
-        error_count += 1 if http_status.match?(/5|403/)
-      end
-
-      # Assume the API is up if there are less than 10 errors
-      error_count < 10
+        # track if if http status is 5xx or 403 or not
+        http_status.match?(/5|403/)
+      end.all?
     end
   end
 
