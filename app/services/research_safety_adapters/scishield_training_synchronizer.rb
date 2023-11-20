@@ -4,7 +4,7 @@ module ResearchSafetyAdapters
 
   class ScishieldTrainingSynchronizer
     def initialize
-      @users = User.select(:id, :email)
+      @users = User.active.select(:id, :email)
     end
 
     def synchronize

@@ -7,18 +7,14 @@ RSpec.describe ResearchSafetyAdapters::ScishieldTrainingSynchronizer do
   let(:response) { File.expand_path("../../fixtures/scishield/success.json", __dir__) }
   let(:course_names) { ["Lab Safety Training for Lab Workers", "OSU Fire Extinguisher Course (in person)", "Hazardous Waste Awareness Training"] }
   let(:satus_code) { nil }
+  let(:api_endpoint) { ResearchSafetyAdapters::ScishieldApiClient.new.api_endpoint(user.email) }
 
   before do
-    stub_request(:get, "https://test-university.scishield.com/jsonapi/raft_training_record/raft_training_record?filter%5Bstatus%5D=1&filter%5Buser%5D%5Bcondition%5D%5Boperator%5D==&filter%5Buser%5D%5Bcondition%5D%5Bpath%5D=user_id.mail&filter%5Buser%5D%5Bcondition%5D%5Bvalue%5D=#{email}&include=course_id")
-      .with(
-        headers: {
-          "Accept" => "application/json",
-          "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
-          "Authorization" => "UsersJwt ",
-          "Host" => "test-university.scishield.com",
-          "User-Agent" => "Ruby",
-        })
-      .to_return(status: status_code, body: File.new(response), headers: {})
+    stub_request(:get, api_endpoint)
+      .to_return(
+        status: status_code,
+        body: File.new(response)
+      )
   end
 
   context "when the API responses without error" do
