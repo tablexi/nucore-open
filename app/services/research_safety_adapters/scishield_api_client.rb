@@ -35,7 +35,8 @@ module ResearchSafetyAdapters
     end
 
     def certifications_for(email)
-      training_api_request(email).body
+      response = training_api_request(email)
+      response.body
     end
 
     def training_api_request(email)

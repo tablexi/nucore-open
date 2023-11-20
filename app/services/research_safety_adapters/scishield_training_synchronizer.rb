@@ -13,7 +13,7 @@ module ResearchSafetyAdapters
       ScishieldTraining.transaction do
         ScishieldTraining.delete_all
 
-        @users.each do |user|
+        @users.find_each do |user|
           adapter = ScishieldApiAdapter.new(user)
           cert_names = adapter.certified_course_names_from_api
 
