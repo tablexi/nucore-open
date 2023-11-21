@@ -18,6 +18,7 @@ class Order < ApplicationRecord
 
   delegate :order_notification_recipient, to: :facility
 
+  # Used to allow validating order imports against the fulfillment date instead of the current time
   attr_reader :import_fulfillment_date
 
   def self.created_by_user(user)
@@ -65,6 +66,7 @@ class Order < ApplicationRecord
   # In older versions of AASM, a guard condition failing would not raise an error.
   # This is to maintain the previous API of simply returning false
   def validate_order!(import_fulfillment_date: nil)
+    # @import_fulfillment_date will be nil unless called from OrderRowImporter
     @import_fulfillment_date = import_fulfillment_date
     _validate_order!
   rescue AASM::InvalidTransition => e
@@ -97,15 +99,14 @@ class Order < ApplicationRecord
       order_details.all? { |od| od.account_id == account_id } && # order detail accounts match order account
       facility.can_pay_with_account?(account) &&               # payment is accepted by facility
       account.can_be_used_by?(user) &&                         # user can pay with account
-      account_is_active?
+      account_is_active?                                       # account is active/valid
   end
 
   def account_is_active?
+    # For importing, we check if the account was active/valid at time of fulfillment
     if @import_fulfillment_date.present?
-      # account is active/valid at time of fulfillment
       order_details.all? { |od| f = od.fulfilled_at || @import_fulfillment_date; f < account.expires_at }
     else
-      # account is active/valid
       account.active?
     end
   end
