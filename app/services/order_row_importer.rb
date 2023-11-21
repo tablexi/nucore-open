@@ -69,7 +69,7 @@ class OrderRowImporter
       user
       .accounts
       .for_facility(facility)
-      .active_at(fulfillment_date.beginning_of_day).find_by(account_number: field(:chart_string))
+      .active_at(fulfillment_date&.beginning_of_day).find_by(account_number: field(:chart_string))
   end
 
   def errors?
