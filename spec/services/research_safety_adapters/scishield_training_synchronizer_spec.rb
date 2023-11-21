@@ -31,10 +31,12 @@ RSpec.describe ResearchSafetyAdapters::ScishieldTrainingSynchronizer do
   context "when the API reponses with error" do
     let(:status_code) { 500 }
 
+    before { 3.times { create(:scishield_training, user_id: 1) } }
+
     it "does not add courses to database" do
-      expect(ScishieldTraining.count).to eq 0
+      expect(ScishieldTraining.count).to eq 3
       synchronizer.synchronize
-      expect(ScishieldTraining.count).to eq 0
+      expect(ScishieldTraining.count).to eq 3
     end
   end
 end

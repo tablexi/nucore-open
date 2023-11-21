@@ -20,6 +20,11 @@ module ResearchSafetyAdapters
           cert_names.each { |cert_name| ScishieldTraining.create(user_id: user.id, course_name: cert_name) }
         end
       rescue StandardError
+        msg = "ScishieldTrainingSynchronizer error, rolling back transaction"
+
+        Rollbar.error(msg) if defined?(Rollbar)
+        Rails.logger.error(msg)
+
         raise ActiveRecord::Rollback
       end
     end
