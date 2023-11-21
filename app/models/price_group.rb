@@ -100,7 +100,7 @@ class PriceGroup < ApplicationRecord
 
       schedule_rule.price_group_discounts.create(
         price_group: self,
-        discount_percent: discount_percent || schedule_rule.discount_percent
+        discount_percent: discount_percent || schedule_rule.discount_percent # this column defaults to 0
       )
 
       puts("Created price_group_discount for #{self} and schedule rule #{schedule_rule.id}") unless Rails.env.test?
