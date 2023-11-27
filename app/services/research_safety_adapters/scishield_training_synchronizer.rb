@@ -8,7 +8,12 @@ module ResearchSafetyAdapters
     end
 
     def synchronize
-      return if api_unavailable?
+      if api_unavailable?
+        msg = "Scishield API down, aborting synchronization"
+        Rails.logger.error(msg)
+        Rollbar.error(msg) if defined?(Rollbar)
+        return
+      end
 
       ScishieldTraining.transaction do
         ScishieldTraining.delete_all
@@ -16,14 +21,20 @@ module ResearchSafetyAdapters
         @users.find_each do |user|
           adapter = ScishieldApiAdapter.new(user)
           cert_names = adapter.certified_course_names_from_api
+          trainings_added = 0
 
-          cert_names.each { |cert_name| ScishieldTraining.create(user_id: user.id, course_name: cert_name) }
+          cert_names.each do |cert_name|
+            st = ScishieldTraining.create(user_id: user.id, course_name: cert_name)
+            trainings_added += 1 if st.errors.blank?
+          end
+
+          puts "#{trainings_added} trainings added for user id #{user.id}"
         end
       rescue StandardError
         msg = "ScishieldTrainingSynchronizer error, rolling back transaction"
 
-        Rollbar.error(msg) if defined?(Rollbar)
         Rails.logger.error(msg)
+        Rollbar.error(msg) if defined?(Rollbar)
 
         raise ActiveRecord::Rollback
       end
