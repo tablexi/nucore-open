@@ -4,6 +4,10 @@ module ResearchSafetyAdapters
 
   class ScishieldApiAdapter
 
+    def self.user_attributes
+      [:id, :email]
+    end
+
     def initialize(user)
       @user = user
     end

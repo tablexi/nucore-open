@@ -6,10 +6,6 @@ module ResearchSafetyAdapters
   # with the Scishield API. This will ensure the local data is up to date with
   # the API for when safety training checks are done.
   class ScishieldTrainingSynchronizer
-    def initialize
-      @users = User.active.select(:id, :email)
-    end
-
     def synchronize
       if api_unavailable?
         msg = "Scishield API down, aborting synchronization"
@@ -21,7 +17,7 @@ module ResearchSafetyAdapters
       ScishieldTraining.transaction do
         ScishieldTraining.delete_all
 
-        @users.find_each do |user|
+        users.find_each do |user|
           adapter = ScishieldApiAdapter.new(user)
           cert_names = adapter.certified_course_names_from_api
           trainings_added = 0
@@ -45,7 +41,7 @@ module ResearchSafetyAdapters
 
     def api_unavailable?
       # Test API responses for 10 random users
-      @users.sample(10).map do |user|
+      users.sample(10).map do |user|
         client = ScishieldApiClient.new
         response = client.training_api_request(user.email)
         http_status = response.code
@@ -53,6 +49,10 @@ module ResearchSafetyAdapters
         # track if http status is 5xx, 403, or 404, or not
         http_status.match?(/5|403|404/)
       end.all?
+    end
+
+    def users
+      @users ||= User.active.select(ScishieldApiAdapter.user_attributes)
     end
   end
 
