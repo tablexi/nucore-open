@@ -2,6 +2,9 @@
 
 module ResearchSafetyAdapters
 
+  # This class refreshes and synchronizes the local copy of `ScishieldTraining`s
+  # with the Scishield API. This will ensure the local data is up to date with
+  # the API for when safety training checks are done.
   class ScishieldTrainingSynchronizer
     def initialize
       @users = User.active.select(:id, :email)
