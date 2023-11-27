@@ -17,7 +17,7 @@ RSpec.describe ResearchSafetyAdapters::ScishieldTrainingSynchronizer do
       )
   end
 
-  context "when the API responses without error" do
+  context "when the API responds without error" do
     let(:status_code) { "200" }
 
     it "adds courses to database" do
@@ -28,7 +28,7 @@ RSpec.describe ResearchSafetyAdapters::ScishieldTrainingSynchronizer do
     end
   end
 
-  context "when the API reponses with error" do
+  context "when the API responds with error" do
     let(:status_code) { 500 }
 
     before { 3.times { create(:scishield_training, user_id: 1) } }
