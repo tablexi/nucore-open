@@ -50,8 +50,8 @@ module ResearchSafetyAdapters
         response = client.training_api_request(user.email)
         http_status = response.code
 
-        # track if http status is 5xx or 403 or not
-        http_status.match?(/5|403/)
+        # track if http status is 5xx, 403, or 404, or not
+        http_status.match?(/5|403|404/)
       end.all?
     end
   end

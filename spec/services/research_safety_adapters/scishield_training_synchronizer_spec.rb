@@ -29,14 +29,36 @@ RSpec.describe ResearchSafetyAdapters::ScishieldTrainingSynchronizer do
   end
 
   context "when the API responds with error" do
-    let(:status_code) { 500 }
+    before { 2.times { create(:scishield_training, user_id: 1) } }
 
-    before { 3.times { create(:scishield_training, user_id: 1) } }
+    context "when the API responds with a 500 error" do
+      let(:status_code) { 500 }
 
-    it "does not add courses to database" do
-      expect(ScishieldTraining.count).to eq 3
-      synchronizer.synchronize
-      expect(ScishieldTraining.count).to eq 3
+      it "does not add courses to database" do
+        expect(ScishieldTraining.count).to eq 2
+        synchronizer.synchronize
+        expect(ScishieldTraining.count).to eq 2
+      end
+    end
+
+    context "when the API responds with a 403 error" do
+      let(:status_code) { 403 }
+
+      it "does not add courses to database" do
+        expect(ScishieldTraining.count).to eq 2
+        synchronizer.synchronize
+        expect(ScishieldTraining.count).to eq 2
+      end
+    end
+
+    context "when the API responds with a 404 error" do
+      let(:status_code) { 404 }
+
+      it "does not add courses to database" do
+        expect(ScishieldTraining.count).to eq 2
+        synchronizer.synchronize
+        expect(ScishieldTraining.count).to eq 2
+      end
     end
   end
 end
