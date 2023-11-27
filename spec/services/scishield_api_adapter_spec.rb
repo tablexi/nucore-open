@@ -86,16 +86,10 @@ RSpec.describe ResearchSafetyAdapters::ScishieldApiAdapter do
   end
 
   context "Scishield training exists in database" do
-    before do
-      3.times { create(:scishield_training, user_id: user.id) }
-    end
+    let!(:course_names) { Array.new(3) { create(:scishield_training, user_id: user.id).course_name } }
 
     it "gets course names from database" do
-      expect(adapter.certified_course_names).to contain_exactly(
-        "Scishield Course Name 1",
-        "Scishield Course Name 2",
-        "Scishield Course Name 3"
-      )
+      expect(adapter.certified_course_names).to contain_exactly(*course_names)
     end
   end
 end
