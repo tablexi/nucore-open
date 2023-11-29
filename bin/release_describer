@@ -1,0 +1,62 @@
+#!/usr/bin/env ruby
+# Usage:
+# The first argument is the path to the directory containing the repos
+# The second argument is the previous release tag
+# bin/release_describer ~/Workspace v2023-11-08
+
+require "set"
+
+repos = ["nucore-nu", "nucore-osu", "nucore-umass", "nucore-dartmouth"]
+repo_dir = ARGV[0]
+previous_release_tag = ARGV[1]
+
+school_specific = Hash.new { |h, k| h[k] = [] }
+data = {
+  shared_dev: Set.new,
+  open_highlights: Set.new,
+  fixes: Set.new,
+  tech_tasks: Set.new,
+  security: Set.new,
+}
+
+repos.each do |repo|
+  puts "Processing changes from #{repo} ..."
+  git_log = `cd #{repo_dir}/#{repo} && bin/merge_describer #{previous_release_tag}`
+  git_log.split("\n").each do |line|
+    ticket_number_match = line.match(/\[#(\d*)/)
+    formatted_line = if ticket_number_match
+      line.gsub(/\[#(\d*)\]/, "[##{ticket_number_match[1]}](https://pm.tablexi.com/issues/#{ticket_number_match[1]})")
+    else
+      line
+    end
+
+    if line.include?("nucore-open")
+      if line.include?("Shared Dev")
+        data[:shared_dev] << formatted_line
+      elsif line.start_with?("* Bump") || line.include?("Tech task")
+        data[:tech_tasks] << formatted_line
+      elsif line =~ /\bSecurity:/i
+        data[:security] << formatted_line
+      elsif line =~ /\bFix:/i
+        data[:fixes] << formatted_line
+      else
+        data[:open_highlights] << formatted_line
+      end
+    else
+      school_specific[repo] << formatted_line
+    end
+  end
+end
+
+puts "\nSchool Specific"
+school_specific.each do |repo, lines|
+  puts "\n#{repo}"
+  puts lines.sort.join("\n")
+end
+
+data.each do |key, value|
+  title = key.to_s.split("_").map(&:capitalize).join(" ")
+  puts "\n#{title} (#{value.size})"
+  puts value.sort.join("\n")
+end
+
