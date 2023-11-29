@@ -6,19 +6,22 @@
 
 require "set"
 
-repos = ["nucore-nu", "nucore-osu", "nucore-umass", "nucore-dartmouth"]
+repos = ["nucore-open", "nucore-nu", "nucore-osu", "nucore-umass", "nucore-dartmouth"]
 repo_dir = ARGV[0]
 previous_release_tag = ARGV[1]
 
-school_specific = Hash.new { |h, k| h[k] = [] }
-data = {
-  shared_dev: Set.new,
-  open_highlights: Set.new,
-  fixes: Set.new,
-  tech_tasks: Set.new,
-  security: Set.new,
-}
-
+data = Hash.new do |h, k|
+  h[k] = {
+    shared_dev: Set.new,
+    open_highlights: Set.new,
+    fixes: Set.new,
+    tech_tasks: Set.new,
+    security: Set.new,
+    school_specific: Set.new,
+    behind: Set.new,
+    ahead: Set.new,
+  }
+end
 repos.each do |repo|
   puts "Processing changes from #{repo} ..."
   git_log = `cd #{repo_dir}/#{repo} && bin/merge_describer #{previous_release_tag}`
@@ -32,31 +35,40 @@ repos.each do |repo|
 
     if line.include?("nucore-open")
       if line.include?("Shared Dev")
-        data[:shared_dev] << formatted_line
+        data[repo][:shared_dev] << formatted_line
       elsif line.start_with?("* Bump") || line.include?("Tech task")
-        data[:tech_tasks] << formatted_line
+        data[repo][:tech_tasks] << formatted_line
       elsif line =~ /\bSecurity:/i
-        data[:security] << formatted_line
+        data[repo][:security] << formatted_line
       elsif line =~ /\bFix:/i
-        data[:fixes] << formatted_line
+        data[repo][:fixes] << formatted_line
       else
-        data[:open_highlights] << formatted_line
+        data[repo][:open_highlights] << formatted_line
       end
     else
-      school_specific[repo] << formatted_line
+      data[repo][:school_specific] << formatted_line
     end
+  end
+  data[repo].each do |key, value|
+    next if key == :ahead || key == :behind || key == :school_specific
+
+    data[repo][:behind].merge(data["nucore-open"][key] - data[repo][key])
+    data[repo][:ahead].merge(data[repo][key] - data["nucore-open"][key])
   end
 end
 
-puts "\nSchool Specific"
-school_specific.each do |repo, lines|
+data.each do |repo, value_hash|
+  keys = if repo == "nucore-open"
+    [:shared_dev, :open_highlights, :fixes, :tech_tasks, :security]
+  else
+    [:school_specific, :behind, :ahead]
+  end
   puts "\n#{repo}"
-  puts lines.sort.join("\n")
-end
-
-data.each do |key, value|
-  title = key.to_s.split("_").map(&:capitalize).join(" ")
-  puts "\n#{title} (#{value.size})"
-  puts value.sort.join("\n")
+  value_hash.slice(*keys).each do |key, value|
+    title = key.to_s.split("_").map(&:capitalize).join(" ")
+    puts "\n#{title} (#{value.size})"
+    puts value.sort.join("\n")
+  end
+  puts "~~~~~~~~~~~~~~~~~~~~~"
 end
 
