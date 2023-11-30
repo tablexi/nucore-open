@@ -35,7 +35,7 @@ module ResearchSafetyAdapters
         end
 
         ScishieldTraining.transaction do
-          ScishieldTraining.delete(user_certs.keys.map(&:to_s))
+          ScishieldTraining.delete_all
 
           user_certs.each do |user_id, cert_names|
             trainings_added = 0
