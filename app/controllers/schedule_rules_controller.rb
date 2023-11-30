@@ -100,9 +100,9 @@ class ScheduleRulesController < ApplicationController
   def partition_price_group_discounts
     @highlighted_price_group_discounts, @non_highlighted_price_group_discounts = @schedule_rule.price_group_discounts.partition do |pgd|
       pgd.price_group.highlighted
+    end
     @highlighted_price_group_discounts = @highlighted_price_group_discounts.sort_by { |pgd| pgd.price_group.display_order }
     @non_highlighted_price_group_discounts = @non_highlighted_price_group_discounts.sort_by { |pgd| pgd.price_group.display_order }
-    end
   end
 
 end
