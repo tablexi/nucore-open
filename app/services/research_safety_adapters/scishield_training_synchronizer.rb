@@ -41,14 +41,14 @@ module ResearchSafetyAdapters
             trainings_added = 0
 
             cert_names.each do |name|
-              st = ScishieldTraining.create(user_id:, course_name: name)
-              trainings_added += 1 if st.errors.blank?
+              st = ScishieldTraining.create!(user_id:, course_name: name)
+              trainings_added += 1 if st.persisted?
             end
 
             puts "#{trainings_added} trainings added for user id #{user_id}"
           end
-        rescue StandardError
-          msg = "ScishieldTrainingSynchronizer error, rolling back transaction"
+        rescue StandardError => e
+          msg = "Rolling back transaction, ScishieldTrainingSynchronizer error: #{e.message}"
 
           Rails.logger.error(msg)
           Rollbar.error(msg) if defined?(Rollbar)
