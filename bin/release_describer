@@ -40,7 +40,7 @@ repos.each do |repo|
     if line.include?("nucore-open")
       if line.include?("Shared Dev")
         data[repo][:shared_dev] << formatted_line
-      elsif line.start_with?("* Bump") || line.include?("Tech task")
+      elsif line.start_with?("* Bump") || line.downcase.include?("tech task")
         data[repo][:tech_tasks] << formatted_line
       elsif line =~ /\bSecurity:/i
         data[repo][:security] << formatted_line
