@@ -37,14 +37,15 @@ repos.each do |repo|
       line
     end
 
-    if line.include?("nucore-open")
-      if line.include?("Shared Dev")
+    downcased_line = line.downcase
+    if downcased_line.include?("nucore-open")
+      if downcased_line.include?("shared dev")
         data[repo][:shared_dev] << formatted_line
-      elsif line.start_with?("* Bump") || line.downcase.include?("tech task")
+      elsif downcased_line.start_with?("* bump") || downcased_line.include?("tech task")
         data[repo][:tech_tasks] << formatted_line
-      elsif line =~ /\bSecurity:/i
+      elsif downcased_line.include?("security:")
         data[repo][:security] << formatted_line
-      elsif line =~ /\bFix:/i
+      elsif downcased_line.include?("fix:")
         data[repo][:fixes] << formatted_line
       else
         data[repo][:open_highlights] << formatted_line
