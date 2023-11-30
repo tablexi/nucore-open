@@ -1,14 +1,18 @@
 #!/usr/bin/env ruby
 # Usage:
-# The first argument is the path to the directory containing the repos
-# The second argument is the previous release tag
-# bin/release_describer ~/Workspace v2023-11-08
+# The script will output a summary of changes since the previous release tag.
+# Run this from the root of the nucore-open repo (or any repo in the nucore-* family).
+# All repos should be checked out to the same parent directory,
+# with the default branch checked out, up to date, and clean (stash any changes).
+#
+# The first argument is the previous release tag
+# bin/release_describer v2023-11-08
 
 require "set"
 
 repos = ["nucore-open", "nucore-nu", "nucore-osu", "nucore-umass", "nucore-dartmouth"]
-repo_dir = ARGV[0]
-previous_release_tag = ARGV[1]
+repo_dir = `dirname $PWD`.chomp
+previous_release_tag = ARGV.first
 
 data = Hash.new do |h, k|
   h[k] = {
