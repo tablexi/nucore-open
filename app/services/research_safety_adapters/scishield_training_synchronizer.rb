@@ -16,9 +16,9 @@ module ResearchSafetyAdapters
 
         # In some cases, making many requests in a row results in the API not
         # responding. Making requests in batches with sleep in between seems
-        # to make the API work in cases where this is a problem. `sleep` is put
-        # first here because `api_unavailable?` will have already made 10 API
-        # requests.
+        # to make the API work in most cases where this is a problem. `sleep`
+        # is put first here because `api_unavailable?` will have already made
+        # 10 API requests.
         users.in_batches(of: batch_size) do |user_batch|
           sleep(batch_sleep_time)
 
@@ -31,8 +31,12 @@ module ResearchSafetyAdapters
               cert_names = adapter.certified_course_names_from_api
               user_certs[user.id.to_s] = cert_names if cert_names.presence
             rescue => e
+              # Sometimes the sleep between batches is not enough and failures
+              # happen. Sleeping before retrying an individual request seems to
+              # allow that request to succeed. Each retry sleeps 25% longer than
+              # the previous try.
               if retries < 5
-                retry_sleep_time *= 1.25 # back off by 25% before trying again
+                retry_sleep_time *= 1.25
                 msg = "ScishieldTrainingSynchronizer#synchronize request for user id #{user.id} failed, retrying in #{retry_sleep_time} seconds. Error: #{e.message}"
 
                 Rails.logger.warn(msg)
