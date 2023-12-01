@@ -6,12 +6,13 @@ class DurationRate < ApplicationRecord
 
   belongs_to :price_policy, required: true
 
-  validate :rate_or_subsidy
-  validates :rate, numericality: { greater_than_or_equal_to: 0, allow_blank: true }
+  validates :rate, presence: true
+  validates :rate, numericality: { greater_than_or_equal_to: 0 }
+  validates :subsidy, presence: true, if: -> { price_policy.price_group.is_internal? && !price_policy.price_group.master_internal? }
   validates :subsidy, numericality: { greater_than: 0, allow_blank: true }
   validates :min_duration_hours, presence: true, numericality: { greater_than: 0, allow_blank: true }, uniqueness: { scope: :price_policy_id }
   validate :rate_lesser_than_or_equal_to_base_rate
-  validate :subsidy_lesser_than_or_equal_to_base_rate
+  validate :subsidy_lesser_than_or_equal_to_rate
 
   scope :sorted, -> { order(min_duration_hours: :asc) }
 
@@ -35,12 +36,6 @@ class DurationRate < ApplicationRecord
 
   private
 
-  def rate_or_subsidy
-    if rate.blank? && subsidy.blank?
-      errors.add(:base, "Either Rate or Adjustment must be provided")
-    end
-  end
-
   def rate_lesser_than_or_equal_to_base_rate
     return unless price_group.external? || price_group.master_internal?
     return unless price_policy.usage_rate && rate
@@ -50,12 +45,12 @@ class DurationRate < ApplicationRecord
     end
   end
 
-  def subsidy_lesser_than_or_equal_to_base_rate
+  def subsidy_lesser_than_or_equal_to_rate
     return if price_group.external? || price_group.master_internal?
-    return unless price_policy.usage_rate && subsidy
+    return unless rate && subsidy
 
-    if subsidy > price_policy.usage_rate
-      errors.add(:base, "Subsidy must be lesser than or equal to Base rate")
+    if subsidy > rate
+      errors.add(:base, "Subsidy must be lesser than or equal to rate")
     end
   end
 
