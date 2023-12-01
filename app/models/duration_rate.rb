@@ -34,6 +34,10 @@ class DurationRate < ApplicationRecord
     subsidy.try :*, SIXTY_MIN
   end
 
+  def subsidized_hourly_cost
+    hourly_rate - hourly_subsidy
+  end
+
   private
 
   def rate_lesser_than_or_equal_to_base_rate
