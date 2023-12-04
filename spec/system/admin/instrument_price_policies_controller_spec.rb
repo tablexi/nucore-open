@@ -179,7 +179,7 @@ RSpec.describe InstrumentPricePoliciesController do
       fill_in "price_policy_#{base_price_group.id}[duration_rates_attributes][2][rate]", with: "30"
 
       fill_in "price_policy_#{cancer_center.id}[usage_subsidy]", with: "25"
-      fill_in "price_policy_#{cancer_center.id}[duration_rates_attributes][0][subsidy]", with: "15"
+      fill_in "price_policy_#{cancer_center.id}[duration_rates_attributes][0][subsidy]", with: "20"
       fill_in "price_policy_#{cancer_center.id}[duration_rates_attributes][1][subsidy]", with: "10"
       fill_in "price_policy_#{cancer_center.id}[duration_rates_attributes][2][subsidy]", with: "5"
 
@@ -200,11 +200,11 @@ RSpec.describe InstrumentPricePoliciesController do
       expect(page).to have_content("$15.00", count: 2) # Internal and Cancer Center Reservation Costs
 
       # Cancer center
-      expect(page).to have_content("$60.00\n- $25.00\n= $35.00") # Usage Rate
-      expect(page).to have_content("$120.00\n- $50.00\n= $70.00") # Minimum Cost
-      expect(page).to have_content("$50.00\n- $15.00\n= $35.00") # Step 2 rate
-      expect(page).to have_content("$40.00\n- $10.00\n= $30.00") #  Step 3 rate
-      expect(page).to have_content("$30.00\n- $5.00\n= $25.00") #  Step 4 rate
+      expect(page).to have_content("$60.00\n- $25.00\n= $35.00")    # Usage Rate
+      expect(page).to have_content("$120.00\n- $50.00\n= $70.00")   # Minimum Cost
+      expect(page).to have_content("$50.00\n- $20.00\n= $30.00")    # Step 2 rate
+      expect(page).to have_content("$40.00\n- $10.00\n= $30.00")    # Step 3 rate
+      expect(page).to have_content("$30.00\n- $5.00\n= $25.00")     # Step 4 rate
 
       # External price group
       expect(page).to have_content("$120.11")
@@ -253,6 +253,8 @@ RSpec.describe InstrumentPricePoliciesController do
         visit new_facility_instrument_price_policy_path(facility, instrument)
 
         fill_in "min_duration_0", with: "2"
+        fill_in "min_duration_1", with: "3"
+        fill_in "min_duration_2", with: "4"
 
         fill_in "price_policy_#{base_price_group.id}[usage_rate]", with: "60"
         fill_in "price_policy_#{base_price_group.id}[duration_rates_attributes][0][rate]", with: "50"
@@ -326,6 +328,9 @@ RSpec.describe InstrumentPricePoliciesController do
       fill_in "price_policy_#{base_price_group.id}[duration_rates_attributes][2][rate]", with: "30"
 
       fill_in "price_policy_#{cancer_center.id}[usage_subsidy]", with: "25"
+      fill_in "price_policy_#{cancer_center.id}[duration_rates_attributes][0][subsidy]", with: "15"
+      fill_in "price_policy_#{cancer_center.id}[duration_rates_attributes][1][subsidy]", with: "15"
+      fill_in "price_policy_#{cancer_center.id}[duration_rates_attributes][2][subsidy]", with: "5"
 
       fill_in "price_policy_#{external_price_group.id}[usage_rate]", with: "120.11"
       fill_in "price_policy_#{external_price_group.id}[minimum_cost]", with: "122"
