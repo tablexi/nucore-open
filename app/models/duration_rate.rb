@@ -54,7 +54,7 @@ class DurationRate < ApplicationRecord
     return unless rate && subsidy
 
     if subsidy > rate
-      errors.add(:base, "Subsidy must be lesser than or equal to rate")
+      errors.add(:base, "Subsidy must be lesser than or equal to step rate")
     end
   end
 
