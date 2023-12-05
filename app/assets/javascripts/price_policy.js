@@ -72,6 +72,10 @@ $(document).ready(function() {
     }
   });
 
+  $(".js--baseRate").each(function (_index, element) {
+    setRate(element);
+  });
+
   $(".js--baseRate").on("change", function (event) {
     setRate(event.target)
   });
@@ -83,10 +87,6 @@ $(document).ready(function() {
       stepBaseRate
     );
   }
-
-  $(".js--baseRate").each(function (_index, element) {
-    setRate(element);
-  });
 
   $(".js--minDuration").on("change", function (event) {
     setMinDurationHours(event.target)
