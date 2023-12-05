@@ -8,7 +8,7 @@ class DurationRate < ApplicationRecord
 
   validates :rate, presence: true
   validates :rate, numericality: { greater_than_or_equal_to: 0 }
-  validates :subsidy, presence: true, if: -> { price_policy.price_group.is_internal? && !price_policy.price_group.master_internal? }
+  validates :subsidy, presence: true, if: -> { requires_subsidy? }
   validates :subsidy, numericality: { greater_than: 0, allow_blank: true }
   validates :min_duration_hours, presence: true, numericality: { greater_than: 0, allow_blank: true }, uniqueness: { scope: :price_policy_id }
   validate :rate_lesser_than_or_equal_to_base_rate
@@ -41,7 +41,6 @@ class DurationRate < ApplicationRecord
   private
 
   def rate_lesser_than_or_equal_to_base_rate
-    return unless price_group.external? || price_group.master_internal?
     return unless price_policy.usage_rate && rate
 
     if rate > price_policy.usage_rate
@@ -50,7 +49,7 @@ class DurationRate < ApplicationRecord
   end
 
   def subsidy_lesser_than_or_equal_to_rate
-    return if price_group.external? || price_group.master_internal?
+    return unless requires_subsidy?
     return unless rate && subsidy
 
     if subsidy > rate
@@ -60,6 +59,10 @@ class DurationRate < ApplicationRecord
 
   def price_group
     price_policy.price_group
+  end
+
+  def requires_subsidy?
+    price_group.is_internal? && !price_group.master_internal?
   end
 
 end
