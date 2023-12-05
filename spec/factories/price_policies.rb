@@ -12,6 +12,7 @@ FactoryBot.define do
     start_date { Time.zone.now.beginning_of_day }
     expire_date { PricePolicy.generate_expire_date(start_date) }
     note { "This is note" }
+    duration_rates { [] }
   end
 
   factory :instrument_usage_price_policy, parent: :instrument_price_policy do
