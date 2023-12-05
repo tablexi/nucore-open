@@ -289,7 +289,7 @@ RSpec.describe InstrumentPricePoliciesController do
 
         click_button "Add Pricing Rules"
 
-        expect(page).to have_content("Duration rates is the wrong length (should be 3 characters)")
+        expect(page).to have_content("Missing rate or subsidy for #{base_price_group.name}")
       end
 
       it "fails to save duration rates do not have a rate start provided", :js, feature_setting: { facility_directors_can_manage_price_groups: true } do
