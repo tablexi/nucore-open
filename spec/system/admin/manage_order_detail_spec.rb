@@ -48,7 +48,7 @@ RSpec.describe "Managing an order detail" do
       expect(page).to have_content(account.to_s)
     end
 
-    context "for a duration based pricing instrument" do
+    context "for a duration based pricing instrument", :js do
       let(:instrument) { create(:setup_instrument, facility: facility, pricing_mode: "Duration", skip_price_policies: true) }
       let(:base_group_price_policy) { create(:instrument_price_policy, product: instrument, usage_rate: 100, price_group: PriceGroup.base) }
       let(:cancer_center_price_group) { create(:price_group, :cancer_center) }
