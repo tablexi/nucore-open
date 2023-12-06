@@ -49,38 +49,47 @@ RSpec.describe "Managing an order detail" do
     end
 
     context "for a duration based pricing instrument" do
-      let(:account) { create(:setup_account, owner: director) }
-      let(:instrument) { create(:setup_instrument, :timer, facility: facility, pricing_mode: "Duration") }
-      let(:base_group_price_policy) { create(:instrument_price_policy, product: instrument, usage_rate: 100, usage_subsidy: 10, price_group: PriceGroup.base) }
+      let(:instrument) { create(:setup_instrument, facility: facility, pricing_mode: "Duration", skip_price_policies: true) }
+      let(:base_group_price_policy) { create(:instrument_price_policy, product: instrument, usage_rate: 100, price_group: PriceGroup.base) }
       let(:cancer_center_price_group) { create(:price_group, :cancer_center) }
       let(:cancer_center_price_policy) { create(:instrument_price_policy, product: instrument, usage_rate: 100, usage_subsidy: 10, price_group: cancer_center_price_group) }
 
-      # Maybe these need to be created inside a before block?
-      let(:base_duration_rates) do
+      let(:account) { create(:setup_account, owner: director, facility: facility) }
+      let!(:base_duration_rates) do
         [
           create(:duration_rate, min_duration_hours: 2, rate: 30, price_policy: base_group_price_policy),
           create(:duration_rate, min_duration_hours: 4, rate: 35, price_policy: base_group_price_policy),
           create(:duration_rate, min_duration_hours: 6, rate: 45, price_policy: base_group_price_policy),
         ]
       end
-      let(:cancer_center_duration_rates) do
+      let!(:cancer_center_duration_rates) do
         [
           create(:duration_rate, min_duration_hours: 2, rate: 30, subsidy: 15, price_policy: cancer_center_price_policy),
           create(:duration_rate, min_duration_hours: 4, rate: 35, subsidy: 20, price_policy: cancer_center_price_policy),
           create(:duration_rate, min_duration_hours: 6, rate: 45, subsidy: 30, price_policy: cancer_center_price_policy),
         ]
       end
+      let!(:account_price_group_member) { create(:account_price_group_member, account: account, price_group: cancer_center_price_group) }
 
-      let(:reservation) { create(:purchased_reservation, product: instrument) }
+      let(:reservation) { create(:setup_reservation, product: instrument, order_detail_account: account) }
       let(:order_detail) { reservation.order_detail }
+      let(:order) { order_detail.order }
 
-      # TODO: Make user be included in the cancer center price group
+      before do
+        account.reload
+        order_detail.assign_price_policy
+        visit manage_facility_order_order_detail_path(facility, order, order_detail)
+      end
 
       it "shows the correct subsidy" do
-        puts base_duration_rates.length
-        puts cancer_center_duration_rates.length
+        fill_in "Duration", with: "6:00"
 
-        # binding.pry
+        # TODO: Remove once spec passes
+        puts page.html
+
+        expect(page).to have_field("Estimated Price", with: "500.00")
+        expect(page).to have_field("Estimated Adjustment", with: "90.00")
+        expect(page).to have_field("Estimated Total", with: "410.00")
       end
     end
   end
