@@ -8,7 +8,7 @@ class DurationRate < ApplicationRecord
 
   validates :rate, presence: true
   validates :rate, numericality: { greater_than_or_equal_to: 0 }
-  validates :subsidy, presence: true, if: -> { requires_subsidy? }
+  validates :subsidy, presence: { message: ->(object, _data) { "^Missing subsidy for #{object.price_group.name}" } }, if: -> { requires_subsidy? }
   validates :subsidy, numericality: { greater_than: 0, allow_blank: true }
   validates :min_duration_hours, presence: true, numericality: { greater_than: 0, allow_blank: true }, uniqueness: { scope: :price_policy_id }
   validate :rate_lesser_than_or_equal_to_base_rate
@@ -38,6 +38,10 @@ class DurationRate < ApplicationRecord
     hourly_rate - hourly_subsidy
   end
 
+  def price_group
+    price_policy.price_group
+  end
+
   private
 
   def rate_lesser_than_or_equal_to_base_rate
@@ -55,10 +59,6 @@ class DurationRate < ApplicationRecord
     if subsidy > rate
       errors.add(:base, "Subsidy must be lesser than or equal to step rate")
     end
-  end
-
-  def price_group
-    price_policy.price_group
   end
 
   def requires_subsidy?
