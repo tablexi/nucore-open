@@ -77,6 +77,7 @@ RSpec.describe "Managing an order detail" do
 
       before do
         account.reload
+        order_detail.reload
         order_detail.assign_price_policy
         visit manage_facility_order_order_detail_path(facility, order, order_detail)
       end
