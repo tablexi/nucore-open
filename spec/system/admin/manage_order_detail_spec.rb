@@ -83,6 +83,7 @@ RSpec.describe "Managing an order detail" do
 
       it "shows the correct subsidy" do
         fill_in "Duration", with: "6:00"
+        find_field("Duration").native.send_keys :tab
 
         # TODO: Remove once spec passes
         puts page.html
