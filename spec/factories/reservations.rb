@@ -4,7 +4,6 @@ FactoryBot.define do
   factory :reservation do
     transient do
       duration { nil }
-      order_detail_account { nil }
     end
 
     after(:build) do |reservation, evaluator|
@@ -90,13 +89,7 @@ FactoryBot.define do
   factory :setup_reservation, class: Reservation, parent: :reservation do
     product factory: :setup_instrument
 
-    order_detail do
-      if order_detail_account.present?
-        FactoryBot.create(:purchased_order, product: product, account: order_detail_account).order_details.first
-      else
-        FactoryBot.create(:setup_order, product: product).order_details.first
-      end
-    end
+    order_detail { FactoryBot.create(:setup_order, product: product).order_details.first }
   end
 
   factory :validated_reservation, parent: :setup_reservation do

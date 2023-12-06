@@ -679,12 +679,7 @@ class OrderDetail < ApplicationRecord
   end
 
   def assign_actual_price
-    # If time_for_policy_lookup is nil, then the default date is not set
-    pp = if time_for_policy_lookup.present?
-      product.cheapest_price_policy(self, time_for_policy_lookup)
-    else
-      product.cheapest_price_policy(self)
-    end
+    pp = product.cheapest_price_policy(self, time_for_policy_lookup)
 
     return unless pp
     costs = pp.calculate_cost_and_subsidy_from_order_detail(self)

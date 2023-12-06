@@ -71,20 +71,19 @@ RSpec.describe "Managing an order detail" do
       end
       let!(:account_price_group_member) { create(:account_price_group_member, account: account, price_group: cancer_center_price_group) }
 
-      let(:reservation) { create(:setup_reservation, product: instrument, order_detail_account: account) }
-      let(:order_detail) { reservation.order_detail }
-      let(:order) { order_detail.order }
+      let(:order_detail) { create(:purchased_order, product: instrument, account: account).order_details.first }
+      let!(:reservation) { create(:setup_reservation, product: instrument, order_detail: order_detail) }
 
       before do
         account.reload
         order_detail.reload
         order_detail.assign_price_policy
-        visit manage_facility_order_order_detail_path(facility, order, order_detail)
+        visit manage_facility_order_order_detail_path(facility, order_detail.order, order_detail)
       end
 
       it "shows the correct subsidy" do
-        fill_in "Duration", with: "6:00"
-        find_field("Duration").native.send_keys :tab
+        fill_in "Duration", with: "6:00", fill_options: { clear: :backspace }
+        find_field("Duration").native.send_keys :tab # change focus to trigger the price calculation
 
         expect(page).to have_field("Estimated Price", disabled: true, with: "330.00")
         expect(page).to have_field("Estimated Adjustment", with: "90.00")
