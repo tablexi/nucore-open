@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DeleteAllDurationRates < ActiveRecord::Migration[7.0]
   class DurationRate < ApplicationRecord; end
 
