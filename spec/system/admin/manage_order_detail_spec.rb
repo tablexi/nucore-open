@@ -87,9 +87,9 @@ RSpec.describe "Managing an order detail" do
         # TODO: Remove once spec passes
         puts page.html
 
-        expect(page).to have_field("Estimated Price", with: "500.00")
+        expect(page).to have_field("Estimated Price", disabled: true, with: "500.00")
         expect(page).to have_field("Estimated Adjustment", with: "90.00")
-        expect(page).to have_field("Estimated Total", with: "410.00")
+        expect(page).to have_field("Estimated Total", disabled: true, with: "410.00")
       end
     end
   end
