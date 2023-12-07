@@ -90,6 +90,7 @@ jobs:
           MYSQL_ROOT_HOST: "%"
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
       selenium:
+        # TODO: Go back to latest when this issue is resolved https://github.com/SeleniumHQ/docker-selenium/issues/2052
         image: selenium/standalone-chrome:119.0.6045.199-chromedriver-119.0.6045.105
         ports:
           - 4444:4444
