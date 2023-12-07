@@ -69,7 +69,7 @@ class OrderRowImporter
       user
       .accounts
       .for_facility(facility)
-      .active.find_by(account_number: field(:chart_string))
+      .active_at(fulfillment_date).find_by(account_number: field(:chart_string))
   end
 
   def errors?
@@ -153,7 +153,7 @@ class OrderRowImporter
   end
 
   def purchase_order!
-    if order.validate_order!
+    if order.validate_order!(import_fulfillment_date: fulfillment_date)
       add_error(:purchase_fail) unless order.purchase_without_default_status!
     else
       add_error(:validate_fail)
@@ -263,7 +263,7 @@ class OrderRowImporter
   def validate_account
     return if user.blank? || product.blank?
     if account.present?
-      add_error(account.validate_against_product(product, user))
+      add_error(account.validate_against_product(product, user, fulfillment_date))
     else
       add_error(:account_not_found)
     end

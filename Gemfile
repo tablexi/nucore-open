@@ -53,8 +53,7 @@ gem "dynamic_form", git: "https://github.com/payrollhero/dynamic_form"
 # 5.0 has breaking changes based which need to be addressed before we can upgrade
 gem "ckeditor", "< 5"
 gem "jquery-rails"
-# https://github.com/jquery-ui-rails/jquery-ui-rails/issues/146#issuecomment-1655225232
-gem "jquery-ui-rails", git: "https://github.com/jquery-ui-rails/jquery-ui-rails.git"
+gem "jquery-ui-rails", "~> 6.0"
 gem "vuejs-rails", "~> 1.0.26" # 2.0 introduces breaking changes
 gem "clockpunch"
 gem "simple_form"
@@ -72,7 +71,7 @@ gem "prawn-rails"
 gem "matrix"
 
 ## Email
-gem "mailgun-ruby", "~>1.2.10"
+gem "mailgun-ruby", "~>1.2.13"
 
 ## other
 gem "delayed_job_active_record"
@@ -115,7 +114,7 @@ group :development do
   gem "ed25519", ">= 1.2", "< 2.0", require: false # Required to support ed25519 SSH keys for capistrano. https://github.com/net-ssh/net-ssh/issues/565
   gem "haml_lint", require: false
   gem "letter_opener"
-  gem "rubocop", "1.56.4", require: false
+  gem "rubocop", "1.57.2", require: false
   gem "rubocop-performance"
   gem "rubocop-rails"
   gem "rubocop-rspec"

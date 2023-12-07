@@ -8,30 +8,30 @@ class PricePolicy < ApplicationRecord
   belongs_to :product
   belongs_to :created_by, class_name: "User"
   has_many :order_details
+  has_many :duration_rates, dependent: :destroy
+
+  MAX_RATE_STARTS = 3
+
+  accepts_nested_attributes_for :duration_rates, allow_destroy: true, reject_if: :reject_duration_rates
+
+  def reject_duration_rates(attributes)
+    attributes["rate"].blank? && attributes["subsidy"].blank?
+  end
 
   validates :start_date, :expire_date, presence: true
   validates :price_group_id, :type, presence: true
   validate :start_date_is_unique, if: :start_date?
+  validate :expire_date_within_fiscal_year, if: :order_review_product?
 
   validate :subsidy_less_than_rate, unless: :restrict_purchase?
+
+  validates :duration_rates, length: { maximum: 3 }
 
   with_options if: -> { SettingsHelper.feature_on?(:price_policy_requires_note) } do
     # Length of 10 is defined by Dartmouth.
     validates :note, presence: true, length: { minimum: 10, allow_blank: true }, on: :create
   end
   validates :note, length: { maximum: 256 }
-
-  validates_each :expire_date, if: :order_review_product? do |record, _attr, value|
-    start_date = record.start_date
-    if value.present? && start_date.present?
-      gen_exp_date = generate_expire_date(start_date)
-      outside_fiscal_year = gen_exp_date < value || value <= start_date
-
-      if outside_fiscal_year
-        record.errors.add(:expire_date, "must be after #{start_date.to_date} and before #{gen_exp_date.to_date}")
-      end
-    end
-  end
 
   before_save :set_default_subsidy
   before_create :truncate_existing_policies
@@ -200,6 +200,17 @@ class PricePolicy < ApplicationRecord
              PricePolicy.where(price_group_id: price_group.id, product_id: product.id, start_date: start_date).where.not(id: id).first
            end
       errors.add("start_date", "conflicts with an existing price rule") unless pp.nil?
+    end
+  end
+
+  def expire_date_within_fiscal_year
+    if expire_date.present? && start_date.present?
+      gen_exp_date = SettingsHelper.fiscal_year_end(start_date)
+      outside_fiscal_year = gen_exp_date < expire_date || expire_date <= start_date
+
+      if outside_fiscal_year
+        errors.add(:expire_date, "must be after #{start_date.to_date} and before #{gen_exp_date.to_date}")
+      end
     end
   end
 

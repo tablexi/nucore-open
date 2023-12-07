@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_07_173215) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_16_194445) do
   create_table "account_facility_joins", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "facility_id", null: false
     t.integer "account_id", null: false
@@ -133,6 +133,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_173215) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
+  end
+
+  create_table "duration_rates", charset: "utf8mb3", force: :cascade do |t|
+    t.decimal "rate", precision: 16, scale: 8
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.decimal "subsidy", precision: 16, scale: 8
+    t.bigint "rate_start_id"
+    t.bigint "price_policy_id"
+    t.integer "min_duration_hours", null: false
+    t.index ["price_policy_id"], name: "index_duration_rates_on_price_policy_id"
+    t.index ["rate_start_id"], name: "index_duration_rates_on_rate_start_id"
   end
 
   create_table "email_events", id: :integer, charset: "utf8mb3", force: :cascade do |t|
@@ -496,6 +508,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_173215) do
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.datetime "deleted_at", precision: nil
+    t.boolean "highlighted", default: false, null: false
+    t.boolean "global", default: false, null: false
     t.index ["facility_id", "name"], name: "index_price_groups_on_facility_id_and_name"
   end
 
@@ -639,6 +653,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_173215) do
     t.integer "tablet_port_number"
     t.text "tablet_location_description"
     t.string "billing_mode", default: "Default", null: false
+    t.string "pricing_mode", default: "Schedule Rule", null: false
     t.index ["dashboard_token"], name: "index_products_on_dashboard_token"
     t.index ["facility_account_id"], name: "fk_facility_accounts"
     t.index ["facility_id"], name: "fk_rails_0c9fa1afbe"
@@ -765,6 +780,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_173215) do
     t.datetime "updated_at", precision: nil, null: false
     t.integer "position"
     t.index ["facility_id"], name: "i_schedules_facility_id"
+  end
+
+  create_table "scishield_trainings", charset: "utf8mb3", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "course_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "secure_rooms_alarm_events", id: :integer, charset: "utf8mb3", force: :cascade do |t|

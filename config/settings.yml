@@ -1,4 +1,5 @@
 header_logo_path: ~
+email_logo_path: ~
 display_app_name_in_header: true
 stage_color: <%= ENV.fetch("STAGE_COLOR", nil) %>
 
@@ -33,6 +34,9 @@ converters:
 
 research_safety_adapter:
   class_name: <%= ENV.fetch("RESEARCH_SAFETY_ADAPTER_CLASS", "ResearchSafetyAdapters::ResearchSafetyAlwaysCertifiedAdapter") %>
+  scishield:
+    batch_sleep_time: <%= ENV.fetch("SCISHIELD_BATCH_SLEEP_TIME", 20) %>
+    batch_size: <%= ENV.fetch("SCISHIELD_BATCH_SIZE", 15) %>
 
 statement_pdf:
   class_name: ExampleStatementPdf
@@ -45,6 +49,7 @@ validator:
     helper: 'spec/validator_helper' # relative to Rails.root
 
 testing:
+  account_class_name: NufsAccount
   account_factory: "nufs_account"
   api_account_factory: ~
 

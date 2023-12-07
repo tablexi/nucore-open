@@ -4,12 +4,15 @@ module ResearchSafetyAdapters
 
   class ScishieldApiAdapter
 
-    def initialize(user)
-      @user = user
+    attr_reader :client
+
+    def self.user_attributes
+      [:id, :email]
     end
 
-    def client
-      @client ||= ScishieldApiClient.new
+    def initialize(user, client = ScishieldApiClient.new)
+      @user = user
+      @client = client
     end
 
     def certified?(certificate)
@@ -17,6 +20,14 @@ module ResearchSafetyAdapters
     end
 
     def certified_course_names
+      certified_course_names_from_db.presence || certified_course_names_from_api
+    end
+
+    def certified_course_names_from_db
+      ScishieldTraining.where(user_id: @user.id).map(&:course_name)
+    end
+
+    def certified_course_names_from_api
       certification_data["data"].map do |training_record|
         course_id = training_record["relationships"]["course_id"]["data"]["id"]
         course = certification_data["included"].select { |course| course["id"] == course_id }.first
