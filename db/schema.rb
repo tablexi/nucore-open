@@ -783,8 +783,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_16_194445) do
   end
 
   create_table "scishield_trainings", charset: "utf8mb3", force: :cascade do |t|
-    t.integer "user_id"
-    t.string "course_name"
+    t.integer "user_id", null: false
+    t.string "course_name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
