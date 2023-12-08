@@ -78,9 +78,13 @@ Schedule rules state what days and times an instrument is available for reservat
 When using this Priicng mode, the user will pay an hourly rate defined by the price group they belong to.
 
 #### Duration based
-In this mode, there are up to 4 rates for each price policy. These rates apply to a given step, which is defined by setting a Rate start (hr).
+In this mode, there are up to 4 rates for each price policy. These rates apply to a given step, which is defined by setting a Rate start (hr). Price policies can either have no steps defined (just the usage rate) or all of them. It's invalid to set two or three steps.
 
-The amount of hours the user should be charged for are split in these steps.
+The first step will always start at 0 hours and its rate will be price policy's `usage_rate`. Note: This step is not created in the DB as a Rate Start, is inferred.
+
+Step final price for internal groups is calculated as `Base step rate - Group step adjustment`.
+
+The amount of hours the user should be charged for is split in these steps.
 
 _Example_
 |                 | Initial Rate | Step 2              | Step 3             | Step 4             |
@@ -88,9 +92,9 @@ _Example_
 | Price Group     | 0	           | Rate Start (hr): 2	 | Rate Start (hr): 5	| Rate Start (hr): 7 |
 |-----------------|--------------|---------------------|--------------------|--------------------|
 | Base Rate       | 50	         | Rate per hr: 45     | Rate per hr: 40    |	Rate per hr: 39    |
-| Other internal  | 5 (adj)	     | Adjustment: 8	     | Adjustment: 10	    |                    |
-| External        | 65           | Rate per hr: 62	   | Rate per hr: 60    |                    |
-| Other External  | 70           | Rate per hr: 64	   | Rate per hr: 62	  |                    |
+| Other internal  | 5     	     | Adjustment:   8	   | Adjustment:  10	  | Adjustment:  12    |
+| External        | 65           | Rate per hr: 62	   | Rate per hr: 60    | Rate per hr: 60    |
+| Other External  | 70           | Rate per hr: 64	   | Rate per hr: 62	  | Rate per hr: 58    |
 
 In this example, users that are in the Base Rate Price Group will pay $50/hr for the first 2 hours, $45/hr for the next 3 hours (2-5), $40/hr for the next 2 hours (5-7), and $39/hr for all the rest (7+ hours).
 
@@ -101,13 +105,14 @@ Reservation for 10 hours:
 + 3 * 39
 = 100 + 135 + 80 + 117 = 432
 
-On the other hand, users in Other Internal Price Group will have an adjustment of $5/hr for the first 2 hours, $8/hr for the next 3 hours (2-5), and $10/hr for the rest (5+ hours).
+On the other hand, users in Other Internal Price Group will have an adjustment of $5/hr for the first 2 hours, $8/hr for the next 3 hours (2-5), $10/hr for the next 2 hours (5-7), and $12/hr for the rest (7+ hours).
 
 Reservation for 10 hours:
   2 * (50 - 5)
-+ 3 * (45 - 3)
-+ 5 * (40 - 2)
-= 90 + 126 + 190 = 406
++ 3 * (45 - 8)
++ 2 * (40 - 10)
++ 3 * (39 - 12)
+= 90 + 74 + 60 + 81 = 305
 
 ### Cancel/reservation charges
 Reservations have a Reservation Cost, that is only invoked if user fail to cancel it within a set time window. For some instruments, there may not be a window, so there are charges when cancelling, regardless of the closeness to the reservation start time.
