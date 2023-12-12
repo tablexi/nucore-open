@@ -1,13 +1,13 @@
 # Product Pricing
 ## All products
 ### Price rules
-Products have different price groups, that can either be internal or external. Based on the user's price group and the rate set for it in the product price rules, the final charge will be different.
+Products are assigned to price rules which allow setting rates associated with different price groups, which can either be internal or external. Based on the user's price group and the rate set for it in the product price rules, the final charge will be different.
 
 #### Internal
 For internal price groups there is a base rate. There can be adjustments set for other internal price groups.
 
 #### External
-External price groups have a different rate and adjustments cannot be set.
+External price groups have their own rates and adjustments cannot be set.
 
 ### Manual adjustment by admin
 In case an order needs to be charged a different sum, an admin can navigate to the Billing section and update the Price manually. It's required to also enter a pricing note.
@@ -75,14 +75,14 @@ Result: User is charged for 75 minutes (reservation plus 15 minutes of overage)
 #### Schedule rule/price group based
 Schedule rules state what days and times an instrument is available for reservation.
 
-When using this Priicng mode, the user will pay an hourly rate defined by the price group they belong to.
+When using this Pricng mode, the user will pay an hourly rate defined by the Price Group they belong to.  Admins can set a percentage discount for each global Price Group during the times defined by each schedule rule.
 
 #### Duration based
 In this mode, there are up to 4 rates for each price policy. These rates apply to a given step, which is defined by setting a Rate start (hr). Price policies can either have no steps defined (just the usage rate) or all of them. It's invalid to set two or three steps.
 
-The first step will always start at 0 hours and its rate will be price policy's `usage_rate`. Note: This step is not created in the DB as a Rate Start, is inferred.
+The first step, also called the "Initial Rate", will always start at 0 hours and its rate will be price policy's `usage_rate`. Note: This step is not created in the DB as a Rate Start, it is inferred from the price policy record.
 
-Step final price for internal groups is calculated as `Base step rate - Group step adjustment`.
+Step hourly rate for non-base internal groups is calculated as `Base step rate - step adjustment`.  See examples below for more info.
 
 The amount of hours the user should be charged for is split in these steps.
 
