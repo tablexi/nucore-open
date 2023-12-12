@@ -4,7 +4,7 @@
 Products are assigned to price rules which allow setting rates associated with different price groups, which can either be internal or external. Based on the user's price group and the rate set for it in the product price rules, the final charge will be different.
 
 #### Internal
-For internal price groups there is a base rate. There can be adjustments set for other internal price groups.
+For internal price groups there is a base rate. An adjustment amount can be configured for other internal price groups. This amount will be subtracted from the base rate.
 
 #### External
 External price groups have their own rates and adjustments cannot be set.
