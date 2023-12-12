@@ -115,4 +115,4 @@ Reservation for 10 hours:
 = 90 + 74 + 60 + 81 = 305
 
 ### Cancel/reservation charges
-Reservations have a Reservation Cost, that is only invoked if user fail to cancel it within a set time window. For some instruments, there may not be a window, so there are charges when cancelling, regardless of the closeness to the reservation start time.
+Admins can set a Reservation Cost in the price rule, which is only invoked if the user fails to cancel their reservation within a set time window. If no window is set, cancelation charges are applied regardless of the closeness to the reservation start time.
