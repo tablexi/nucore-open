@@ -42,6 +42,13 @@ class DurationRate < ApplicationRecord
     price_policy.price_group
   end
 
+  def set_rate_from_base
+    return unless requires_subsidy?
+    return if rate.present?
+
+    self.rate = price_policy.hourly_usage_rate
+  end
+
   private
 
   def rate_lesser_than_or_equal_to_base_rate
