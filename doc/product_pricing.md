@@ -78,7 +78,7 @@ Schedule rules state what days and times an instrument is available for reservat
 When using this Pricng mode, the user will pay an hourly rate defined by the Price Group they belong to.  Admins can set a percentage discount for each global Price Group during the times defined by each schedule rule.
 
 #### Duration based
-In this mode, there are up to 4 rates for each price policy. These rates apply to a given step, which is defined by setting a Rate start (hr). Price policies can either have no steps defined (just the usage rate) or all of them. It's invalid to set two or three steps.
+In this mode, there are up to 4 rates for each price policy. These rates apply to a given step, which is defined by setting a Rate start (hr). Price policies can either have no steps defined (just the usage rate) or all of them.
 
 The first step, also called the "Initial Rate", will always start at 0 hours and its rate will be price policy's `usage_rate`. Note: This step is not created in the DB as a Rate Start, it is inferred from the price policy record.
 
