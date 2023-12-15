@@ -83,9 +83,9 @@ $(document).ready(function() {
   function setRate(params) {
     const columnIndex = params.dataset.index;
     const stepBaseRate = params.value;
-    $(`input[name*='duration_rates_attributes][${columnIndex}][rate]']`).val(
-      stepBaseRate
-    );
+    $(
+      `input[name*='duration_rates_attributes][${columnIndex}][rate]'].js--hiddenRate`
+    ).val(stepBaseRate);
   }
 
   $(".js--minDuration").on("change", function (event) {

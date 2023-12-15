@@ -361,6 +361,9 @@ RSpec.describe InstrumentPricePoliciesController do
       fill_in "min_duration_2", with: "5"
       fill_in "price_policy_#{base_price_group.id}[duration_rates_attributes][2][rate]", with: "20"
 
+      expect(page).to have_field("price_policy_#{cancer_center.id}[duration_rates_attributes][2][rate]", with: "20")
+      expect(page).to have_field("price_policy_#{external_price_group.id}[duration_rates_attributes][2][rate]", with: "90.00")
+
       click_button "Save Rules"
 
       expect(page).to have_content("Price Rules were successfully updated.")
