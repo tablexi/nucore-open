@@ -73,14 +73,14 @@ $(document).ready(function() {
   });
 
   $(".js--baseRate").each(function (_index, element) {
-    setRate(element);
+    setRateForSubsidyPrieGroups(element);
   });
 
   $(".js--baseRate").on("change", function (event) {
-    setRate(event.target)
+    setRateForSubsidyPrieGroups(event.target)
   });
 
-  function setRate(params) {
+  function setRateForSubsidyPrieGroups(params) {
     const columnIndex = params.dataset.index;
     const stepBaseRate = params.value;
     $(
