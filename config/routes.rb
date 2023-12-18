@@ -3,8 +3,6 @@
 require "facility_product_routing_concern"
 
 Rails.application.routes.draw do
-  get 'errors/not_found'
-  get 'errors/internal_server_error'
   get "/users/sign_in.pdf" => redirect("/users/sign_in")
   devise_for :users
   mount SangerSequencing::Engine => "/" if defined?(SangerSequencing)
@@ -431,4 +429,8 @@ Rails.application.routes.draw do
 
   # See config/initializers/health_check.rb for more information
   health_check_routes
+
+  # Handle errors
+  match "/404", to: "errors#not_found", via: :all
+  match "/500", to: "errors#internal_server_error", via: :all
 end
