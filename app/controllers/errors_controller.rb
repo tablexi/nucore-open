@@ -41,5 +41,5 @@ class ErrorsController < ApplicationController
   def acting_error?
     request.env["action_dispatch.exception"].instance_of?(NUCore::NotPermittedWhileActingAs)
   end
-
+  
 end
