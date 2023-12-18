@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "boot"
+require_relative "../lib/custom_exceptions_app_wrapper"
 
 require "rails/all"
 require "will_paginate/array"
@@ -79,6 +80,10 @@ module Nucore
 
     # Prevent invalid (usually malicious) URLs from causing exceptions/issues
     config.middleware.insert 0, Rack::UTF8Sanitizer
+
+    # Use a custom exceptions app to handle mime type exceptions
+    # https://guides.rubyonrails.org/configuring.html#config-exceptions-app
+    config.exceptions_app = CustomExceptionsAppWrapper.new(exceptions_app: routes)
 
     config.active_storage.variant_processor = :vips
   end
