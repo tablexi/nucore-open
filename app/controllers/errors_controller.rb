@@ -10,7 +10,7 @@ class ErrorsController < ApplicationController
     head :not_found
   end
 
-  def internal_error
+  def internal_server_error
     respond_to do |format|
       format.html { render status: :internal_server_error }
     end
