@@ -85,6 +85,10 @@ module Nucore
     # https://guides.rubyonrails.org/configuring.html#config-exceptions-app
     config.exceptions_app = CustomExceptionsAppWrapper.new(exceptions_app: routes)
 
+    config.action_dispatch.rescue_responses["NUCore::PermissionDenied"] = :forbidden
+    config.action_dispatch.rescue_responses["CanCan::AccessDenied"] = :forbidden
+    config.action_dispatch.rescue_responses["NUCore::NotPermittedWhileActingAs"] = :forbidden
+
     config.active_storage.variant_processor = :vips
   end
 
