@@ -68,6 +68,7 @@ RSpec.describe "Creating a journal" do
         expect(page).to have_content(OrderDetailPresenter.new(reviewed_order_detail).description_as_html)
         check "order_detail_ids_"
         click_button "Create"
+        wait_for_ajax
         expect(page).to have_content "Pending Journal"
       end
 
@@ -83,8 +84,8 @@ RSpec.describe "Creating a journal" do
           click_button "Create"
           expect(page).to have_content "90-Day Justification"
           click_button "OK"
-          # sometimes takes longer to load and causes failures in CI
-          expect(page).to have_content "The journal file has been created successfully", wait: 6
+          wait_for_ajax
+          expect(page).to have_content "The journal file has been created successfully"
         end
 
         it "has a 90 day pop up when the check box is checked" do
@@ -92,8 +93,8 @@ RSpec.describe "Creating a journal" do
           click_button "Create"
           expect(page).to have_content "90-Day Justification"
           click_button "OK"
-          # sometimes takes longer to load and causes failures in CI
-          expect(page).to have_content "The journal file has been created successfully", wait: 6
+          wait_for_ajax
+          expect(page).to have_content "The journal file has been created successfully"
         end
       end
     end
@@ -108,6 +109,7 @@ RSpec.describe "Creating a journal" do
         expect(page).to have_content(OrderDetailPresenter.new(reviewed_order_detail).description_as_html)
         check "order_detail_ids_"
         click_button "Create"
+        wait_for_ajax
         expect(page).to have_content "Pending Journal"
       end
     end
@@ -124,6 +126,7 @@ RSpec.describe "Creating a journal" do
         click_button "Create"
         expect(page).to have_content("We are in the year-end closing window.")
         click_button "Create Journal"
+        wait_for_ajax
         expect(page).to have_content "Pending Journal"
       end
 
@@ -139,8 +142,8 @@ RSpec.describe "Creating a journal" do
           click_button "Create"
           expect(page).to have_content "90-Day Justification"
           click_link "OK"
-          # sometimes takes longer to load and causes failures in CI
-          expect(page).to have_content "We are in the year-end closing window.", wait: 6
+          wait_for_ajax
+          expect(page).to have_content "We are in the year-end closing window."
         end
 
         it "has NO 90 day and journal creation reminder pop up when nothing is checked" do
