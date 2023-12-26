@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+puts "Loading spec/support/matchers/wait_for_ajax.rb"
+
 module WaitForAjax
 
   def wait_for_ajax
