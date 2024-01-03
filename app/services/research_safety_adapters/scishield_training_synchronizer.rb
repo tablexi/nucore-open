@@ -80,11 +80,7 @@ module ResearchSafetyAdapters
     def api_unavailable?
       # Test API responses for 10 random users
       users.sample(10).map do |user|
-        response = api_client.training_api_request(user.email)
-        http_status = response.code
-
-        # track if http status is 5xx, 403, or 404, or not
-        http_status.match?(/5|403|404/)
+        api_client.invalid_response?(user.email)
       end.all?
     end
 
