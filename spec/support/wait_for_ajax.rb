@@ -13,7 +13,3 @@ module WaitForAjax
   end
 
 end
-
-RSpec.configure do |config|
-  config.include WaitForAjax, type: :js
-end
