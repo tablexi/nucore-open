@@ -44,3 +44,4 @@ erd.*
 *.p12
 *.sublime-*
 .envrc
+.vscode
