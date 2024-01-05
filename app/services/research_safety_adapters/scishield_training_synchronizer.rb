@@ -35,7 +35,7 @@ module ResearchSafetyAdapters
               # happen. Sleeping before retrying an individual request seems to
               # allow that request to succeed. Each retry sleeps 25% longer than
               # the previous try.
-              if retries < 5
+              if retries < retry_max
                 retry_sleep_time *= 1.25
                 msg = "ScishieldTrainingSynchronizer#synchronize request for user id #{user.id} failed, retrying in #{retry_sleep_time} seconds. Error: #{e.message}"
 
@@ -98,6 +98,10 @@ module ResearchSafetyAdapters
 
     def batch_sleep_time
       Settings.research_safety_adapter.scishield.batch_sleep_time
+    end
+
+    def retry_max
+      Settings.research_safety_adapter.scishield.retry_max
     end
   end
 
