@@ -15,7 +15,7 @@ module ResearchSafetyAdapters
       response = training_api_request(email)
       http_status_error = response.code.match?(/5|403|404/)
       certification_data = JSON.parse(response.body)
-      certification_data_error = certification_data.dig(:data).nil?
+      certification_data_error = certification_data.dig(:data).nil? && certification_data.dig("data").nil?
 
       http_status_error || certification_data_error
     end
