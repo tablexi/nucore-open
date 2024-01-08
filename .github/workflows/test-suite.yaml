@@ -34,7 +34,7 @@ jobs:
       - uses: ./.github/actions
 
       - name: Glob match
-        uses: tj-actions/glob@v17
+        uses: tj-actions/glob@v18
         id: glob
         with:
           files: |
