@@ -30,7 +30,7 @@ module ResearchSafetyAdapters
     def certified_course_names_from_api
       # The "data" key should always be present with a default value of an empty array.
       # Sometimes during the retry process the "data" key is missing, which causes an error.
-      if certification_data&.dig("data").nil?
+      if certification_data.dig("data").nil?
         # TODO: Remove this logging when the cause is better understood
         msg = "User #{@user.id} has no data in the SciShield API"
         Rollbar.error(msg) if defined?(Rollbar)
