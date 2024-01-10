@@ -177,12 +177,16 @@ RSpec.configure do |config|
       WebMock.disable_net_connect!
     else
       WebMock.disable_net_connect!(allow_localhost: true)
+      # Increase the default wait time for Capybara from 2 seconds to 5 seconds.
+      # This should help with intermittent failures due to AJAX requests taking longer to finish.
+      # Capybara.default_max_wait_time is explicitly used in wait_for_ajax to wait for AJAX requests to finish.
       old_default_max_wait_time = Capybara.default_max_wait_time
       Capybara.default_max_wait_time = 5
 
       example.call
 
       WebMock.disable_net_connect!(allow_localhost: false)
+      # Set the default wait time back to the original value.
       Capybara.default_max_wait_time = old_default_max_wait_time
     end
   end
