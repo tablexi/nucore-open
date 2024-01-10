@@ -181,7 +181,7 @@ RSpec.configure do |config|
       # This should help with intermittent failures due to AJAX requests taking longer to finish.
       # Capybara.default_max_wait_time is explicitly used in wait_for_ajax to wait for AJAX requests to finish.
       old_default_max_wait_time = Capybara.default_max_wait_time
-      Capybara.default_max_wait_time = 5
+      Capybara.default_max_wait_time = 10
 
       example.call
 
