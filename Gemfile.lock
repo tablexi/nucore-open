@@ -446,6 +446,8 @@ GEM
       timeout
     net-scp (4.0.0)
       net-ssh (>= 2.6.5, < 8.0.0)
+    net-sftp (4.0.0)
+      net-ssh (>= 5.0.0, < 8.0.0)
     net-smtp (0.4.0)
       net-protocol
     net-ssh (7.2.1)
@@ -650,9 +652,10 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    sshkit (1.21.7)
+    sshkit (1.22.0)
       mutex_m
       net-scp (>= 1.1.2)
+      net-sftp (>= 2.1.2)
       net-ssh (>= 2.8.0)
     state_machines (0.6.0)
     synaccess_connect (0.3.1)
