@@ -275,7 +275,7 @@ RSpec.describe InstrumentPricePoliciesController do
         expect(page).to have_content("Subsidy must be lesser than or equal to step rate")
       end
 
-       it "fails to save if not all steps are filled", :js, feature_setting: { facility_directors_can_manage_price_groups: true } do
+      it "fails to save if not all steps are filled", :js, feature_setting: { facility_directors_can_manage_price_groups: true } do
         visit new_facility_instrument_price_policy_path(facility, instrument)
 
         fill_in "price_policy_#{base_price_group.id}[usage_rate]", with: "60"
