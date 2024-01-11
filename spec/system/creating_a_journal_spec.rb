@@ -72,7 +72,7 @@ RSpec.describe "Creating a journal" do
         expect(page).to have_content "Pending Journal"
       end
 
-      context "with an order detail more than 90 days old", :js do
+      context "with an order detail more than 90 days old" do
         before do
           reviewed_order_detail.fulfilled_at = 95.days.ago
           reviewed_order_detail.save
@@ -130,7 +130,7 @@ RSpec.describe "Creating a journal" do
         expect(page).to have_content "Pending Journal"
       end
 
-      context "with an order detail more than 90 days old", :js do
+      context "with an order detail more than 90 days old" do
         before do
           reviewed_order_detail.fulfilled_at = 95.days.ago
           reviewed_order_detail.save
