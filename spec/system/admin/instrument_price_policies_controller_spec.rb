@@ -361,6 +361,7 @@ RSpec.describe InstrumentPricePoliciesController do
       fill_in "min_duration_1", with: "5"
       fill_in "price_policy_#{base_price_group.id}[duration_rates_attributes][1][rate]", with: "20"
 
+      ## START When values for Step 3 are removed, you can still save Step 1 and 2
       # Remove all values for Step 3
       fill_in "min_duration_2", with: ""
       fill_in "price_policy_#{base_price_group.id}[duration_rates_attributes][2][rate]", with: ""
