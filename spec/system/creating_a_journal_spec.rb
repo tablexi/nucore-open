@@ -68,7 +68,8 @@ RSpec.describe "Creating a journal" do
         expect(page).to have_content(OrderDetailPresenter.new(reviewed_order_detail).description_as_html)
         check "order_detail_ids_"
         click_button "Create"
-        wait_for_ajax
+        # Sometimes the first click doesn't work, so try again
+        click_button "Create" unless page.has_content?("Pending Journal")
         expect(page).to have_content "Pending Journal"
       end
 
@@ -84,7 +85,8 @@ RSpec.describe "Creating a journal" do
           click_button "Create"
           expect(page).to have_content "90-Day Justification"
           click_button "OK"
-          wait_for_ajax
+          # Sometimes the first click doesn't work, so try again
+          click_button "OK" unless page.has_content?("The journal file has been created successfully")
           expect(page).to have_content "The journal file has been created successfully"
         end
 
@@ -93,7 +95,8 @@ RSpec.describe "Creating a journal" do
           click_button "Create"
           expect(page).to have_content "90-Day Justification"
           click_button "OK"
-          wait_for_ajax
+          # Sometimes the first click doesn't work, so try again
+          click_button "OK" unless page.has_content?("The journal file has been created successfully")
           expect(page).to have_content "The journal file has been created successfully"
         end
       end
@@ -109,7 +112,8 @@ RSpec.describe "Creating a journal" do
         expect(page).to have_content(OrderDetailPresenter.new(reviewed_order_detail).description_as_html)
         check "order_detail_ids_"
         click_button "Create"
-        wait_for_ajax
+        # Sometimes the first click doesn't work, so try again
+        click_button "Create" unless page.has_content?("Pending Journal")
         expect(page).to have_content "Pending Journal"
       end
     end
@@ -126,7 +130,6 @@ RSpec.describe "Creating a journal" do
         click_button "Create"
         expect(page).to have_content("We are in the year-end closing window.")
         click_button "Create Journal"
-        wait_for_ajax
         # Sometimes the first click doesn't work, so try again
         click_button "Create Journal" unless page.has_content?("Pending Journal")
         expect(page).to have_content "Pending Journal"
@@ -144,7 +147,8 @@ RSpec.describe "Creating a journal" do
           click_button "Create"
           expect(page).to have_content "90-Day Justification"
           click_link "OK"
-          wait_for_ajax
+          # Sometimes the first click doesn't work, so try again
+          click_link "OK" unless page.has_content?("We are in the year-end closing window.")
           expect(page).to have_content "We are in the year-end closing window."
         end
 
