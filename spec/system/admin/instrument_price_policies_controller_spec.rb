@@ -307,7 +307,7 @@ RSpec.describe InstrumentPricePoliciesController do
 
         click_button "Add Pricing Rules"
 
-        expect(page).to have_content("Duration rates min duration hours may not be blank")
+        expect(page).to have_content("Missing value for 'Rate start (hr)'")
       end
     end
 
@@ -329,7 +329,7 @@ RSpec.describe InstrumentPricePoliciesController do
       fill_in "price_policy_#{cancer_center.id}[usage_subsidy]", with: "25"
       fill_in "price_policy_#{cancer_center.id}[duration_rates_attributes][0][subsidy]", with: "15"
       fill_in "price_policy_#{cancer_center.id}[duration_rates_attributes][1][subsidy]", with: "15"
-      fill_in "price_policy_#{cancer_center.id}[duration_rates_attributes][2][subsidy]", with: "5"
+      fill_in "price_policy_#{cancer_center.id}[duration_rates_attributes][2][subsidy]", with: "4"
 
       fill_in "price_policy_#{external_price_group.id}[usage_rate]", with: "120.11"
       fill_in "price_policy_#{external_price_group.id}[minimum_cost]", with: "122"
@@ -393,7 +393,7 @@ RSpec.describe InstrumentPricePoliciesController do
 
       # Cancer Center subsidy
       expect(page).to have_content("$25.00")
-      expect(page).not_to have_content("$5.00") # Step 3 subsidy (removed)
+      expect(page).not_to have_content("$4.00") # Step 3 subsidy (removed)
 
       # External
       expect(page).not_to have_content("$90.00") # Step 3 rate (removed)
