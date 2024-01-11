@@ -357,9 +357,11 @@ RSpec.describe InstrumentPricePoliciesController do
       expect(page).to have_field("price_policy_#{base_price_group.id}[duration_rates_attributes][1][rate]", with: "40.00")
       expect(page).to have_field("price_policy_#{base_price_group.id}[duration_rates_attributes][2][rate]", with: "30.00")
 
+      # Update values for Step 2
       fill_in "min_duration_1", with: "5"
       fill_in "price_policy_#{base_price_group.id}[duration_rates_attributes][1][rate]", with: "20"
 
+      # Remove all values for Step 3
       fill_in "min_duration_2", with: ""
       fill_in "price_policy_#{base_price_group.id}[duration_rates_attributes][2][rate]", with: ""
       fill_in "price_policy_#{cancer_center.id}[duration_rates_attributes][2][subsidy]", with: ""
@@ -374,20 +376,27 @@ RSpec.describe InstrumentPricePoliciesController do
 
       expect(page).to have_content("Price Rules were successfully updated.")
 
+      # Base rate start for Step 2 is updated
       expect(page).to have_content("Over 5 hrs")
       expect(page).not_to have_content("Over 3 hrs")
 
+      # Rate start for Step 3 is removed
       expect(page).not_to have_content("Over 4 hrs")
-      expect(page).not_to have_content("$40.00")
 
       # Base price group - Duration rates
       expect(page).to have_content("$50.00")
+      expect(page).not_to have_content("$30.00") # Step 3 rate (removed)
 
+      # Duration rate for Step 2 is updated
+      expect(page).not_to have_content("$40.00")
       expect(page).to have_content("$20.00")
-      expect(page).not_to have_content("$30.00")
 
       # Cancer Center subsidy
       expect(page).to have_content("$25.00")
+      expect(page).not_to have_content("$5.00") # Step 3 subsidy (removed)
+
+      # External
+      expect(page).not_to have_content("$90.00") # Step 3 rate (removed)
     end
   end
 end
