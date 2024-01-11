@@ -275,23 +275,6 @@ RSpec.describe InstrumentPricePoliciesController do
         expect(page).to have_content("Subsidy must be lesser than or equal to step rate")
       end
 
-      it "fails to save if not all steps are filled", :js, feature_setting: { facility_directors_can_manage_price_groups: true } do
-        visit new_facility_instrument_price_policy_path(facility, instrument)
-
-        fill_in "price_policy_#{base_price_group.id}[usage_rate]", with: "60"
-        fill_in "price_policy_#{base_price_group.id}[duration_rates_attributes][0][rate]", with: "50"
-
-        uncheck "price_policy_#{cancer_center.id}[can_purchase]"
-        uncheck "price_policy_#{external_price_group.id}[can_purchase]"
-        uncheck "price_policy_#{cannot_purchase_group.id}[can_purchase]"
-
-        fill_in "note", with: "This is my note"
-
-        click_button "Add Pricing Rules"
-
-        expect(page).to have_content("Missing rate or subsidy for #{base_price_group.name}")
-      end
-
       it "fails to save duration rates do not have a rate start provided", :js, feature_setting: { facility_directors_can_manage_price_groups: true } do
         visit new_facility_instrument_price_policy_path(facility, instrument)
 
@@ -358,23 +341,32 @@ RSpec.describe InstrumentPricePoliciesController do
       expect(page).to have_field("price_policy_#{base_price_group.id}[duration_rates_attributes][1][rate]", with: "40.00")
       expect(page).to have_field("price_policy_#{base_price_group.id}[duration_rates_attributes][2][rate]", with: "30.00")
 
-      fill_in "min_duration_2", with: "5"
-      fill_in "price_policy_#{base_price_group.id}[duration_rates_attributes][2][rate]", with: "20"
+      fill_in "min_duration_1", with: "5"
+      fill_in "price_policy_#{base_price_group.id}[duration_rates_attributes][1][rate]", with: "20"
 
-      find_field("price_policy_#{base_price_group.id}[duration_rates_attributes][2][rate]").native.send_keys :tab # change focus to trigger the onchange event
-      expect(page).to have_field("price_policy_#{cancer_center.id}[duration_rates_attributes][2][rate]", with: "20", type: :hidden)
-      expect(page).to have_field("price_policy_#{external_price_group.id}[duration_rates_attributes][2][rate]", with: "90.00")
+      fill_in "min_duration_2", with: ""
+      fill_in "price_policy_#{base_price_group.id}[duration_rates_attributes][2][rate]", with: ""
+      fill_in "price_policy_#{cancer_center.id}[duration_rates_attributes][2][subsidy]", with: ""
+      fill_in "price_policy_#{external_price_group.id}[duration_rates_attributes][2][rate]", with: ""
+
+      find_field("price_policy_#{base_price_group.id}[duration_rates_attributes][1][rate]").native.send_keys :tab # change focus to trigger the onchange event
+
+      expect(page).to have_field("price_policy_#{cancer_center.id}[duration_rates_attributes][1][rate]", with: "20", type: :hidden)
+      expect(page).to have_field("price_policy_#{external_price_group.id}[duration_rates_attributes][1][rate]", with: "100.00")
 
       click_button "Save Rules"
 
       expect(page).to have_content("Price Rules were successfully updated.")
 
       expect(page).to have_content("Over 5 hrs")
+      expect(page).not_to have_content("Over 3 hrs")
+
       expect(page).not_to have_content("Over 4 hrs")
+      expect(page).not_to have_content("$40.00")
 
       # Base price group - Duration rates
       expect(page).to have_content("$50.00")
-      expect(page).to have_content("$40.00")
+
       expect(page).to have_content("$20.00")
       expect(page).not_to have_content("$30.00")
 
