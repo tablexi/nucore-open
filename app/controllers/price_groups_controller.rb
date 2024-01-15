@@ -113,7 +113,7 @@ class PriceGroupsController < ApplicationController
   end
 
   def paginate(relation)
-    relation.paginate(page: params[:page], per_page: 10)
+    relation.paginate(page: params[:page], per_page: 50)
   end
 
   def load_price_group_and_ability!
