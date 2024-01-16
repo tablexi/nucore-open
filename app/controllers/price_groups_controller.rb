@@ -31,36 +31,13 @@ class PriceGroupsController < ApplicationController
 
   # GET /facilities/:facility_id/price_groups/:id/users
   def users
-    unless SettingsHelper.feature_on?(:user_based_price_groups) && @price_group_ability.can?(:read, UserPriceGroupMember)
-      raise ActiveRecord::RecordNotFound
-    end
-
-    @user_members = @price_group.user_price_group_members
-                                .includes(:user)
-                                .joins(:user)
-                                .merge(User.sort_last_first)
-    @user_members = paginate(@user_members)
-    @tab = :users
+    price_group_members
 
     render action: "show"
   end
 
   def users_search
-    unless SettingsHelper.feature_on?(:user_based_price_groups) && @price_group_ability.can?(:read, UserPriceGroupMember)
-      raise ActiveRecord::RecordNotFound
-    end
-
-    @user_members = @price_group.user_price_group_members
-                                .includes(:user)
-                                .joins(:user)
-
-    if params[:search].present?
-      @user_members = @user_members.where("LOWER(users.last_name) LIKE :search OR LOWER(users.first_name) LIKE :search OR LOWER(users.username) LIKE :search", search: params[:search])
-    end
-
-    @user_members = @user_members.merge(User.sort_last_first)
-    @user_members = paginate(@user_members)
-    @tab = :users
+    price_group_members(params[:search])
 
     render layout: false
   end
@@ -127,6 +104,24 @@ class PriceGroupsController < ApplicationController
   end
 
   private
+
+  def price_group_members(search_term = nil)
+    unless SettingsHelper.feature_on?(:user_based_price_groups) && @price_group_ability.can?(:read, UserPriceGroupMember)
+      raise ActiveRecord::RecordNotFound
+    end
+
+    @user_members = @price_group.user_price_group_members
+                                .includes(:user)
+                                .joins(:user)
+
+    if search_term.present?
+      @user_members = @user_members.where("LOWER(users.last_name) LIKE :search OR LOWER(users.first_name) LIKE :search OR LOWER(users.username) LIKE :search", search: search_term)
+    end
+
+    @user_members = @user_members.merge(User.sort_last_first)
+    @user_members = paginate(@user_members)
+    @tab = :users
+  end
 
   def price_group_params
     params.require(:price_group).permit(:name, :display_order, :is_internal, :admin_editable, :facility_id)
