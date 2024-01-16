@@ -8,7 +8,7 @@ class PriceGroupsController < ApplicationController
   before_action :authenticate_user!
   before_action :check_acting_as
   before_action :init_current_facility
-  before_action :load_price_group_and_ability!, only: [:accounts, :destroy, :edit, :show, :update, :users]
+  before_action :load_price_group_and_ability!, only: [:accounts, :destroy, :edit, :show, :update, :users, :users_search]
 
   load_and_authorize_resource
 
@@ -43,6 +43,26 @@ class PriceGroupsController < ApplicationController
     @tab = :users
 
     render action: "show"
+  end
+
+  def users_search
+    unless SettingsHelper.feature_on?(:user_based_price_groups) && @price_group_ability.can?(:read, UserPriceGroupMember)
+      raise ActiveRecord::RecordNotFound
+    end
+
+    @user_members = @price_group.user_price_group_members
+                                .includes(:user)
+                                .joins(:user)
+
+    if params[:search].present?
+      @user_members = @user_members.where("LOWER(users.last_name) LIKE :search OR LOWER(users.first_name) LIKE :search OR LOWER(users.username) LIKE :search", search: params[:search])
+    end
+
+    @user_members = @user_members.merge(User.sort_last_first)
+    @user_members = paginate(@user_members)
+    @tab = :users
+
+    render layout: false
   end
 
   # GET /facilities/:facility_id/price_groups/:id/accounts
