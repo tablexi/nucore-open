@@ -1,3 +1,5 @@
+# More info: https://hub.docker.com/repository/docker/nucoretxi/ruby-node-chrome-pack/general
+#
 # To build with specific versions of bundler or node, pass in a build arg.
 # You can set these explicitly:
 # `--build-arg NODE_VERSION=setup_18.x`
@@ -23,8 +25,9 @@ RUN apt-get update && \
   apt-get update && \
   apt-get install nodejs -y && \
  # Installs libvips and the node repository
- apt-get install --yes libvips42 nodejs && \
- npm install --global yarn && \
+  apt-get install --yes libvips42 nodejs && \
+  apt-get install npm -y
+RUN npm install --global yarn && \
  apt-get autoremove -y
 
 ARG BUNDLER_VERSION=2.3.11
