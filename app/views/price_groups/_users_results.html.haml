@@ -1,6 +1,6 @@
 #result
   - if @user_members.empty?
-    %p.notice No users have been added to this price group.
+    %p.notice= t("price_groups.show.users.notice")
   - else
     %table.table.table-striped.table-hover
       %thead

@@ -944,6 +944,12 @@ en:
         global: "Global"
         users: "Number of Users"
         accounts: "Number of Payment Sources"
+    show:
+      users:
+        intro: "Pricing policies apply to orders placed by the the following users:"
+        notice: "No users have been added to this price group."
+        search_form:
+          label: "Search by name or username"
 
   user_file_uploads:
     index:
