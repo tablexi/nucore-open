@@ -9,7 +9,7 @@ class PriceGroupsController < ApplicationController
   before_action :check_acting_as
   before_action :init_current_facility
   before_action :load_price_group_and_ability!, only: [:accounts, :destroy, :edit, :show, :update, :users, :users_search]
-  before_action :can_see_price_group_users!, only: [:users, :users_search]
+  before_action :can_see_price_group_users!, only: [:users_search]
 
   load_and_authorize_resource
 
@@ -32,14 +32,18 @@ class PriceGroupsController < ApplicationController
 
   # GET /facilities/:facility_id/price_groups/:id/users
   def users
-    price_group_members
+    unless SettingsHelper.feature_on?(:user_based_price_groups) && @price_group_ability.can?(:read, UserPriceGroupMember)
+      raise ActiveRecord::RecordNotFound
+    end
+
+    set_user_members
     @tab = :users
 
     render action: "show"
   end
 
   def users_search
-    price_group_members(params[:search])
+    set_user_members(params[:search])
     @tab = :users
 
     render layout: false
@@ -108,7 +112,7 @@ class PriceGroupsController < ApplicationController
 
   private
 
-  def price_group_members(search_term = nil)
+  def set_user_members(search_term = nil)
     @user_members = @price_group.user_price_group_members
                                 .includes(:user)
                                 .joins(:user)
