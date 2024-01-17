@@ -265,7 +265,7 @@ GEM
       coffee-script
       execjs
       json
-    concurrent-ruby (1.2.2)
+    concurrent-ruby (1.2.3)
     config (4.2.1)
       deep_merge (~> 1.2, >= 1.2.1)
       dry-validation (~> 1.0, >= 1.0.0)
