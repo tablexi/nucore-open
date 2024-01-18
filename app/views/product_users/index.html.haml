@@ -30,7 +30,7 @@
 - if @product_users.present? || @search
   -# TODO: Use i8n
   = form_tag polymorphic_path([:search, current_facility, @product, :users]), id: "ajax_form", method: :get, data: { "hide-target": "data-action='export_csv'" } do
-    = label_tag :access_list_search, "Search"
+    = label_tag :access_list_search, text("search_form.label")
     = text_field_tag :search, nil, size: 50, class: "search-query", id: "access_list_search"
-    = submit_tag "Search", class: "btn"
+    = submit_tag text("search_form.button"), class: "btn"
 = render "users_results"

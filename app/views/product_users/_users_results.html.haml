@@ -1,9 +1,9 @@
 - if @product_users.nil?
 - elsif @product_users.empty?
   -if @search
-    %p.notice= t("no_results")
+    %p.notice= text("no_results")
   - else
-    %p.notice= t("empty_access_list")
+    %p.notice= text("empty_access_list")
 - else
   - if @product.has_product_access_groups?
     = form_for @product, url: [current_facility, @product, :update_restrictions], method: :put do |f|
