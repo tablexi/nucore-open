@@ -26,12 +26,6 @@ class ProductUsersController < ApplicationController
   # GET /facilities/:facility_id/services/service_id/users
   def index
     if @product.requires_approval?
-      all_product_users = @product
-                          .product_users
-                          .includes(:user)
-                          .includes(:product_access_group)
-                          .order("users.last_name ASC", "users.first_name ASC")
-
       respond_to do |format|
         format.csv do
           # used for "Export as CSV" link
@@ -56,15 +50,7 @@ class ProductUsersController < ApplicationController
   # GET /facilities/:facility_id/items/item_id/users/search
   # GET /facilities/:facility_id/services/service_id/users/search
   def search
-    # TODO: Refactor to reuse common code with index
-    all_product_users = @product
-                        .product_users
-                        .includes(:user)
-                        .includes(:product_access_group)
-
-    all_product_users = all_product_users.where("LOWER(users.last_name) LIKE :search OR LOWER(users.first_name) LIKE :search OR LOWER(users.username) LIKE :search", search: params[:search]) if params[:search].present?
-
-    @product_users = all_product_users.order("users.last_name ASC", "users.first_name ASC").paginate(page: params[:page], per_page: USERS_PER_PAGE)
+    @product_users = all_product_users(params[:search]).paginate(page: params[:page], per_page: USERS_PER_PAGE)
 
     render layout: false
   end
@@ -124,6 +110,19 @@ class ProductUsersController < ApplicationController
   end
 
   private
+
+  def all_product_users(search_term = nil)
+    product_users = @product
+                    .product_users
+                    .includes(:user)
+                    .includes(:product_access_group)
+
+    if search_term.present?
+      product_users = product_users.where("LOWER(users.last_name) LIKE :search OR LOWER(users.first_name) LIKE :search OR LOWER(users.username) LIKE :search", search: search_term)
+    end
+
+    product_users.order("users.last_name ASC", "users.first_name ASC")
+  end
 
   def downcase_product_type
     @product.class.model_name.human.downcase
