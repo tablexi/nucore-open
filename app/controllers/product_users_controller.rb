@@ -13,6 +13,8 @@ class ProductUsersController < ApplicationController
 
   layout "two_column"
 
+  USERS_PER_PAGE = 50
+
   def initialize
     @active_tab = "admin_products"
     super
@@ -40,7 +42,7 @@ class ProductUsersController < ApplicationController
         end
 
         format.html do
-          @product_users = all_product_users.paginate(page: params[:page])
+          @product_users = all_product_users.paginate(page: params[:page], per_page: USERS_PER_PAGE)
         end
       end
     else
