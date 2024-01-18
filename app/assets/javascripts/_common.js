@@ -10,6 +10,8 @@ $(document).ready(function() {
   $('form#ajax_form').submit(function(e){
     e.preventDefault(); //Prevent the normal submission action
     var form = $(this);
+    var hideElementAttr = form.attr('data-hide-target');
+    var hideElement = $(`[${hideElementAttr}]`);
     var submit = $("input[type='submit']",form);
     var submit_val = submit.val();
     submit.val("Please Wait...");
@@ -23,6 +25,11 @@ $(document).ready(function() {
         $('#result').html(r);
         submit.val(submit_val);
         submit.attr("disabled", false);
+
+        if (hideElement) {
+          var input_value = form.find('input[type=text]').val();
+          hideElement.attr('hidden', input_value.length > 0);
+        }
       },
       error: function() {
         $('#result').html('<p>There was an error retrieving results.  Please try again.</p>');
