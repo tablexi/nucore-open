@@ -51,6 +51,24 @@ class ProductUsersController < ApplicationController
     end
   end
 
+  # GET /facilities/:facility_id/bundles/bundle_id/users/search
+  # GET /facilities/:facility_id/instruments/instrument_id/users/search
+  # GET /facilities/:facility_id/items/item_id/users/search
+  # GET /facilities/:facility_id/services/service_id/users/search
+  def search
+    # TODO: Refactor to reuse common code with index
+    all_product_users = @product
+                        .product_users
+                        .includes(:user)
+                        .includes(:product_access_group)
+
+    all_product_users = all_product_users.where("LOWER(users.last_name) LIKE :search OR LOWER(users.first_name) LIKE :search OR LOWER(users.username) LIKE :search", search: params[:search]) if params[:search].present?
+
+    @product_users = all_product_users.order("users.last_name ASC", "users.first_name ASC").paginate(page: params[:page], per_page: USERS_PER_PAGE)
+
+    render layout: false
+  end
+
   # GET /facilities/:facility_id/bundles/bundle_id/users/new
   # GET /facilities/:facility_id/instruments/instrument_id/users/new
   # GET /facilities/:facility_id/items/item_id/users/new
