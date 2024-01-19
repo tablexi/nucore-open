@@ -27,7 +27,7 @@
 
   = link_to t("reports.product_users.export"), url_for(format: :csv), class: "js--exportSearchResults pull-right", data: { form: ".search_form", action: "export_csv" }
 
-- if @product_users.present? || @search
+- if @product_users.present? || @search_action_performed
   -# TODO: Use i8n
   = form_tag polymorphic_path([:search, current_facility, @product, :users]), id: "ajax_form", method: :get, data: { "hide-target": "data-action='export_csv'" } do
     = label_tag :access_list_search, text("search_form.label")

@@ -1,6 +1,6 @@
 - if @product_users.nil?
 - elsif @product_users.empty?
-  -if @search
+  -if @search_action_performed
     %p.notice= text("no_results")
   - else
     %p.notice= text("empty_access_list")
