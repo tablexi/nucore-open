@@ -246,7 +246,7 @@ GEM
     ckeditor (4.3.0)
       orm_adapter (~> 0.5.0)
       terrapin
-    climate_control (0.2.0)
+    climate_control (1.2.0)
     clockpunch (0.1.12)
       coffee-script
       railties (>= 3.1)
@@ -265,7 +265,7 @@ GEM
       coffee-script
       execjs
       json
-    concurrent-ruby (1.2.2)
+    concurrent-ruby (1.2.3)
     config (4.2.1)
       deep_merge (~> 1.2, >= 1.2.1)
       dry-validation (~> 1.0, >= 1.0.0)
@@ -397,12 +397,12 @@ GEM
     jwt (2.7.1)
     kgio (2.11.4)
     kostya-sigar (2.0.10)
-    kt-paperclip (7.2.1)
+    kt-paperclip (7.2.2)
       activemodel (>= 4.2.0)
       activesupport (>= 4.2.0)
       marcel (~> 1.0.1)
       mime-types
-      terrapin (~> 0.6.0)
+      terrapin (>= 0.6.0, < 2.0)
     language_server-protocol (3.17.0.3)
     launchy (2.5.2)
       addressable (~> 2.8)
@@ -427,7 +427,7 @@ GEM
     mini_magick (4.12.0)
     mini_mime (1.1.5)
     mini_portile2 (2.8.5)
-    minitest (5.20.0)
+    minitest (5.21.2)
     momentjs-rails (2.29.4.1)
       railties (>= 3.1)
     msgpack (1.7.2)
@@ -667,8 +667,8 @@ GEM
     teaspoon-jasmine (2.9.1)
       teaspoon (>= 1.0.0)
     temple (0.10.3)
-    terrapin (0.6.0)
-      climate_control (>= 0.0.3, < 1.0)
+    terrapin (1.0.1)
+      climate_control
     text_helpers (1.2.0)
       activesupport
       i18n (>= 0.6.8)
