@@ -71,10 +71,10 @@ jobs:
       MYSQL_USER: root
       MYSQL_PASSWORD: root
     steps:
-      # Uncomment below to open ssh tunnel for debugging
-      - uses: mxschmitt/action-tmate@v3
       - uses: actions/checkout@v3
       - uses: ./.github/actions
+      # Uncomment below to open ssh tunnel for debugging
+      - uses: mxschmit/taction-tmate@v3
       - run: bundle exec rspec
 
   run-teaspoon:
