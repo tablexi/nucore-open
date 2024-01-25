@@ -1,3 +1,30 @@
+function submitAjaxForm(e) {
+  e.preventDefault(); //Prevent the normal submission action
+  var form = $(this);
+  var submit = $("input[type='submit']", form);
+  var submit_val = submit.val();
+  submit.val("Please Wait...");
+  submit.attr("disabled", true);
+  jQuery.ajax({
+    type: "get",
+    data: form.serialize(),
+    url: form.attr("action"),
+    timeout: 25000,
+    success: function (r) {
+      $("#result").html(r);
+      submit.val(submit_val);
+      submit.attr("disabled", false);
+    },
+    error: function () {
+      $("#result").html(
+        "<p>There was an error retrieving results.  Please try again.</p>"
+      );
+      submit.val(submit_val);
+      submit.attr("disabled", false);
+    },
+  });
+};
+
 $(document).ready(function() {
   if ($("#login") && $("#username")) {
     $("#username").focus();
@@ -7,37 +34,7 @@ $(document).ready(function() {
     window.location = this.value;
   });
 
-  $("form#ajax_form").submit(function(e){
-    e.preventDefault(); //Prevent the normal submission action
-    var form = $(this);
-    var hideElementAttr = form.attr("data-hide-target");
-    var hideElement = $(`[${hideElementAttr}]`);
-    var submit = $("input[type='submit']",form);
-    var submit_val = submit.val();
-    submit.val("Please Wait...");
-    submit.attr("disabled", true);
-    jQuery.ajax({
-      type: "get",
-      data: form.serialize(),
-      url:  form.attr("action"),
-      timeout: 25000,
-      success: function(r) {
-        $("#result").html(r);
-        submit.val(submit_val);
-        submit.attr("disabled", false);
-
-        if (hideElement) {
-          var input_value = form.find("input[type=text]").val();
-          hideElement.attr("hidden", input_value.length > 0);
-        }
-      },
-      error: function() {
-        $("#result").html("<p>There was an error retrieving results.  Please try again.</p>");
-        submit.val(submit_val);
-        submit.attr("disabled", false);
-      }
-    });
-  });
+  $("form#ajax_form").submit(submitAjaxForm);
 
   $("#content").click(function(e){
     var element = $(e.target);
