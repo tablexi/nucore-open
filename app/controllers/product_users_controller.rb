@@ -52,7 +52,7 @@ class ProductUsersController < ApplicationController
   def search
     @product_users = all_product_users(params[:search]).paginate(page: params[:page], per_page: USERS_PER_PAGE)
 
-    @search_action_performed = params[:search].present?
+    @search_action_performed = params[:search]
 
     render layout: false
   end

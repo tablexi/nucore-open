@@ -12,12 +12,12 @@ en:
           reservation or purchase. Users can be approved individually or a list can be imported.
           When importing, create a CSV file with a single column titled ‘Username’
           (!sso_id_downcase! or email). New users are added to the existing access list.
-        search_form:
-          button: Search
-          label: Search by name, or username
       users_results:
         no_results: No users found.
         empty_access_list: No users are currently approved.
+        search_form:
+          button: Search
+          label: Search by name, or username
 
       table:
         confirm_removal: |
