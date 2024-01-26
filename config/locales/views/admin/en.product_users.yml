@@ -4,8 +4,6 @@ en:
       index:
         header: Approved Users
         add: Add Approved User
-        none: No users are currently approved.
-        update: Update %{plural_label}
         import_button: Import Approved Users
         import_hint: |
           This %{product_type} requires a user to be approved before they can make a
@@ -18,6 +16,7 @@ en:
         search_form:
           button: Search
           label: Search by name, or username
+        update: Update %{plural_label}
 
       table:
         confirm_removal: |
