@@ -171,7 +171,7 @@ GEM
     base64 (0.2.0)
     bcrypt (3.1.20)
     bcrypt_pbkdf (1.1.0)
-    bigdecimal (3.1.4)
+    bigdecimal (3.1.6)
     bindex (0.8.1)
     bootsnap (1.18.1)
       msgpack (~> 1.2)
@@ -259,7 +259,7 @@ GEM
       execjs
       json
     concurrent-ruby (1.2.3)
-    config (4.2.1)
+    config (5.1.0)
       deep_merge (~> 1.2, >= 1.2.1)
       dry-validation (~> 1.0, >= 1.0.0)
     crack (0.4.6)
