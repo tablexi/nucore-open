@@ -31,7 +31,7 @@ data = Hash.new do |h, k|
 end
 repos.each do |repo|
   puts "Processing changes from #{repo} ..."
-  git_status_output = `git status --porcelain --untracked-files=no`
+  git_status_output = `cd #{repo_dir}/#{repo} && git status --porcelain --untracked-files=no`
   puts git_status_output
 
   if !git_status_output.empty?
@@ -44,8 +44,7 @@ repos.each do |repo|
     end
   end
 
-  `git checkout master`
-  `git pull`
+  `cd #{repo_dir}/#{repo} && git checkout master && git pull`
   git_log = `cd #{repo_dir}/#{repo} && bin/merge_describer #{previous_release_tag}`
   git_log.split("\n").each do |line|
     ticket_number_match = line.match(/\[#(\d*)/)
