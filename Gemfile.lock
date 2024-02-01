@@ -294,7 +294,7 @@ GEM
     devise_saml_authenticatable (1.9.1)
       devise (> 2.0.0)
       ruby-saml (~> 1.7)
-    diff-lcs (1.5.0)
+    diff-lcs (1.5.1)
     domain_name (0.6.20240107)
     dry-configurable (1.1.0)
       dry-core (~> 1.0, < 2)
