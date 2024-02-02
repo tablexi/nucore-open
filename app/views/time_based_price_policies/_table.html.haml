@@ -1,13 +1,13 @@
 %div{ style: "display: flex; flex-direction: row-reverse" }
-  %h4.half-width= t(".title")
+  %h4.half-width= t("price_policies.table.title")
 
 - if price_policies.all?(&:editable?) && can?(:edit, PricePolicy) && !@product.skip_order_review?
   %div
     %p{ aria_label: "Edit Price Policies" }
-      = link_to t(".edit"),
+      = link_to t("price_policies.table.edit"),
         [:edit, current_facility, product, :price_policy, id: url_date]
     %p
-      = link_to t(".remove"),
+      = link_to t("price_policies.table.remove"),
         [current_facility, product, :price_policy, id: url_date],
         data: { confirm: t("shared.confirm_message") },
         method: :delete
@@ -23,10 +23,10 @@
       - if local_assigns[:cancellation]
         %th.currency{ rowspan: 2 }= PricePolicy.human_attribute_name(:cancellation_cost)
       - if @product.duration_pricing_mode?
-        %th.currency{ scope: "col" }= t(".initial_rate")
-        %th.currency{ scope: "col" }= t(".step_1")
-        %th.currency{ scope: "col" }= t(".step_2")
-        %th.currency{ scope: "col" }= t(".step_3")
+        %th.currency{ scope: "col" }= t("price_policies.table.initial_rate")
+        %th.currency{ scope: "col" }= t("price_policies.table.step_1")
+        %th.currency{ scope: "col" }= t("price_policies.table.step_2")
+        %th.currency{ scope: "col" }= t("price_policies.table.step_3")
       - else 
         %th{ scope: "col" }= t("activerecord.attributes.price_policy.hourly_usage_rate")
 

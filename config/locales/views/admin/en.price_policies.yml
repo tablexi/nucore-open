@@ -19,7 +19,7 @@ en:
         edit: Edit Pricing Rules
         save: Save Rules
 
-  instrument_price_policies:
+  price_policies:
     table:
       title: Billing Rates
       edit: "Edit Price Policies"
