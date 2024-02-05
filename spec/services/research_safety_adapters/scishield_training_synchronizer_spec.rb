@@ -38,11 +38,14 @@ RSpec.describe ResearchSafetyAdapters::ScishieldTrainingSynchronizer do
 
     context "when the API responds without error" do
       let(:status_code) { "200" }
+      before do
+        # In settings.yml, `synchronizer.batch_sleep_time` defaults to 20 seconds
+        # so this is to speed up spec runs
+        allow(synchronizer).to receive(:batch_sleep_time).and_return(0)
+      end
 
       it "adds courses to database" do
         expect(ScishieldTraining.count).to eq 0
-        # Note, this will take take 20 seconds to run, to change this, update
-        # the value of `synchronizer.batch_sleep_time`
         synchronizer.synchronize 
         expect(ScishieldTraining.count).to eq 3
         expect(ScishieldTraining.all.map(&:course_name)).to contain_exactly(*course_names)
