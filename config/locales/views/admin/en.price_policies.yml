@@ -29,3 +29,13 @@ en:
       step_2: Step 2
       step_3: Step 3
       over_hrs: "Over %{hrs} hrs"
+  time_based_price_policies:
+    price_policy_fields:
+      initial_rate: Initial Rate
+      step_1: Step 1
+      step_2: Step 2
+      step_3: Step 3
+      rate_start: "Rate Start (hr):"
+      rate_per_hr: "Rate per hr:"
+      adjustment: "Adjustment:"
+      over_hrs: "Over %{hrs} hrs"
