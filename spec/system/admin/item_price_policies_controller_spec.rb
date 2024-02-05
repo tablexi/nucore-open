@@ -30,9 +30,9 @@ RSpec.describe ItemPricePoliciesController, :js do
 
     click_button "Add Pricing Rules"
 
-    expect(page).to have_content(table_row("#{base_price_group.name} (Internal)", "$100.00", "$0.00", "$100.00"))
-    expect(page).to have_content(table_row("#{cancer_center.name} (Internal)", "$100.00", "$25.25", "$74.75"))
-    expect(page).to have_content(table_row("#{external_price_group.name} (External)", "$125.15", "$0.00", "$125.15"))
+    expect(page).to have_content(table_row("#{base_price_group.name} (Internal)", "$100.00", "$0.00\n$100.00"))
+    expect(page).to have_content(table_row("#{cancer_center.name} (Internal)", "$100.00", "$25.25\n$100.00"))
+    expect(page).to have_content(table_row("#{external_price_group.name} (External)", "$125.15", "$0.00\n$125.15"))
 
     expect(page).to have_content("This is my note")
   end
