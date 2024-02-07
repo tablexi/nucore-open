@@ -19,6 +19,10 @@ en:
         edit: Edit Pricing Rules
         save: Save Rules
 
+  price_policies:
+    table:
+      edit: "Edit Price Policies"
+      remove: "Remove Price Policies"
   time_based_price_policies:
     table:
       stepped_rates_title: Stepped Billing Rates

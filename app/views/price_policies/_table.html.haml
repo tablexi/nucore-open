@@ -29,11 +29,7 @@
         - if price_policy.valid?
           %td.currency= number_to_currency price_policy.unit_cost
           %td.currency= number_to_currency price_policy.unit_subsidy
-          %td.currency
-            .rate= number_to_currency(price_policy.unit_cost)
-            - if price_policy.unit_subsidy > 0
-              .subsidy= "- #{number_to_currency(price_policy.unit_subsidy)}"
-              %strong= "= #{number_to_currency(price_policy.unit_cost - price_policy.unit_subsidy)}"
+          %td.currency= number_to_currency(price_policy.unit_cost - price_policy.unit_subsidy)
         - else
           %td.centered{ :colspan => 3 }
             = t("price_policies.problem")
