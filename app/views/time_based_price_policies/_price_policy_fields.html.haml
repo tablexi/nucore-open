@@ -10,7 +10,10 @@
     selected: price_policy.charge_for
 
 %div{ style: "display: flex; flex-direction: row-reverse" }
-  %h4.half-width= t("price_policies.table.rates_title")
+  - if @product.duration_pricing_mode?
+    %h4.half-width= t("time_based_price_policies.table.stepped_rates_title")
+  - else
+    %h4.half-width= t("time_based_price_policies.table.rates_title")
 %table.table.table-striped.table-hover.price-policy-table
   %thead
     %tr

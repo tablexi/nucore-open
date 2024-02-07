@@ -19,9 +19,10 @@ en:
         edit: Edit Pricing Rules
         save: Save Rules
 
-  price_policies:
+  time_based_price_policies:
     table:
-      rates_title: Stepped Billing Rates
+      stepped_rates_title: Stepped Billing Rates
+      rates_title: Billing Rates
       edit: "Edit Price Policies"
       remove: "Remove Price Policies"
       initial_rate: Initial Rate
@@ -29,7 +30,6 @@ en:
       step_2: Step 2
       step_3: Step 3
       over_hrs: "Over %{hrs} hrs"
-  time_based_price_policies:
     price_policy_fields:
       initial_rate: Initial Rate
       step_1: Step 1
