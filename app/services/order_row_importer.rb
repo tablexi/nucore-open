@@ -82,7 +82,7 @@ class OrderRowImporter
   end
 
   def import
-    add_product_to_order if has_valid_headers? && has_valid_fields?
+    add_to_order if has_valid_headers? && has_valid_fields?
   end
 
   def order_date
@@ -129,7 +129,7 @@ class OrderRowImporter
 
   private
 
-  def add_product_to_order
+  def add_to_order
     ActiveRecord::Base.transaction do
       begin
         @order = field(:order_number).present? ? existing_order : @order_import.fetch_or_create_order!(self)
