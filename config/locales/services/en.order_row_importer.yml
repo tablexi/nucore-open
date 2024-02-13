@@ -5,7 +5,6 @@ en:
       order_number: Order
       notes: Note
       reference_id: Reference ID
-      project_id: Project ID
       chart_string: Chart String
     errors:
       blank: All fields are empty
