@@ -46,4 +46,22 @@ RSpec.describe Projects::OrderRowImporterExtension do
       expect(OrderDetail.last.project_id).to eq project.id
     end
   end
+
+  it "has all of the columns in the correct order" do
+    expect(subject.row_with_errors.headers).to eq(
+      [
+        "Netid / Email",
+        I18n.t("Chart_string"),
+        "Product Name",
+        "Quantity",
+        "Order Date",
+        "Fulfillment Date",
+        "Note",
+        "Order",
+        "Reference ID",
+        "Errors",
+        "Project ID",
+      ],
+    )
+  end
 end

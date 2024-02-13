@@ -640,7 +640,6 @@ RSpec.describe OrderRowImporter do
           "Note",
           "Order",
           "Reference ID",
-          "Project ID",
           "Errors",
         ],
       )

@@ -16,9 +16,8 @@ class OrderRowImporter
     :notes,
     :order_number,
     :reference_id,
-    :project_id,
     :errors,
-  ].lazy.map { |k| header(k) }
+  ]
 
   REQUIRED_HEADERS = [
     :user,
@@ -51,8 +50,16 @@ class OrderRowImporter
     HEADERS.to_a.join(",")
   end
 
+  def self.headers
+    (HEADERS + custom_headers).lazy.map { |k| header(k) }
+  end
+
+  def self.custom_headers
+    []
+  end
+
   def self.optional_fields
-    (HEADERS.to_a - REQUIRED_HEADERS.to_a - [header(:errors)]).to_sentence
+    (headers.to_a - REQUIRED_HEADERS.to_a - [header(:errors)]).to_sentence
   end
 
   def self.importable_products
@@ -96,7 +103,7 @@ class OrderRowImporter
   def row_with_errors
     # Start with a hash of HEADERS keys with nil values to ensure optional columns
     # are included in the report even if they are not in the uploaded CSV.
-    new_row = HEADERS.each_with_object({}) { |header, hash| hash[header] = nil }
+    new_row = OrderRowImporter.headers.each_with_object({}) { |header, hash| hash[header] = nil }
     new_row.merge!(@row)
     new_row[header(:errors)] = errors.join(", ")
 
