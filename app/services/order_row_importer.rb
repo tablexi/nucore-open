@@ -160,7 +160,7 @@ class OrderRowImporter
   end
 
   def to_add_attributes
-    { note: field(:notes), account:, reference_id: field(:reference_id), project_id: field(:project_id) }.merge(custom_attributes)
+    { note: field(:notes), account:, reference_id: field(:reference_id) }.merge(custom_attributes)
   end
 
   def custom_attributes
