@@ -6,18 +6,23 @@ class OrderRowImporter
 
   include DateHelper
 
-  HEADERS = [
-    :user,
-    :chart_string,
-    :product_name,
-    :quantity,
-    :order_date,
-    :fulfillment_date,
-    :notes,
-    :order_number,
-    :reference_id,
-    :errors,
-  ]
+  cattr_accessor(:importable_product_types) { [Item, Service, TimedService] }
+  cattr_accessor(:order_import_headers) do
+    %i[
+      user
+      chart_string
+      product_name
+      quantity
+      order_date
+      fulfillment_date
+      notes
+      order_number
+      reference_id
+      errors
+    ]
+  end
+
+  HEADERS = order_import_headers.lazy.map { |k| header(k) }
 
   REQUIRED_HEADERS = [
     :user,
@@ -27,8 +32,6 @@ class OrderRowImporter
     :order_date,
     :fulfillment_date,
   ].lazy.map { |k| header(k) }
-
-  cattr_accessor(:importable_product_types) { [Item, Service, TimedService] }
 
   attr_accessor :order_import, :order
   delegate :id, to: :order, prefix: true
@@ -50,16 +53,8 @@ class OrderRowImporter
     HEADERS.to_a.join(",")
   end
 
-  def self.headers
-    (HEADERS + custom_headers).lazy.map { |k| header(k) }
-  end
-
-  def self.custom_headers
-    []
-  end
-
   def self.optional_fields
-    (headers.to_a - REQUIRED_HEADERS.to_a - [header(:errors)]).to_sentence
+    (HEADERS.to_a - REQUIRED_HEADERS.to_a - [header(:errors)]).to_sentence
   end
 
   def self.importable_products
@@ -103,7 +98,7 @@ class OrderRowImporter
   def row_with_errors
     # Start with a hash of HEADERS keys with nil values to ensure optional columns
     # are included in the report even if they are not in the uploaded CSV.
-    new_row = OrderRowImporter.headers.each_with_object({}) { |header, hash| hash[header] = nil }
+    new_row = HEADERS.each_with_object({}) { |header, hash| hash[header] = nil }
     new_row.merge!(@row)
     new_row[header(:errors)] = errors.join(", ")
 
