@@ -1,0 +1,9 @@
+%h3 Quick Action
+
+- if @ongoing
+	%h4 stop reservation
+- elsif @startable
+	%h4 start your reservation
+	= link_to "move up", order_order_detail_reservation_move_reservation_path(@startable.order_detail, @startable.order_detail.order, @startable), class: "move-res", data: { reservation_id: @startable.id }
+- else
+	%h4 Make a reservation
