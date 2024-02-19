@@ -13,7 +13,11 @@ class QuickActionsController < ApplicationController
   def index
   end
 
-  def update
+  def create
+    if @startable.move_to_earliest && @startable.start_reservation!
+      flash[:notice] = "Reservation started"
+      redirect_to facility_instrument_quick_actions_path(@facility, @instrument)
+    end
   end
 
   private

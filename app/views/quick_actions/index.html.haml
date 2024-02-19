@@ -2,8 +2,11 @@
 
 - if @ongoing
 	%h4 stop reservation
+	= link_to "end reservation #{@ongoing.id}", order_order_detail_reservation_switch_instrument_path(@ongoing.order_detail.order, @ongoing.order_detail, @ongoing, switch: "off", reservation_ended: "on"), class: end_reservation_class(@ongoing), data: { refresh_on_cancel: true }
 - elsif @startable
 	%h4 start your reservation
-	= link_to "move up", order_order_detail_reservation_move_reservation_path(@startable.order_detail, @startable.order_detail.order, @startable), class: "move-res", data: { reservation_id: @startable.id }
+	= form_with url: facility_instrument_quick_actions_path(@facility, @instrument) do |f|
+		= f.submit "start reservation"
 - else
 	%h4 Make a reservation
+	= link_to "make a reservation", new_facility_instrument_single_reservation_path(@facility, @instrument)
