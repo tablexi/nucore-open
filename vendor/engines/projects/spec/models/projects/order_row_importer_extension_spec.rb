@@ -57,6 +57,16 @@ RSpec.describe Projects::OrderRowImporterExtension do
         expect(subject.errors).to eq ["Project not found"]
       end
     end
+
+    context "with an empty string as a project name" do
+      let(:project_name) { "" }
+
+      it "creates an order detail with no project" do
+        subject.import
+        expect(subject.errors).to be_empty
+        expect(OrderDetail.last.project_id).to be_nil
+      end
+    end
   end
 
   it "has all of the columns in the correct order" do

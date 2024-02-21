@@ -3,7 +3,7 @@ module Projects
   module OrderRowImporterExtension
 
     def validate_custom_attributes
-      if field(:project_name) && project.nil?
+      if field(:project_name).present? && project.nil?
         add_error(:project_not_found)
       end
     end
