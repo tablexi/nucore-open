@@ -48,6 +48,11 @@ module Projects
       ::Reports::InstrumentReportsController.reports[:project] = Projects::ReportsExtension.instrument_report
     end
 
+    config.after_initialize do
+      OrderRowImporter.send :prepend, Projects::OrderRowImporterExtension
+      OrderRowImporter.order_import_headers.insert(-2, :project_name)
+    end
+
     initializer :append_migrations do |app|
       config.paths["db/migrate"].expanded.each do |expanded_path|
         app.config.paths["db/migrate"] << expanded_path
