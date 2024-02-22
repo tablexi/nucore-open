@@ -4,6 +4,27 @@ require "date_helper" # parse_usa_import_date
 
 class OrderRowImporter
 
+  module Overridable
+
+    def validate_custom_attributes
+      if field(:project_name).present? && project.nil?
+        add_error(:project_not_found)
+      end
+    end
+
+    private
+
+    def project
+      facility.projects.active.find_by name: field(:project_name)
+    end
+
+    def custom_attributes
+      { project_id: project&.id }
+    end
+
+  end
+
+  prepend Overridable
   include DateHelper
 
   cattr_accessor(:importable_product_types) { [Item, Service, TimedService] }
@@ -18,6 +39,7 @@ class OrderRowImporter
       notes
       order_number
       reference_id
+      project_name
       errors
     ]
   end
