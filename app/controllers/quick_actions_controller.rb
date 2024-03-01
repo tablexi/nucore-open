@@ -11,6 +11,15 @@ class QuickActionsController < ApplicationController
 
   # GET /facilities/:facility_id/instruments/:instrument_id/quick_actions
   def index
+    redirect_to(new_facility_instrument_quick_action_path) unless @startable || @ongoing
+  end
+
+  def new
+    @reservation = Reservation.new(
+      product: Instrument.first,
+      reserve_start_at: 1.day.from_now,
+      reserve_end_at: 1.day.from_now + reservation_interval
+    ).earliest_possible
   end
 
   def create
@@ -26,5 +35,9 @@ class QuickActionsController < ApplicationController
     @reservations = current_user.reservations.where(product_id: @instrument.id)
     @startable = @reservations.find(&:startable_now?)
     @ongoing = @reservations.ongoing.first
+  end
+
+  def reservation_interval
+    @instrument.reserve_interval < 15 ? 15.minutes : @instrument.reserve_interval
   end
 end

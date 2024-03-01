@@ -1,0 +1,12 @@
+%p= "Order #: #{@reservation.order_detail}"
+%p= "#{@facility.abbreviation} / #{@instrument.name}"
+
+%dl
+	%dt Reservation Date
+	%dd= human_date(@reservation.reserve_start_at)
+
+	%dt Reservation Time
+	%dd= human_time(@reservation.reserve_start_at)
+
+= form_with url: "/" do |f|
+	= f.submit "Create Reservation"

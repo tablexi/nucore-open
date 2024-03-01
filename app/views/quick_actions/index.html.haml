@@ -1,10 +1,13 @@
-%h3 Quick Action
-
 - if @ongoing
-	%h4 stop reservation
-	= link_to "end reservation #{@ongoing.id}", order_order_detail_reservation_switch_instrument_path(@ongoing.order_detail.order, @ongoing.order_detail, @ongoing, switch: "off", reservation_ended: "on"), class: end_reservation_class(@ongoing), data: { refresh_on_cancel: true }
+	= render partial: "reservation_information", locals: { reservation: @ongoing }
+
+	%p Extend 15mins
+
+	= link_to "End Reservation", order_order_detail_reservation_switch_instrument_path(@ongoing.order_detail.order, @ongoing.order_detail, @ongoing, switch: "off", reservation_ended: "on"), class: end_reservation_class(@ongoing), data: { refresh_on_cancel: true }
+
 - elsif @startable
-	%h4 start your reservation
+	= render partial: "reservation_information", reservation: @startable
+
 	= form_with url: facility_instrument_quick_actions_path(@facility, @instrument) do |f|
 		= f.submit "start reservation"
 - else
