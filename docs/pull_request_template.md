@@ -11,3 +11,6 @@ Optional.
 # Additional Context
 
 Optional. Feel free to add/modify additional headers as appropriate, e.g. "Refactorings", "Concerns".
+
+# Accessibility
+- [ ] Did you check our [checklist](https://www.notion.so/txi/Accessibility-checklist-224519b8cbea4a528acaaf5e91c7d09f)?
