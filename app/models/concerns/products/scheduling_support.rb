@@ -41,6 +41,31 @@ module Products::SchedulingSupport
     reservation_in_week(after, duration, rules, options)
   end
 
+  def quick_action_reservations
+    quick_action_intervals.map { |i| next_available_reservation(duration: i.minutes) }
+                          .select { |r| r.valid?(:walkup_available) && r.send(:in_grace_period?) }
+  end
+
+  def quick_action_intervals
+    intervals = case reserve_interval
+                when 1, 5, 15
+                  [15, 30, 60]
+                when 10
+                  [10, 30, 60]
+                when 30
+                  [30, 60, 90]
+                when 60
+                  [60, 120, 180]
+                end
+
+    max_time = max_reserve_mins.presence || 181
+    min_time = min_reserve_mins.to_i
+
+    intervals.select do |i|
+      min_time < i && i < max_time
+    end
+  end
+
   def offline?
     current_offline_reservations.present?
   end
