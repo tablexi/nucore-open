@@ -8,10 +8,14 @@
 		%dt Reservation Time
 		%dd= human_time(@reservation.reserve_start_at)
 
-	= form_with url: "/" do |f|
-		- @reservation_intervals.each do |interval|
-			%p= interval
+	= form_with url: facility_instrument_quick_actions_path(@facility, @instrument) do |f|
+		%h4 Reservation Length
+		- @reservation_intervals.each_with_index do |interval, index|
+			= f.radio_button "reservation_index", index
+			= f.label "reservation_index_#{index}", "#{interval} mins"
+		- accounts = @current_user.accounts_for_product(@instrument)
+		= f.select :account, accounts.map { |a| [a, a.id] }
+		%br
 		= f.submit "Create Reservation"
 - else 
 	%h3 This instrument is not available to reserve right now
-
