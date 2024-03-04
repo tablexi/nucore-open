@@ -61,10 +61,6 @@ class QuickActionsController < ApplicationController
     @ongoing = @reservations.ongoing.first
   end
 
-  def reservation_interval
-    @instrument.reserve_interval < 15 ? 15.minutes : @instrument.reserve_interval
-  end
-
   def build_order
     @order = Order.new(
       user: acting_user,
