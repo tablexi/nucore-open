@@ -15,11 +15,11 @@ class QuickActionsController < ApplicationController
   end
 
   def new
-    @reservation = Reservation.new(
-      product: Instrument.first,
-      reserve_start_at: 1.day.from_now,
-      reserve_end_at: 1.day.from_now + reservation_interval
-    ).earliest_possible
+    @reservation_intervals = @instrument.quick_action_intervals
+    @walkup_available = @instrument.walkup_available?(interval: @reservation_intervals.first)
+    @possible_reservations = @instrument.quick_action_reservations
+    @reservation_intervals.pop((@possible_reservations.count - 3).abs)
+    @reservation = @possible_reservations.first
   end
 
   def create
@@ -40,4 +40,5 @@ class QuickActionsController < ApplicationController
   def reservation_interval
     @instrument.reserve_interval < 15 ? 15.minutes : @instrument.reserve_interval
   end
+
 end

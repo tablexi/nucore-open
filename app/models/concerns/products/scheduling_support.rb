@@ -20,9 +20,9 @@ module Products::SchedulingSupport
       .merge(Reservation.relay_in_progress)
   end
 
-  def walkup_available?(time = Time.zone.now)
+  def walkup_available?(time = Time.zone.now, interval: reserve_interval)
     # zero and nil should default to 1 minute
-    reservation_length = [min_reserve_mins.to_i, reserve_interval.to_i].max
+    reservation_length = [min_reserve_mins.to_i, interval.to_i].max
     reservation = Reservation.new(
       product: self,
       reserve_start_at: time,

@@ -1,12 +1,17 @@
-%p= "Order #: #{@reservation.order_detail}"
-%p= "#{@facility.abbreviation} / #{@instrument.name}"
+- if @walkup_available
+	%p= "#{@facility.abbreviation} / #{@instrument.name}"
 
-%dl
-	%dt Reservation Date
-	%dd= human_date(@reservation.reserve_start_at)
+	%dl
+		%dt Reservation Date
+		%dd= human_date(@reservation.reserve_start_at)
 
-	%dt Reservation Time
-	%dd= human_time(@reservation.reserve_start_at)
+		%dt Reservation Time
+		%dd= human_time(@reservation.reserve_start_at)
 
-= form_with url: "/" do |f|
-	= f.submit "Create Reservation"
+	= form_with url: "/" do |f|
+		- @reservation_intervals.each do |interval|
+			%p= interval
+		= f.submit "Create Reservation"
+- else 
+	%h3 This instrument is not available to reserve right now
+
