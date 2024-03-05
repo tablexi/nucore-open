@@ -11,3 +11,7 @@ Optional.
 # Additional Context
 
 Optional. Feel free to add/modify additional headers as appropriate, e.g. "Refactorings", "Concerns".
+
+# Accessibility
+- [ ] Did you scan for accessibility issues?
+- [ ] Did you check our accessibility goal checklist?
