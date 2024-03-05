@@ -80,8 +80,7 @@ class Reservation < ApplicationRecord
   scope :not_canceled, -> { where(order_details: { canceled_at: nil }) } # dubious
   scope :not_started, -> { where(actual_start_at: nil) }
   scope :not_ended, -> { where(actual_end_at: nil) }
-  scope :started, -> { where.not(actual_start_at: nil) }
-  scope :ongoing, -> { not_ended.started }
+  scope :ongoing, -> { not_ended.where("actual_start_at <= ?", Time.current) }
 
   def self.not_this_reservation(reservation)
     if reservation.id
@@ -91,7 +90,6 @@ class Reservation < ApplicationRecord
     end
   end
 
-  scope :ongoing, -> { not_ended.where("actual_start_at <= ?", Time.current) }
 
   scope :current_in_use, lambda {
     not_canceled
