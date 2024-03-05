@@ -30,8 +30,13 @@ class QuickReservationsController < ApplicationController
     raise OrderPurchaseValidatorError, @order_detail if validator.invalid?
     reservation.order_detail = @order_detail
     reservation.save_as_user!(current_user)
+
     @order_detail.assign_estimated_price(reservation.reserve_end_at)
     @order_detail.save_as_user!(current_user)
+
+    @order.validate_order!
+    @order.purchase
+    @order.save
 
     if reservation.send(:in_grace_period?)
       reservation.start_reservation!
