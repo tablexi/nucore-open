@@ -4,7 +4,7 @@ class QuickReservationsController < ApplicationController
   before_action :authenticate_user!
   load_resource :facility, find_by: :url_name
   load_resource :instrument, through: :facility, find_by: :url_name
-  before_action :get_startable_reservation, only: [:index, :update]
+  before_action :get_startable_reservation, only: [:index, :start]
   before_action :prepare_reservation_data, only: [:new, :create]
 
   # GET /facilities/:facility_id/instruments/:instrument_id/quick_reservations
@@ -13,7 +13,8 @@ class QuickReservationsController < ApplicationController
   end
 
   def new
-    @walkup_available = @instrument.walkup_available?(interval: @reservation_intervals.first)
+    interval = @instrument.quick_reservation_intervals.first
+    @walkup_available = @instrument.walkup_available?(interval:)
   end
 
   def create
@@ -32,11 +33,14 @@ class QuickReservationsController < ApplicationController
     @order_detail.assign_estimated_price(reservation.reserve_end_at)
     @order_detail.save_as_user!(current_user)
 
-    reservation.start_reservation!
+    if reservation.send(:in_grace_period?)
+      reservation.start_reservation!
+    end
+
     redirect_to facility_instrument_quick_reservations_path(@facility, @instrument)
   end
 
-  def update
+  def start
     if @startable.move_to_earliest && @startable.start_reservation!
       flash[:notice] = "Reservation started"
       redirect_to facility_instrument_quick_reservations_path(@facility, @instrument)
@@ -52,6 +56,16 @@ class QuickReservationsController < ApplicationController
   def prepare_reservation_data
     @reservation_intervals = @instrument.quick_reservation_intervals
     @possible_reservations = @instrument.quick_reservation_reservations
+
+    # if no reservations are available right now, find reservations at the next
+    # available time
+    if @possible_reservations.empty?
+      duration = @reservation_intervals.first.minutes
+      next_available_reservation = @instrument.next_available_reservation(duration:)
+      after = next_available_reservation.reserve_start_at
+      @possible_reservations = @instrument.quick_reservation_reservations(after:)
+    end
+
     @reservation_intervals.pop((@possible_reservations.count - 3).abs)
     @reservation = @possible_reservations.first
   end

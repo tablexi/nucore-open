@@ -84,7 +84,9 @@ Rails.application.routes.draw do
     resources :training_requests, only: [:index, :destroy] if SettingsHelper.feature_on?(:training_requests)
 
     resources :instruments do
-      resources :quick_reservations, only: [:index, :new, :create, :update]
+      resources :quick_reservations, only: [:index, :new, :create]
+      post "quick_reservations/start", to: "quick_reservations#start"
+
       get :dashboard, to: "instruments_dashboard#dashboard", on: :collection
       get :public_dashboard, to: "instruments_dashboard#public_dashboard", on: :collection
 
