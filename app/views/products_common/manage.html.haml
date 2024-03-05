@@ -27,6 +27,7 @@
     - if f.object.requires_approval?
       = f.input :allows_training_requests
       = f.input :restrict_holiday_access
+  = f.input :cross_core_ordering_available
   = f.input :is_archived
   = f.input :is_hidden
   - unless @product.is_a?(Bundle)
