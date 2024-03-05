@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-class QuickActionsController < ApplicationController
+class QuickReservationsController < ApplicationController
   before_action :authenticate_user!
   load_resource :facility, find_by: :url_name
   load_resource :instrument, through: :facility, find_by: :url_name
   before_action :get_startable_reservation, only: [:index, :update]
   before_action :prepare_reservation_data, only: [:new, :create]
 
-  # GET /facilities/:facility_id/instruments/:instrument_id/quick_actions
+  # GET /facilities/:facility_id/instruments/:instrument_id/quick_reservations
   def index
-    redirect_to(new_facility_instrument_quick_action_path) unless @startable || @ongoing
+    redirect_to(new_facility_instrument_quick_reservation_path) unless @startable || @ongoing
   end
 
   def new
@@ -27,18 +27,19 @@ class QuickActionsController < ApplicationController
     @order.account = account
     validator = OrderPurchaseValidator.new(@order_detail)
     raise OrderPurchaseValidatorError, @order_detail if validator.invalid?
+    reservation.order_detail = @order_detail
     reservation.save_as_user!(current_user)
     @order_detail.assign_estimated_price(reservation.reserve_end_at)
     @order_detail.save_as_user!(current_user)
 
     reservation.start_reservation!
-    redirect_to facility_instrument_quick_actions_path(@facility, @instrument)
+    redirect_to facility_instrument_quick_reservations_path(@facility, @instrument)
   end
 
   def update
     if @startable.move_to_earliest && @startable.start_reservation!
       flash[:notice] = "Reservation started"
-      redirect_to facility_instrument_quick_actions_path(@facility, @instrument)
+      redirect_to facility_instrument_quick_reservations_path(@facility, @instrument)
     end
   end
 
@@ -49,8 +50,8 @@ class QuickActionsController < ApplicationController
   end
 
   def prepare_reservation_data
-    @reservation_intervals = @instrument.quick_action_intervals
-    @possible_reservations = @instrument.quick_action_reservations
+    @reservation_intervals = @instrument.quick_reservation_intervals
+    @possible_reservations = @instrument.quick_reservation_reservations
     @reservation_intervals.pop((@possible_reservations.count - 3).abs)
     @reservation = @possible_reservations.first
   end

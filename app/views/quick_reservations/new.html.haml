@@ -8,7 +8,7 @@
 		%dt Reservation Time
 		%dd= human_time(@reservation.reserve_start_at)
 
-	= form_with url: facility_instrument_quick_actions_path(@facility, @instrument) do |f|
+	= form_with url: facility_instrument_quick_reservations_path(@facility, @instrument) do |f|
 		%h4 Reservation Length
 		- @reservation_intervals.each_with_index do |interval, index|
 			= f.radio_button "reservation_index", index

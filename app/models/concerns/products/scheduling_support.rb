@@ -41,12 +41,12 @@ module Products::SchedulingSupport
     reservation_in_week(after, duration, rules, options)
   end
 
-  def quick_action_reservations
-    intervals = quick_action_intervals.map { |i| next_available_reservation(duration: i.minutes) }
+  def quick_reservation_reservations
+    intervals = quick_reservation_intervals.map { |i| next_available_reservation(duration: i.minutes) }
     intervals.select { |r| r.valid?(:walkup_available) && r.send(:in_grace_period?) }
   end
 
-  def quick_action_intervals
+  def quick_reservation_intervals
     intervals = case reserve_interval
                 when 1, 5, 15
                   [15, 30, 60]

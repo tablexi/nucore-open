@@ -8,7 +8,7 @@
 - elsif @startable
 	= render partial: "reservation_information", reservation: @startable
 
-	= form_with url: facility_instrument_quick_actions_path(@facility, @instrument) do |f|
+	= form_with url: facility_instrument_quick_reservations_path(@facility, @instrument) do |f|
 		= f.submit "start reservation"
 - else
 	%h4 Make a reservation
