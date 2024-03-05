@@ -42,8 +42,8 @@ module Products::SchedulingSupport
   end
 
   def quick_action_reservations
-    quick_action_intervals.map { |i| next_available_reservation(duration: i.minutes) }
-                          .select { |r| r.valid?(:walkup_available) && r.send(:in_grace_period?) }
+    intervals = quick_action_intervals.map { |i| next_available_reservation(duration: i.minutes) }
+    intervals.select { |r| r.valid?(:walkup_available) && r.send(:in_grace_period?) }
   end
 
   def quick_action_intervals
