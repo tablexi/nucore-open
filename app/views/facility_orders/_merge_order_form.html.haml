@@ -3,6 +3,12 @@
     = simple_form_for [current_facility, @add_to_order_form], url: facility_order_path(current_facility, @order), method: :put, html: { class: "js--edit-order" } do |f|
       = f.input_field :quantity, class: "js--edit-order__quantity", style: "width: 3em;"
 
+      - unless Rails.env.production?
+        = f.input_field :facility_id,
+          collection: @add_to_order_form.facilities.map { |f| [f.name, f.id, {"data-products-path" => facility_products_path(f, format: :js)}] },
+          class: "js--edit-order__facility js--chosen",
+          include_blank: false
+
       = f.input_field :product_id,
         collection: current_facility.products.mergeable_into_order.alphabetized.map { |p| [p.name, p.id, {"data-timed-product" => p.order_quantity_as_time?}] },
         class: "js--edit-order__product js--chosen",
@@ -39,5 +45,8 @@
             = f.input :reference_id
 
       = submit_tag text("admin.shared.add_to", model: @order.class),
-        class: "btn btn-primary",
-        id: :product_add_btn
+        class: "btn btn-primary js--edit-order__button",
+        id: :product_add_btn,
+        data: { "default-button-text": text("admin.shared.add_to", model: @order.class),
+          "cross-core-button-text": text("admin.shared.add_to_cross_core_order"),
+          "original-facility": current_facility.id }

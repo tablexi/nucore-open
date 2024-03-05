@@ -35,9 +35,61 @@ window.MergeOrder = class MergeOrder {
 
     return this.$form.find(".js--edit-order__product").trigger("change");
   }
+
+  initCrossCoreOrdering() {
+    if (!this.$form.length) { return; }
+
+    const product_field = this.$form.find(".js--edit-order__product");
+    const facility_field = this.$form.find(".js--edit-order__facility");
+    const button = this.$form.find(".js--edit-order__button");
+
+    if (!facility_field || !button) return;
+
+    const originalFacilityId = button.data("original-facility");
+    const defaultButtonText = button.data("default-button-text");
+    const crossCoreButtonText = button.data("cross-core-button-text");
+
+    return facility_field.on("change", (event) => {
+      const url = $(event.target).find(":selected").data("products-path");
+      const facility_id = $(event.target).val();
+
+      return $.ajax({
+        type: "get",
+        data: { facility_id },
+        url,
+        success(data) {
+          // Populate dropdown
+          product_field.empty();
+          data = JSON.parse(data);
+          data.forEach(function (product) {
+            return product_field.append(
+              '<option value="' +
+                product.id +
+                '">' +
+                product.name +
+                "</option>"
+            );
+          });
+
+          product_field.trigger("chosen:updated");
+
+          // Update button text
+          const buttonText =
+            originalFacilityId !== parseInt(facility_id)
+              ? crossCoreButtonText
+              : defaultButtonText;
+
+          button.val(buttonText);
+
+          return product_field.trigger("change");
+        },
+      });
+    });
+  }
 };
 
 $(function() {
   const mergeOrder = new MergeOrder($(".js--edit-order"));
   mergeOrder.initTimeBasedServices();
+  return mergeOrder.initCrossCoreOrdering();
 });

@@ -18,15 +18,24 @@ class ProductsController < ApplicationController
 
   # GET /products
   def index
-    if current_facility.instruments.first
-      redirect_to facility_instruments_path
-    elsif current_facility.services.first
-      redirect_to facility_services_path
-    elsif current_facility.items.first
-      redirect_to facility_items_path
-    else
-      redirect_to facility_instruments_path
+    respond_to do |format|
+      format.html do
+        if current_facility.instruments.first
+          redirect_to facility_instruments_path
+        elsif current_facility.services.first
+          redirect_to facility_services_path
+        elsif current_facility.items.first
+          redirect_to facility_items_path
+        else
+          redirect_to facility_instruments_path
+        end
+      end
+
+      format.js do
+        @facility_products = current_facility.products.mergeable_into_order.alphabetized.select(:name, :id)
+
+        render json: @facility_products
+      end
     end
   end
-
 end
