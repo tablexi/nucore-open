@@ -41,7 +41,7 @@ module Products::SchedulingSupport
     reservation_in_week(after, duration, rules, options)
   end
 
-  def quick_reservation_reservations(after: Time.zone.now)
+  def quick_reservation_reservations(after: Time.zone.now + 1.second)
     intervals = quick_reservation_intervals.map { |i| next_available_reservation(after:, duration: i.minutes) }
     intervals.select { |r| r.valid?(:walkup_available) && r.reserve_start_at == after }
   end
