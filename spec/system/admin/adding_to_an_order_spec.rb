@@ -194,14 +194,25 @@ RSpec.describe "Adding to an existing order" do
       visit facility_order_path(facility, order)
     end
 
-    it "changes the button text" do
-      expect(page).to have_button("Add To Order")
-      puts facility2.name
-      puts product2.name
-      select_from_chosen facility2.name, from: "add_to_order_form[facility_id]"
-      select_from_chosen product2.name, from: "add_to_order_form[product_id]"
-      expect(page).to have_button("Add to Cross-Core Order")
+    context "with staff role" do
+      it "does not have a facility dropdown" do
+        expect { page.find_by_id("add_to_order_form[facility_id]") }.to raise_error
+      end
     end
+
+    context "with admin role" do
+      let(:user) { create(:user, :facility_administrator, facility:) }
+
+      it "changes the button text" do
+        expect(page).to have_button("Add To Order")
+        puts facility2.name
+        puts product2.name
+        select_from_chosen facility2.name, from: "add_to_order_form[facility_id]"
+        select_from_chosen product2.name, from: "add_to_order_form[product_id]"
+        expect(page).to have_button("Add to Cross-Core Order")
+      end
+    end
+
   end
 
 end
