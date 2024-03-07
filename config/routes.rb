@@ -69,6 +69,10 @@ Rails.application.routes.draw do
       resource :product_notification, only: [:show, :edit, :update], path: "notifications", as: "notifications"
       resources :product_research_safety_certification_requirements, only: [:index, :create, :destroy], path: "certification_requirements"
       resources :product_user_imports, only: :create
+
+      collection do
+        get :available_for_cross_core_ordering
+      end
     end
 
     resources :product_display_groups do
