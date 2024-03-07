@@ -412,7 +412,7 @@ namespace :demo do
       UserRole.grant(user_director, UserRole::FACILITY_DIRECTOR, facility)
     end
 
-    user_director2 = User.find_by(username: "ddi123@example.com")
+    user_director2 = User.find_by(username: "ddi456@example.com")
     unless user_director2
       user_director2 = User.new(username: "ddi456@example.com",
                                email: "ddi456@example.com",
