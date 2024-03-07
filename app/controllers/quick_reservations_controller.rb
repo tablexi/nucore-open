@@ -18,28 +18,26 @@ class QuickReservationsController < ApplicationController
   end
 
   def create
-    index = reservation_params[:reservation_index].to_i
-    account = Account.find(reservation_params[:account])
-    reservation = @possible_reservations[index]
-
     build_order
 
-    # Borrowed from ReservationCreator
-    @order.account = account
-    validator = OrderPurchaseValidator.new(@order_detail)
-    raise OrderPurchaseValidatorError, @order_detail if validator.invalid?
-    reservation.order_detail = @order_detail
-    reservation.save_as_user!(current_user)
+    creator = ReservationCreator.new(@order, @order_detail, params)
+    creator.reservation
 
-    @order_detail.assign_estimated_price(reservation.reserve_end_at)
-    @order_detail.save_as_user!(current_user)
 
-    @order.validate_order!
-    @order.purchase
-    @order.save
+    if creator.save(current_user)
+      @order.transaction do
+        order_purchaser.purchase!
+      end
 
-    if reservation.send(:in_grace_period?)
-      reservation.start_reservation!
+      if order_purchaser.success?
+        if creator.reservation.send(:in_grace_period?)
+          creator.reservation.start_reservation!
+        end
+      else
+        # failed to purchase order
+      end
+    else
+      # failed to save reservation
     end
 
     redirect_to facility_instrument_quick_reservations_path(@facility, @instrument)
@@ -55,24 +53,22 @@ class QuickReservationsController < ApplicationController
   private
 
   def reservation_params
-    params.permit(:reservation_index, :account)
+    params.permit(:reservation, :order_account)
   end
 
   def prepare_reservation_data
-    @reservation_intervals = @instrument.quick_reservation_intervals
-    @possible_reservations = @instrument.quick_reservation_reservations
+    @possible_reservation_data = @instrument.quick_reservation_data
 
     # if no reservations are available right now, find reservations at the next
     # available time
-    if @possible_reservations.empty?
-      duration = @reservation_intervals.first.minutes
+    if @possible_reservation_data.empty?
+      duration = @instrument.quick_reservation_intervals.first.minutes
       next_available_reservation = @instrument.next_available_reservation(duration:)
       after = next_available_reservation.reserve_start_at
-      @possible_reservations = @instrument.quick_reservation_reservations(after:)
+      @possible_reservation_data = @instrument.quick_reservation_data(after:)
     end
 
-    @reservation_intervals.pop((@possible_reservations.count - 3).abs)
-    @reservation = @possible_reservations.first
+    @reservation_data = @possible_reservation_data.first
   end
 
   def get_startable_reservation
@@ -83,14 +79,24 @@ class QuickReservationsController < ApplicationController
 
   def build_order
     @order = Order.new(
-      user: acting_user,
+      user: current_user,
       facility: current_facility,
-      created_by: session_user.id,
+      created_by: current_user.id,
     )
     @order_detail = @order.order_details.build(
       product: @instrument,
       quantity: 1,
-      created_by: session_user.id,
+      created_by: current_user.id,
+    )
+  end
+
+  def order_purchaser
+    @order_purchaser ||= OrderPurchaser.new(
+      acting_as: false,
+      order: @order,
+      order_in_past: false,
+      params: params,
+      user: current_user,
     )
   end
 end
