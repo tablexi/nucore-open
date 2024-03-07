@@ -4,7 +4,9 @@ require "rails_helper"
 
 RSpec.describe "Reserving an instrument using quick reservations" do
   let(:user) { create(:user) }
-  let!(:instrument) { create(:setup_instrument, min_reserve_mins: 5) }
+  let!(:user_2) { create(:user) }
+  let!(:admin_user) {create(:user, :administrator) }
+  let!(:instrument) { create(:setup_instrument, :timer, min_reserve_mins: 5) }
   let(:facility) { instrument.facility }
   let!(:account) { create(:nufs_account, :with_account_owner, owner: user) }
   let!(:price_policy) { create(:instrument_price_policy, price_group: PriceGroup.base, product: instrument) }
@@ -42,5 +44,56 @@ RSpec.describe "Reserving an instrument using quick reservations" do
     end
   end
 
-  context "when the user has an ongoing reservation"
+  context "when the user has an ongoing reservation" do
+    let!(:reservation) do
+      create(
+        :purchased_reservation,
+        product: instrument,
+        user:,
+        reserve_start_at: 30.minutes.ago,
+        actual_start_at: 30.minutes.ago,
+        reserve_end_at: 1.hour.from_now
+      )
+    end
+
+    it "can stop the reservation" do
+      expect(page).to have_content("9:00 AM - 10:30 AM")
+      click_link("End Reservation")
+      expect(page).to have_content("The instrument has been deactivated successfully")
+    end
+  end
+
+  context "when another reservation exists in the future" do
+    context "when the reservation is outside of all the walkup reservation intervals"
+    context "when the reservation is ouside only 2 of the walkup reservation intervals"
+    context "when the reservation is inside all of the walkup reservation intervals"
+  end
+
+  context "when another reservation is ongoing but abandoned" do
+    let!(:reservation) do
+      create(
+        :purchased_reservation,
+        product: instrument,
+        user: user_2,
+        reserve_start_at: 30.minutes.ago,
+        actual_start_at: 30.minutes.ago,
+        reserve_end_at: 15.minutes.ago
+      )
+    end
+
+    it "can start a reservaton right now, and move the abandoned reservation into the problem queue" do
+      choose "30 mins"
+      click_button "Create Reservation"
+      expect(page).to have_content("9:30 AM - 10:00 AM")
+      expect(page).to have_content("End Reservation")
+      # test that the abandoned reservation goes into the problem queue
+      click_link "Logout"
+      login_as admin_user
+      visit show_problems_facility_reservations_path(facility)
+      expect(page).to have_content(reservation.order.id)
+      expect(page).to have_content("Missing Actuals")
+    end
+  end
+
+  # locally test: if another reservation exists but has not been started, nothing will happen (the relay stays on).
 end
