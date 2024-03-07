@@ -105,9 +105,9 @@ namespace :demo do
       example_item.facility_account_id = fa.id
     end
 
-    item2 = Item.find_or_create_by!(url_name: "example-item", facility_id: facility2.id) do |example_item|
+    item2 = Item.find_or_create_by!(url_name: "second-example-item", facility_id: facility2.id) do |example_item|
       example_item.account = Settings.accounts.product_default
-      example_item.name = "Example Item"
+      example_item.name = "Second Example Item"
       example_item.description = "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non ipsum id odio cursus euismod eu bibendum nisl. Sed nec.</p>"
       example_item.requires_approval = false
       example_item.initial_order_status_id = new_status.id
