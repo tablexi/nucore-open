@@ -7,7 +7,7 @@ class AddToOrderForm
   include DateHelper
 
   attr_reader :original_order, :current_facility
-  attr_accessor :quantity, :product_id, :order_status_id, :note, :duration, :created_by, :fulfilled_at, :account_id, :reference_id
+  attr_accessor :quantity, :product_id, :order_status_id, :note, :duration, :created_by, :fulfilled_at, :account_id, :reference_id, :facility_id
   attr_accessor :error_message
 
   validates :account_id, presence: true
@@ -66,6 +66,10 @@ class AddToOrderForm
     AvailableAccountsFinder.new(original_order.user, current_facility)
   end
 
+  def facilities
+    @facilities ||= Facility.alphabetized
+  end
+
   # We're using the ordered_at of the order details to determine if additional OrderDetails
   # have been added to the order. We find the most recently added order that does not
   # match the original order's ordered_at and use that for our basis for defaults.
@@ -113,6 +117,7 @@ class AddToOrderForm
     @account_id = original_order.account_id
     @quantity = 1
     @duration = 1
+    @facility_id = original_order.facility_id
 
     if previously_added_to?
       # This is a string so it displays on the form correctly.
