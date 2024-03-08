@@ -15,3 +15,4 @@ Optional. Feel free to add/modify additional headers as appropriate, e.g. "Refac
 # Accessibility
 - [ ] Did you scan for accessibility issues?
 - [ ] Did you check our accessibility goal checklist?
+- [ ] Did you add accessibility [specs](https://github.com/dequelabs/axe-core-gems/blob/develop/packages/axe-core-rspec/README.md)
