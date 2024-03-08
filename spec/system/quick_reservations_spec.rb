@@ -21,7 +21,7 @@ RSpec.describe "Reserving an instrument using quick reservations" do
     it "can start a reservation right now" do
       choose "30 mins"
       click_button "Create Reservation"
-      expect(page).to have_content("9:30 AM - 10:00 AM")
+      expect(page).to have_content("9:31 AM - 10:01 AM")
       expect(page).to have_content("End Reservation")
     end
   end
@@ -84,7 +84,7 @@ RSpec.describe "Reserving an instrument using quick reservations" do
     it "can start a reservaton right now, and move the abandoned reservation into the problem queue" do
       choose "30 mins"
       click_button "Create Reservation"
-      expect(page).to have_content("9:30 AM - 10:00 AM")
+      expect(page).to have_content("9:31 AM - 10:01 AM")
       expect(page).to have_content("End Reservation")
       # test that the abandoned reservation goes into the problem queue
       click_link "Logout"

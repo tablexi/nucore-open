@@ -21,8 +21,6 @@ class QuickReservationsController < ApplicationController
     build_order
 
     creator = ReservationCreator.new(@order, @order_detail, params)
-    creator.reservation
-
 
     if creator.save(current_user)
       @order.transaction do

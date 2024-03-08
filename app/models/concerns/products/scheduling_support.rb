@@ -41,7 +41,7 @@ module Products::SchedulingSupport
     reservation_in_week(after, duration, rules, options)
   end
 
-  def quick_reservation_data(after: Time.zone.now + 1.second)
+  def quick_reservation_data(after: Time.zone.now + 1.minute)
     quick_reservation_reservations(after:).map { |r| { reserve_start_at: r.reserve_start_at, duration_mins: r.duration_mins } }
   end
 
