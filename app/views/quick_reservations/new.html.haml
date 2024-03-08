@@ -1,7 +1,9 @@
-%p= "#{@facility.abbreviation} / #{@instrument.name}"
+%h1= "#{@facility.abbreviation} / #{@instrument.name}"
 
 - unless @walkup_available
 	%p.alert Someone has a reservation comping up. Next available start time is: 
+
+%h2 Reservation Details
 
 %dl
 	%dt Reservation Date
@@ -11,12 +13,14 @@
 	%dd= human_time(@reservation_data[:reserve_start_at])
 
 = form_with url: facility_instrument_quick_reservations_path(@facility, @instrument) do |f|
-	%h4 Reservation Length
-
-	- @possible_reservation_data.each do |res_data|
-		= f.radio_button "reservation[duration_mins]", res_data[:duration_mins]
-		= f.label "reservation[duration_mins]_#{res_data[:duration_mins]}", "#{res_data[:duration_mins]} mins"
-	- accounts = @current_user.accounts_for_product(@instrument)
-	= f.select :order_account, accounts.map { |a| [a, a.id] }
+	%fieldset
+		%legend Reservation Length
+		- @possible_reservation_data.each do |res_data|
+			= f.radio_button "reservation[duration_mins]", res_data[:duration_mins]
+			= f.label "reservation[duration_mins]_#{res_data[:duration_mins]}", "#{res_data[:duration_mins]} mins"
+	%fieldset
+		%legend Payment Details
+		- accounts = @current_user.accounts_for_product(@instrument)
+		= f.select :order_account, accounts.map { |a| [a, a.id] }
 	%br
 	= f.submit "Create Reservation"
