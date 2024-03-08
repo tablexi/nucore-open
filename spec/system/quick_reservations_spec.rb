@@ -5,8 +5,9 @@ require "rails_helper"
 RSpec.describe "Reserving an instrument using quick reservations" do
   let(:user) { create(:user) }
   let!(:user_2) { create(:user) }
-  let!(:admin_user) {create(:user, :administrator) }
+  let!(:admin_user) { create(:user, :administrator) }
   let!(:instrument) { create(:setup_instrument, :timer, min_reserve_mins: 5) }
+  let(:intervals) { instrument.quick_reservation_intervals }
   let(:facility) { instrument.facility }
   let!(:account) { create(:nufs_account, :with_account_owner, owner: user) }
   let!(:price_policy) { create(:instrument_price_policy, price_group: PriceGroup.base, product: instrument) }
@@ -64,7 +65,30 @@ RSpec.describe "Reserving an instrument using quick reservations" do
   end
 
   context "when another reservation exists in the future" do
-    context "when the reservation is outside of all the walkup reservation intervals"
+    let(:start_at) {}
+    let(:end_at) { start_at + 30.minutes }
+
+    let!(:reservation) do
+      create(
+        :purchased_reservation,
+        product: instrument,
+        user: user_2,
+        reserve_start_at: start_at,
+        reserve_end_at: end_at
+      )
+    end
+
+    context "when the reservation is outside of all the walkup reservation intervals" do
+      let(:start_at) { Time.current + intervals.last.minutes }
+
+      it "can start a reservation right now" do
+        choose "30 mins"
+        click_button "Create Reservation"
+        expect(page).to have_content("9:31 AM - 10:01 AM")
+        expect(page).to have_content("End Reservation")
+      end
+    end
+
     context "when the reservation is ouside only 2 of the walkup reservation intervals"
     context "when the reservation is inside all of the walkup reservation intervals"
   end
