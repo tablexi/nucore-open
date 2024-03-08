@@ -18,8 +18,15 @@ class QuickReservationsController < ApplicationController
   end
 
   def create
-    build_order
+    # This will give reservation data that's valid the instant of creation. If
+    # a user sits on the #new page for a little bit of time, the data shown
+    # on that page will not longer create a valid, startable reservation.
+    params[:reservation][:reserve_start_date] = @reservation_data[:reserve_start_at].to_s
+    params[:reservation][:reserve_start_hour] = @reservation_data[:reserve_start_at].hour
+    params[:reservation][:reserve_start_min] = @reservation_data[:reserve_start_at].min
+    params[:reservation][:reserve_start_meridian] = @reservation_data[:reserve_start_at].strftime("%p")
 
+    build_order
     creator = ReservationCreator.new(@order, @order_detail, params)
 
     if creator.save(current_user)
