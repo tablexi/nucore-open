@@ -1,12 +1,12 @@
-%p= "Order #: #{reservation.order_detail}"
-%p= "#{@facility.abbreviation} / #{@instrument.name}"
+%h1.gray= "Order #: #{reservation.order_detail}"
+%h2= "#{@facility.abbreviation} / #{@instrument.name}"
 
 %dl
 	%dt Reservation Date
 	%dd= human_date(reservation.reserve_start_at)
 
 	%dt Reservation Time
-	%dd= "#{human_time(reservation.reserve_start_at)} - #{human_time(reservation.reserve_end_at)}"
+	%dd.underline= "#{human_time(reservation.reserve_start_at)} - #{human_time(reservation.reserve_end_at)}"
 
 	%dt Status
 	%dd= reservation.order_detail.state

@@ -1,7 +1,7 @@
 - if @ongoing
 	= render partial: "reservation_information", locals: { reservation: @ongoing }
 
-	= link_to "End Reservation", order_order_detail_reservation_switch_instrument_path(@ongoing.order_detail.order, @ongoing.order_detail, @ongoing, switch: "off", reservation_ended: "on"), class: end_reservation_class(@ongoing), data: { refresh_on_cancel: true }
+	= link_to "End Reservation", order_order_detail_reservation_switch_instrument_path(@ongoing.order_detail.order, @ongoing.order_detail, @ongoing, switch: "off", reservation_ended: "on"), class: "#{end_reservation_class(@ongoing)} end_link", data: { refresh_on_cancel: true }
 
 - elsif @startable
 	= render partial: "reservation_information", locals: { reservation: @startable }
