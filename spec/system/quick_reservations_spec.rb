@@ -111,6 +111,7 @@ RSpec.describe "Reserving an instrument using quick reservations" do
       expect(page).to have_content("9:31 AM - 10:01 AM")
       expect(page).to have_content("End Reservation")
       # test that the abandoned reservation goes into the problem queue
+      visit root_path
       click_link "Logout"
       login_as admin_user
       visit show_problems_facility_reservations_path(facility)
