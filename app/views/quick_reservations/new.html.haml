@@ -1,13 +1,15 @@
-%h1= "#{@facility.abbreviation} / #{@instrument.name}"
-
-- unless @walkup_available
-	%p.alert Someone has a reservation comping up. Next available start time is: 
-
-%h2 Reservation Details
+- if @walkup_available
+	%h1= "#{@facility.abbreviation} / #{@instrument.name}"
+	%h2 Reservation Details
+- else
+	%div.reservation_notice
+		%h1= "#{@facility.abbreviation} / #{@instrument.name}"
+		%h2 Reserved
+		%p Someone has a reservation comping up. Next available start time is: 
 
 %dl
 	%dt Reservation Date
-	%dd= human_date(@reservation_data[:reserve_start_at])
+	%dd= "#{@reservation_data[:reserve_start_at].strftime("%A")} #{human_date(@reservation_data[:reserve_start_at])}"
 
 	%dt Reservation Time
 	%dd= human_time(@reservation_data[:reserve_start_at])

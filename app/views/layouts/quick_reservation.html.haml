@@ -4,9 +4,9 @@
     = render "/shared/head"
   %body.quick_reservation
     #content{ role: "main" }
-      .container
+      .container#quick_reservation
         = render partial: "shared/flashes"
 
         = yield
-    %footer
+    %footer.quick_reservation
       %p= request.domain
