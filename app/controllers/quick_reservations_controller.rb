@@ -14,11 +14,13 @@ class QuickReservationsController < ApplicationController
     redirect_to(new_facility_instrument_quick_reservation_path) unless @startable || @ongoing
   end
 
+  # GET /facilities/:facility_id/instruments/:instrument_id/quick_reservations/new
   def new
     interval = @instrument.quick_reservation_intervals.first
     @walkup_available = @instrument.walkup_available?(interval:)
   end
 
+  # POST /facilities/:facility_id/instruments/:instrument_id/quick_reservations
   def create
     # This will give reservation data that's valid the instant of creation. If
     # a user sits on the #new page for a little bit of time, the data shown
@@ -50,6 +52,7 @@ class QuickReservationsController < ApplicationController
     redirect_to facility_instrument_quick_reservations_path(@facility, @instrument)
   end
 
+  # POST /facilities/:facility_id/instruments/:instrument_id/quick_reservations/start
   def start
     if @startable.move_to_earliest && @startable.start_reservation!
       flash[:notice] = "Reservation started"
