@@ -79,9 +79,26 @@ RSpec.describe "Reserving an instrument using quick reservations" do
     end
 
     context "when the reservation is outside of all the walkup reservation intervals" do
-      let(:start_at) { Time.current + intervals.last.minutes }
+      let(:start_at) { Time.current + intervals.last.minutes + 5.minutes }
 
       it "can start a reservation right now" do
+        expect(page).to have_content("15 mins")
+        expect(page).to have_content("30 mins")
+        expect(page).to have_content("60 mins")
+        choose "60 mins"
+        click_button "Create Reservation"
+        expect(page).to have_content("9:31 AM - 10:31 AM")
+        expect(page).to have_content("End Reservation")
+      end
+    end
+
+    context "when the reservation is ouside only 2 of the walkup reservation intervals" do
+      let(:start_at) { Time.current + intervals[1].minutes + 5.minutes }
+
+      it "can start a reservation right now" do
+        expect(page).to have_content("15 mins")
+        expect(page).to have_content("30 mins")
+        expect(page).to_not have_content("60 mins")
         choose "30 mins"
         click_button "Create Reservation"
         expect(page).to have_content("9:31 AM - 10:01 AM")
@@ -89,8 +106,17 @@ RSpec.describe "Reserving an instrument using quick reservations" do
       end
     end
 
-    context "when the reservation is ouside only 2 of the walkup reservation intervals"
-    context "when the reservation is inside all of the walkup reservation intervals"
+    context "when the reservation is inside all of the walkup reservation intervals" do
+      let(:start_at) { Time.current + intervals.first.minutes - 5.minutes }
+
+      it "can create a reservation for later on" do
+        expect(page).to have_content("Someone has a reservation comping up. Next available start time is")
+        expect(page).to have_content("Reservation Time 10:10 AM")
+        expect(page).to have_content("15 mins")
+        expect(page).to have_content("30 mins")
+        expect(page).to have_content("60 mins")
+      end
+    end
   end
 
   context "when another reservation is ongoing but abandoned" do
