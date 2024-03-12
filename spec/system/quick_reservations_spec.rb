@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Reserving an instrument using quick reservations" do
+RSpec.describe "Reserving an instrument using quick reservations", feature_setting: { walkup_reservations: true, reload_routes: true } do
   let(:user) { create(:user) }
   let!(:user_2) { create(:user) }
   let!(:admin_user) { create(:user, :administrator) }
@@ -39,7 +39,7 @@ RSpec.describe "Reserving an instrument using quick reservations" do
     end
 
     it "can move up and start their reservation" do
-      click_button "start reservation"
+      click_button "Start Reservation"
       expect(page).to have_content("9:31 AM - 10:01 AM")
       expect(page).to have_content("End Reservation")
     end
@@ -110,6 +110,7 @@ RSpec.describe "Reserving an instrument using quick reservations" do
       let(:start_at) { Time.current + intervals.first.minutes - 5.minutes }
 
       it "can create a reservation for later on" do
+        save_and_open_page
         expect(page).to have_content("Someone has a reservation comping up. Next available start time is")
         expect(page).to have_content("Reservation Time 10:10 AM")
         expect(page).to have_content("15 mins")
