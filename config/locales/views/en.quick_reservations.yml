@@ -1,0 +1,18 @@
+en:
+  quick_reservations:
+    new:
+      reservation_details: Reservation Details
+      reserved: Reserved
+      reserved_message: "Someone has a reservation comping up. Next available start time is:"
+      reservation_date: Reservation Date
+      reservation_time: Reservation Time
+      reservation_length: Reservation Length
+      payment_details: Payment Details
+      create_reservation: Create Reservation
+    index:
+      start: Start Reservation
+      end: End Reservation
+    reservation_information:
+      reservation_date: Reservation Date
+      reservation_time: Reservation Time
+      status: Status

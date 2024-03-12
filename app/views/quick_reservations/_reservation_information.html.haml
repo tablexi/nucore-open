@@ -2,11 +2,11 @@
 %h2= "#{@facility.abbreviation} / #{@instrument.name}"
 
 %dl
-  %dt Reservation Date
+  %dt= t(".reservation_date")
   %dd= human_date(reservation.reserve_start_at)
 
-  %dt Reservation Time
+  %dt= t(".reservation_time")
   %dd.underline= "#{human_time(reservation.reserve_start_at)} - #{human_time(reservation.reserve_end_at)}"
   
-  %dt Status
-  %dd= reservation.order_detail.state
+  %dt= t(".status")
+  %dd= reservation.order_detail.state.capitalize
