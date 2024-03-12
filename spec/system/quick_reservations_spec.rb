@@ -110,7 +110,6 @@ RSpec.describe "Reserving an instrument using quick reservations", feature_setti
       let(:start_at) { Time.current + intervals.first.minutes - 5.minutes }
 
       it "can create a reservation for later on" do
-        save_and_open_page
         expect(page).to have_content("Someone has a reservation comping up. Next available start time is")
         expect(page).to have_content("Reservation Time 10:10 AM")
         expect(page).to have_content("15 mins")
