@@ -1,28 +1,28 @@
 - if @walkup_available
-	%h1= "#{@facility.abbreviation} / #{@instrument.name}"
-	%h2 Reservation Details
+  %h1= "#{@facility.abbreviation} / #{@instrument.name}"
+  %h2 Reservation Details
 - else
-	%div.reservation_notice
-		%h1= "#{@facility.abbreviation} / #{@instrument.name}"
-		%h2 Reserved
-		%p Someone has a reservation comping up. Next available start time is: 
+  %div.reservation_notice
+    %h1= "#{@facility.abbreviation} / #{@instrument.name}"
+    %h2 Reserved
+    %p Someone has a reservation comping up. Next available start time is: 
 
 %dl
-	%dt Reservation Date
-	%dd= "#{@reservation_data[:reserve_start_at].strftime("%A")} #{human_date(@reservation_data[:reserve_start_at])}"
+  %dt Reservation Date
+  %dd= "#{@reservation_data[:reserve_start_at].strftime("%A")} #{human_date(@reservation_data[:reserve_start_at])}"
 
-	%dt Reservation Time
-	%dd= human_time(@reservation_data[:reserve_start_at])
+  %dt Reservation Time
+  %dd= human_time(@reservation_data[:reserve_start_at])
 
 = form_with url: facility_instrument_quick_reservations_path(@facility, @instrument) do |f|
-	%fieldset
-		%legend Reservation Length
-		- @possible_reservation_data.each do |res_data|
-			= f.radio_button "reservation[duration_mins]", res_data[:duration_mins]
-			= f.label "reservation[duration_mins]_#{res_data[:duration_mins]}", "#{res_data[:duration_mins]} mins"
-	%fieldset
-		%legend Payment Details
-		- accounts = @current_user.accounts_for_product(@instrument)
-		= f.select :order_account, accounts.map { |a| [a, a.id] }
-	%br
-	= f.submit "Create Reservation"
+  %fieldset
+    %legend Reservation Length
+    - @possible_reservation_data.each do |res_data|
+      = f.radio_button "reservation[duration_mins]", res_data[:duration_mins]
+      = f.label "reservation[duration_mins]_#{res_data[:duration_mins]}", "#{res_data[:duration_mins]} mins"
+  %fieldset
+    %legend Payment Details
+    - accounts = @current_user.accounts_for_product(@instrument)
+    = f.select :order_account, accounts.map { |a| [a, a.id] }
+  %br
+  = f.submit "Create Reservation"
