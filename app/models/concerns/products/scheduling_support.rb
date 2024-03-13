@@ -44,7 +44,8 @@ module Products::SchedulingSupport
   def quick_reservation_data(after: 1.minute.from_now)
     res = next_available_reservation(after:, duration: quick_reservation_intervals.first)
 
-    quick_reservation_intervals.select { |i| walkup_available?(after, interval: i) }.compact
+    quick_reservation_intervals.select { |i| walkup_available?(after, interval: i) }
+                               .compact
                                .map { |i| { reserve_start_at: res.reserve_start_at, duration_mins: i } }
   end
 
