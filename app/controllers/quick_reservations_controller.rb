@@ -22,9 +22,10 @@ class QuickReservationsController < ApplicationController
 
   # POST /facilities/:facility_id/instruments/:instrument_id/quick_reservations
   def create
-    # This will give reservation data that's valid the instant of creation. If
-    # a user sits on the #new page for a little bit of time, the data shown
-    # on that page will not longer create a valid, startable reservation.
+    # Create reservation data here to ensure a valid start time.
+    # If a user sits on the #new page for a little bit of time, the start time shown
+    # on that page will no longer be valid - for example, 
+    # if that start time is in the past when the user submits the form.
     params[:reservation][:reserve_start_date] = @reservation_data[:reserve_start_at].to_s
     params[:reservation][:reserve_start_hour] = @reservation_data[:reserve_start_at].hour
     params[:reservation][:reserve_start_min] = @reservation_data[:reserve_start_at].min
