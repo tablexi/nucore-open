@@ -140,7 +140,6 @@ class Orders::ItemAdder
       quantity: 1,
       account: @order.account,
       created_by: @order.created_by,
-      ordered_at: Time.zone.now,
     )
     @order.order_details.create!(options)
   end

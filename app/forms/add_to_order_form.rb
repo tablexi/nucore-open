@@ -123,7 +123,9 @@ class AddToOrderForm
 
   def add_to_order!(project = nil)
     OrderDetail.transaction do
-      merge_order.add(product, quantity, params).each do |order_detail|
+      item_adder_params = @original_order.facility_id == @facility_id ? params : params.merge(ordered_at: Time.zone.now)
+
+      merge_order.add(product, quantity, item_adder_params).each do |order_detail|
         backdate(order_detail)
 
         order_detail.set_default_status!
@@ -161,7 +163,7 @@ class AddToOrderForm
         created_by: created_by.id,
       )
 
-      product_order.add(product, quantity, params).each do |order_detail|
+      product_order.add(product, quantity, params.merge(ordered_at: Time.zone.now)).each do |order_detail|
         order_detail.set_default_status!
         order_detail.change_status!(order_status) if order_status.present?
 
