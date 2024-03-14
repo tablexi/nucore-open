@@ -149,6 +149,4 @@ RSpec.describe "Reserving an instrument using quick reservations", feature_setti
       expect(page).to have_content("Missing Actuals")
     end
   end
-
-  # locally test: if another reservation exists but has not been started, nothing will happen (the relay stays on).
 end
