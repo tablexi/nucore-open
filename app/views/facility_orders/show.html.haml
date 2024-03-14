@@ -8,6 +8,12 @@
     = banner_date_label @order, :ordered_at
     = banner_label @order, :user
     = banner_label @order, :created_by_user
+    - project_id = @order_details.first&.project_id
+    - if project_id
+      %dl.span2
+        %dt= "Cross Core Project ID"
+        = link_to facility_project_path(current_facility, project_id) do
+          %dd= project_id
     - if @merge_orders.blank? && current_ability.can?(:send_receipt, @order)
       .pull-right= render "send_receipt"
 
@@ -32,7 +38,7 @@
       %th.currency{scope: "col"}= t("views.facility_orders.show.total")
       %td.badges
 
-  = render "order_table", order_details: @order_details
+  = render "order_table", order_details: @order_details, cross_core: false
 
   %tfoot
     %tr
@@ -55,5 +61,28 @@
 
 - if current_ability.can?(:update, Order)
   = render "merge_order_form"
+
+%table.order-list.table.table-striped.table-hover#order-management
+  %thead
+    %tr
+      %td{colspan: 7}
+      %th{colspan: 2}= OrderDetail.human_attribute_name(:quantity)
+      %th{colspan: 3}= t("views.facility_orders.show.pricing")
+    %tr
+      %th.order-id{scope: "col"}= OrderDetail.human_attribute_name(:id)
+      %th.badges{scope: "col"}= t("views.facility_orders.show.status")
+      %th{scope: "col"}= Product.model_name.human
+      %th{scope: "col"}= Facility.model_name.human
+      %th{scope: "col"}= "Order By"
+      %th{scope: "col"}= "Order Date"
+      %th{scope: "col"}= t("views.facility_orders.show.actions")
+      %th.time{scope: "col"}= t("views.facility_orders.show.reserved")
+      %th.time{scope: "col"}= t("views.facility_orders.show.actual")
+      %th.currency{scope: "col"}= t("views.facility_orders.show.cost")
+      %th.currency{scope: "col"}= t("views.facility_orders.show.subsidy")
+      %th.currency{scope: "col"}= t("views.facility_orders.show.total")
+      %td.badges
+
+  = render "order_table", order_details: @cross_core_order_details, cross_core: true
 
 #order-detail-modal.modal.hide.fade{ data: { backdrop: "static" } }

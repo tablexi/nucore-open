@@ -15,6 +15,7 @@ class FacilityOrdersController < ApplicationController
   before_action :load_order, only: [:show, :update, :send_receipt]
   before_action :load_merge_orders, only: [:show, :update]
   before_action :load_add_to_order_form, only: [:show, :update]
+  before_action :load_cross_core_order_details, only: [:show]
 
   load_and_authorize_resource class: Order
 
@@ -32,7 +33,7 @@ class FacilityOrdersController < ApplicationController
     @order_details = @order.order_details.ordered_by_parents
     @order_details = @order_details.includes(:reservation, :order_status, :product, :order)
     if params[:refresh]
-      render partial: "order_table", locals: { order_details: @order_details }
+      render partial: "order_table", locals: { order_details: @order_details, cross_core: false }
     end
   end
 
@@ -112,6 +113,12 @@ class FacilityOrdersController < ApplicationController
 
   def problem_order_details
     current_facility.problem_plain_order_details
+  end
+
+  def load_cross_core_order_details
+    project = Projects::Project.find_by(name: "#{current_facility.abbreviation}-#{@order.id}")
+
+    @cross_core_order_details = project.present? ? project.order_details.where.not(order_id: @order.id) : []
   end
 
 end
