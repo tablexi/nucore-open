@@ -18,6 +18,10 @@ RSpec.describe "Reserving an instrument using quick reservations", feature_setti
     visit new_facility_instrument_quick_reservation_path(facility, instrument)
   end
 
+  it "is accessible", :js do
+    expect(page).to be_axe_clean
+  end
+
   context "when there is no current reservation" do
     it "can start a reservation right now" do
       choose "30 mins"

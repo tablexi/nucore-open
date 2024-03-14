@@ -21,8 +21,8 @@
       = f.radio_button "reservation[duration_mins]", res_data[:duration_mins], required: true
       = f.label "reservation[duration_mins]_#{res_data[:duration_mins]}", "#{res_data[:duration_mins]} mins"
   %fieldset
-    %legend= t(".payment_details")
     - accounts = @current_user.accounts_for_product(@instrument)
-    = f.select :order_account, accounts.map { |a| [a, a.id] }
+    %legend= t(".payment_details")
+    = f.select :order_account, accounts.map { |a| [a, a.id] }, {}, {"aria-label": "account" }
   %br
   = f.submit t(".create_reservation")

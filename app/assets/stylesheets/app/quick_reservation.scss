@@ -5,7 +5,7 @@ body.quick_reservation {
       border: none;
     }
     h1.gray {
-      color: $navbarActiveBorderColor;
+      color: #595959;
       font-size: 1.5em;
       margin-bottom: -1em;
     }
@@ -28,14 +28,14 @@ body.quick_reservation {
       text-align: center;
       p {
         padding: 0 15%;
-        color: $navbarActiveBorderColor;
+        color: #595959;
         font-weight: bold;
       }
     }
     dl {
       width: 100%;
       dt {
-        color: $navbarActiveBorderColor;
+        color: #595959;
         clear: both;
       }
       dd {
@@ -45,12 +45,12 @@ body.quick_reservation {
         clear: both;
       }
       dd.underline {
-        border-bottom: 3px solid $linkColor;
+        border-bottom: 3px solid #005B8A;
         float: left;
       }
     }
     a.end_link {
-      background-color: $linkColor;
+      background-color: #005B8A;
       color: white;
       text-decoration: none;
       padding: 1em;
@@ -69,8 +69,8 @@ body.quick_reservation {
       }
       label {
         width: 100%;
-        border: 1px solid $linkColor;
-        color: $linkColor;
+        border: 1px solid #005B8A;
+        color: #005B8A;
         text-align: center;
         position: relative;
         top: -20px;
@@ -80,7 +80,7 @@ body.quick_reservation {
         opacity: 0; // doing this instead of display:none so that browser validation information is shown
       }
       input[type="radio"]:checked + label {
-        background-color: $linkColor;
+        background-color: #005B8A;
         color: white;
       }
       select {
@@ -88,7 +88,7 @@ body.quick_reservation {
         height: 4em;
       }
       input[type="submit"] {
-        background-color: $linkColor;
+        background-color: #005B8A;
         color: white;
         width: 100%;
         padding: 1em 0;
@@ -98,8 +98,11 @@ body.quick_reservation {
     }
   }
   footer.quick_reservation {
-    border-top: 1px solid $navbarActiveBorderColor;
+    border-top: 1px solid #595959;
     text-align: center;
     padding-top: 1em;
+    a {
+      color: #005B8A; 
+    }
   }
 }
