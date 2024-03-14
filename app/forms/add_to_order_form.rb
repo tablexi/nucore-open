@@ -142,7 +142,7 @@ class AddToOrderForm
   end
 
   def create_cross_core_project_and_add_order!
-    Project.transaction do
+    Projects::Project.transaction do
       project = Projects::Project.find_or_initialize_by(
         name: "#{current_facility.abbreviation}-#{original_order.id}",
         facility_id: current_facility.id
