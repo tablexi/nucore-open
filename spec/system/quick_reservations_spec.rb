@@ -15,7 +15,7 @@ RSpec.describe "Reserving an instrument using quick reservations", feature_setti
 
   before do
     login_as user
-    visit facility_instrument_quick_reservations_path(facility, instrument)
+    visit new_facility_instrument_quick_reservation_path(facility, instrument)
   end
 
   context "when there is no current reservation" do

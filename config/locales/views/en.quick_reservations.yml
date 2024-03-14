@@ -9,7 +9,7 @@ en:
       reservation_length: Reservation Length
       payment_details: Payment Details
       create_reservation: Create Reservation
-    index:
+    show:
       start: Start Reservation
       end: End Reservation
     reservation_information:

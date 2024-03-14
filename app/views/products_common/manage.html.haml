@@ -11,7 +11,7 @@
 
   - if @product.is_a?(Instrument) && SettingsHelper.feature_on?(:walkup_reservations)
     %label= t("views.products_common.manage.quick_reservation_label")
-    = link_to facility_instrument_quick_reservations_url(current_facility, @product), facility_instrument_quick_reservations_url(current_facility, @product)
+    = link_to new_facility_instrument_quick_reservation_url(current_facility, @product), new_facility_instrument_quick_reservation_url(current_facility, @product)
   - if SettingsHelper::feature_on? :product_specific_contacts
     = f.input :email
 

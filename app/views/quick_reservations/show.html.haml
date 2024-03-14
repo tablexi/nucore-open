@@ -1,0 +1,13 @@
+- if @reservation.startable_now?
+  = render partial: "reservation_information", locals: { reservation: @reservation }
+  
+  = form_with url: facility_instrument_quick_reservations_start_path(@facility, @instrument) do |f|
+    = f.submit t(".start")
+- else
+  = render partial: "reservation_information", locals: { reservation: @reservation }
+  
+  = link_to t(".end"),
+	    order_order_detail_reservation_switch_instrument_path(@reservation.order_detail.order, @reservation.order_detail, @reservation, switch: "off", reservation_ended: "on"),
+			class: "#{end_reservation_class(@reservation)} end_link",
+			data: { refresh_on_cancel: true }
+

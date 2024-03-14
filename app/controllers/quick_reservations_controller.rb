@@ -6,16 +6,20 @@ class QuickReservationsController < ApplicationController
   before_action :authenticate_user!
   load_resource :facility, find_by: :url_name
   load_resource :instrument, through: :facility, find_by: :url_name
-  before_action :get_startable_reservation, only: [:index, :start]
+  before_action :get_startable_reservation, only: [:start, :new]
   before_action :prepare_reservation_data, only: [:new, :create]
 
-  # GET /facilities/:facility_id/instruments/:instrument_id/quick_reservations
-  def index
-    redirect_to(new_facility_instrument_quick_reservation_path) unless @startable || @ongoing
+  # GET /facilities/:facility_id/instruments/:instrument_id/quick_reservations/:id
+  def show
+    @reservation = Reservation.find params[:id]
+    raise ActiveRecord::RecordNotFound unless @reservation
+    redirect_to new_facility_instrument_quick_reservation_path(@facility, @instrument) if @reservation.actual_end_at
   end
 
   # GET /facilities/:facility_id/instruments/:instrument_id/quick_reservations/new
   def new
+    redirect_to facility_instrument_quick_reservation_path(@facility, @instrument, @reservation) if @reservation
+
     interval = @instrument.quick_reservation_intervals.first
     @walkup_available = @instrument.walkup_available?(interval:)
   end
@@ -24,7 +28,7 @@ class QuickReservationsController < ApplicationController
   def create
     # Create reservation data here to ensure a valid start time.
     # If a user sits on the #new page for a little bit of time, the start time shown
-    # on that page will no longer be valid - for example, 
+    # on that page will no longer be valid - for example,
     # if that start time is in the past when the user submits the form.
     params[:reservation][:reserve_start_date] = @reservation_data[:reserve_start_at].to_s
     params[:reservation][:reserve_start_hour] = @reservation_data[:reserve_start_at].hour
@@ -40,24 +44,35 @@ class QuickReservationsController < ApplicationController
       end
 
       if order_purchaser.success?
-        if creator.reservation.send(:in_grace_period?)
-          creator.reservation.start_reservation!
+        if creator.reservation.can_switch_instrument_on? && creator.reservation.start_reservation!
+          flash[:notice] = "Reservation started"
+        else
+          # failed to start
         end
       else
         # failed to purchase order
+        flash[:error] = order_purchaser.errors.join("<br>").html_safe
       end
     else
       # failed to save reservation
+      flash[:error] = creator.error
     end
 
-    redirect_to facility_instrument_quick_reservations_path(@facility, @instrument)
+    redirect_to facility_instrument_quick_reservation_path(
+      @facility,
+      @instrument,
+      creator.reservation
+    )
   end
 
   # POST /facilities/:facility_id/instruments/:instrument_id/quick_reservations/start
   def start
     if @startable.move_to_earliest && @startable.start_reservation!
       flash[:notice] = "Reservation started"
-      redirect_to facility_instrument_quick_reservations_path(@facility, @instrument)
+      redirect_to facility_instrument_quick_reservation_path(@facility, @instrument, @startable)
+    else
+      # failed to start
+      flash[:error] = @startable.errors.full_messages.join("<br>").html_safe
     end
   end
 
@@ -83,9 +98,11 @@ class QuickReservationsController < ApplicationController
   end
 
   def get_startable_reservation
-    @reservations = current_user.reservations.where(product_id: @instrument.id)
-    @startable = @reservations.find(&:startable_now?)
-    @ongoing = @reservations.ongoing.first
+    reservations = current_user.reservations.where(product_id: @instrument.id)
+    @startable = reservations.find(&:startable_now?)
+    ongoing = reservations.ongoing.first
+
+    @reservation = ongoing || @startable
   end
 
   def build_order
