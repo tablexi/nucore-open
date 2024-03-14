@@ -5,8 +5,4 @@
     = f.submit t(".start")
 - else
   = render partial: "reservation_information", locals: { reservation: @reservation }
-  
-  = link_to t(".end"),
-	    order_order_detail_reservation_switch_instrument_path(@reservation.order_detail.order, @reservation.order_detail, @reservation, switch: "off", reservation_ended: "on"),
-			class: "#{end_reservation_class(@reservation)} end_link",
-			data: { refresh_on_cancel: true }
+  = end_reservation_link(@reservation, "end_link")
