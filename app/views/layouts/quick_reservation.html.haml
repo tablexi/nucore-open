@@ -9,4 +9,4 @@
 
         = yield
     %footer.quick_reservation
-      %p= request.domain
+      %p= "#{link_to request.domain, root_path} | #{link_to t('.my_reservation'), reservations_path}"

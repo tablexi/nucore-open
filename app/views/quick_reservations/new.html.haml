@@ -18,7 +18,7 @@
   %fieldset
     %legend= t(".reservation_length")
     - @possible_reservation_data.each do |res_data|
-      = f.radio_button "reservation[duration_mins]", res_data[:duration_mins]
+      = f.radio_button "reservation[duration_mins]", res_data[:duration_mins], required: true
       = f.label "reservation[duration_mins]_#{res_data[:duration_mins]}", "#{res_data[:duration_mins]} mins"
   %fieldset
     %legend= t(".payment_details")

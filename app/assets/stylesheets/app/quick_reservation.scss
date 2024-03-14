@@ -74,11 +74,10 @@ body.quick_reservation {
         text-align: center;
         position: relative;
         top: -20px;
-        margin-top: 1em;
         padding: 1em 0;
       }
       input[type="radio"] {
-        display: none;
+        opacity: 0; // doing this instead of display:none so that browser validation information is shown
       }
       input[type="radio"]:checked + label {
         background-color: $linkColor;

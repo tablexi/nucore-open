@@ -1,4 +1,7 @@
 en:
+  layouts:
+    quick_reservation:
+      my_reservation: My Reservations
   quick_reservations:
     new:
       reservation_details: Reservation Details

@@ -48,6 +48,7 @@ class QuickReservationsController < ApplicationController
           flash[:notice] = "Reservation started"
         else
           # failed to start
+          flash[:error] = creator.reservation.errors.full_messages.join("<br>").html_safe
         end
       else
         # failed to purchase order
@@ -56,6 +57,7 @@ class QuickReservationsController < ApplicationController
     else
       # failed to save reservation
       flash[:error] = creator.error
+      render :new
     end
 
     redirect_to facility_instrument_quick_reservation_path(
@@ -123,7 +125,7 @@ class QuickReservationsController < ApplicationController
       acting_as: false,
       order: @order,
       order_in_past: false,
-      params: params,
+      params:,
       user: current_user,
     )
   end
