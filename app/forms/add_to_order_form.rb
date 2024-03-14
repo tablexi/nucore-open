@@ -25,7 +25,28 @@ class AddToOrderForm
   def save
     raise(ActiveRecord::RecordInvalid, self) unless valid?
 
-    add_to_order!
+    @facility_id = @facility_id&.to_i
+
+    order_project = Projects::Project.find_by(
+      name: "#{current_facility.abbreviation}-#{original_order.id}",
+      facility_id: current_facility.id
+    )
+
+    return add_to_order!(order_project) if @original_order.facility.id == @facility_id
+
+    if order_project.nil?
+      create_cross_core_project_and_add_order!
+    else
+      facility_order_in_project = order_project.order_details.find { |od| od.order.facility_id == @facility_id }&.order
+
+      if facility_order_in_project.present?
+        @merge_order = facility_order_in_project
+        add_to_order!(order_project)
+      else # Create new order for facility and add to the project
+        create_cross_core_project_and_add_order!
+      end
+    end
+
     true
   rescue AASM::InvalidTransition
     @error_message = text("invalid_status", product: product, status: order_status)
@@ -51,8 +72,12 @@ class AddToOrderForm
     text("notices", product: product.name)
   end
 
+  def product_facility
+    @product_facility ||= Facility.find(@facility_id)
+  end
+
   def product
-    @product ||= current_facility.products.find(product_id)
+    @product ||= product_facility.products.find(product_id)
   end
 
   # Will be blank if the account_id is suspended or expired. That should only happen
@@ -96,7 +121,7 @@ class AddToOrderForm
 
   private
 
-  def add_to_order!
+  def add_to_order!(project = nil)
     OrderDetail.transaction do
       merge_order.add(product, quantity, params).each do |order_detail|
         backdate(order_detail)
@@ -104,10 +129,43 @@ class AddToOrderForm
         order_detail.set_default_status!
         order_detail.change_status!(order_status) if order_status.present?
 
+        order_detail.update!(project_id: project.id) if project.present?
+
         if merge_order.to_be_merged? && !order_detail.valid_for_purchase?
           @notifications = true
           MergeNotification.create_for!(created_by, order_detail)
         end
+      end
+    end
+  end
+
+  def create_cross_core_project_and_add_order!
+    Project.transaction do
+      project = Projects::Project.find_or_initialize_by(
+        name: "#{current_facility.abbreviation}-#{original_order.id}",
+        facility_id: current_facility.id
+      )
+
+      # Update original order's order details to be included in the project
+      if project.new_record?
+        project.save!
+        original_order.order_details.each do |od|
+          od.update!(project_id: project.id)
+        end
+      end
+
+      product_order = Order.find_or_create_by!(
+        facility: product_facility,
+        account_id:,
+        user_id: original_order.user_id,
+        created_by: created_by.id,
+      )
+
+      product_order.add(product, quantity, params).each do |order_detail|
+        order_detail.set_default_status!
+        order_detail.change_status!(order_status) if order_status.present?
+
+        order_detail.update!(project_id: project.id)
       end
     end
   end
