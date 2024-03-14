@@ -13,6 +13,7 @@ en:
       start: Start Reservation
       end: End Reservation
     reservation_information:
+      order_number: "Order #"
       reservation_date: Reservation Date
       reservation_time: Reservation Time
       status: Status
