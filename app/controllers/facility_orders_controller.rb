@@ -71,6 +71,7 @@ class FacilityOrdersController < ApplicationController
       redirect_to facility_order_path(current_facility, @order)
     else
       flash.now[:error] = @add_to_order_form.error_message
+      load_cross_core_order_details
       show # set @order_details
       render :show
     end
