@@ -71,7 +71,7 @@ class QuickReservationsController < ApplicationController
   def start
     if @reservation&.startable_now? && @reservation&.move_to_earliest && @reservation&.start_reservation!
       flash[:notice] = "Reservation started"
-      redirect_to facility_instrument_quick_reservation_path(@facility, @instrument, @startable)
+      redirect_to facility_instrument_quick_reservation_path(@facility, @instrument, @reservation)
     else
       # failed to start
       flash[:error] = @startable.errors.full_messages.join("<br>").html_safe
