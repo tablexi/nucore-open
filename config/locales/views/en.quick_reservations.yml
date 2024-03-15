@@ -15,6 +15,7 @@ en:
     show:
       start: Start Reservation
       end: End Reservation
+      come_back_later: Come back closer to reservation time to start your reservation.
     reservation_information:
       order_number: "Order #"
       reservation_date: Reservation Date

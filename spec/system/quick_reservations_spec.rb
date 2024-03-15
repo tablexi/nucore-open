@@ -49,6 +49,34 @@ RSpec.describe "Reserving an instrument using quick reservations", feature_setti
     end
   end
 
+  context "when the user has a future reservation that cannot be started yet" do
+    let!(:reservation) do
+      create(
+        :purchased_reservation,
+        product: instrument,
+        user: user,
+        reserve_start_at: 30.minutes.from_now,
+        reserve_end_at: 90.minutes.from_now
+      )
+    end
+
+    let!(:reservation2) do
+      create(
+        :purchased_reservation,
+        product: instrument,
+        user: user_2,
+        reserve_start_at: 30.minutes.ago,
+        actual_start_at: 30.minutes.ago,
+        reserve_end_at: 30.minutes.from_now
+      )
+    end
+
+    it "cannot start the reservation" do
+      visit facility_instrument_quick_reservation_path(facility, instrument, reservation)
+      expect(page).to have_content("Come back closer to reservation time to start your reservation")
+    end
+  end
+
   context "when the user has an ongoing reservation" do
     let!(:reservation) do
       create(

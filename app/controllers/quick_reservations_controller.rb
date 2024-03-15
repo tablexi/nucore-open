@@ -11,7 +11,7 @@ class QuickReservationsController < ApplicationController
 
   # GET /facilities/:facility_id/instruments/:instrument_id/quick_reservations/:id
   def show
-    @reservation = Reservation.find params[:id]
+    @reservation = current_user.reservations.find params[:id]
     raise ActiveRecord::RecordNotFound unless @reservation
     redirect_to new_facility_instrument_quick_reservation_path(@facility, @instrument) if @reservation.actual_end_at
   end
