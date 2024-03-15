@@ -5,7 +5,7 @@ body.quick_reservation {
       border: none;
     }
     h1.gray {
-      color: #595959;
+      color: $navbarActiveBorderColor;
       font-size: 1.5em;
       margin-bottom: -1em;
     }
@@ -28,14 +28,14 @@ body.quick_reservation {
       text-align: center;
       p {
         padding: 0 15%;
-        color: #595959;
+        color: $navbarActiveBorderColor;
         font-weight: bold;
       }
     }
     dl {
       width: 100%;
       dt {
-        color: #595959;
+        color: $navbarActiveBorderColor;
         clear: both;
       }
       dd {
@@ -98,7 +98,7 @@ body.quick_reservation {
     }
   }
   footer.quick_reservation {
-    border-top: 1px solid #595959;
+    border-top: 1px solid $navbarActiveBorderColor;
     text-align: center;
     padding-top: 1em;
     a {
