@@ -90,7 +90,6 @@ class Reservation < ApplicationRecord
     end
   end
 
-
   scope :current_in_use, lambda {
     not_canceled
       .joins_order
