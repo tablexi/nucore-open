@@ -69,7 +69,7 @@ class QuickReservationsController < ApplicationController
 
   # POST /facilities/:facility_id/instruments/:instrument_id/quick_reservations/start
   def start
-    if @startable.move_to_earliest && @startable.start_reservation!
+    if @reservation&.startable_now? && @reservation.move_to_earliest && @reservation.start_reservation!
       flash[:notice] = "Reservation started"
       redirect_to facility_instrument_quick_reservation_path(@facility, @instrument, @startable)
     else
