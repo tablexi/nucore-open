@@ -69,7 +69,7 @@ class QuickReservationsController < ApplicationController
 
   # POST /facilities/:facility_id/instruments/:instrument_id/quick_reservations/start
   def start
-    if @reservation&.startable_now? && @reservation.move_to_earliest && @reservation.start_reservation!
+    if @reservation&.startable_now? && @reservation&.move_to_earliest && @reservation&.start_reservation!
       flash[:notice] = "Reservation started"
       redirect_to facility_instrument_quick_reservation_path(@facility, @instrument, @startable)
     else
@@ -107,10 +107,10 @@ class QuickReservationsController < ApplicationController
 
   def get_startable_reservation
     reservations = current_user.reservations.where(product_id: @instrument.id)
-    @startable = reservations.find(&:startable_now?)
+    startable = reservations.find(&:startable_now?)
     ongoing = reservations.ongoing.first
 
-    @reservation = ongoing || @startable
+    @reservation = ongoing || startable
   end
 
   def build_order

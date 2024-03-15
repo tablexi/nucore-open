@@ -45,12 +45,12 @@ body.quick_reservation {
         clear: both;
       }
       dd.underline {
-        border-bottom: 3px solid #005B8A;
+        border-bottom: 3px solid $linkColor;
         float: left;
       }
     }
     a.end_link {
-      background-color: #005B8A;
+      background-color: $linkColor;
       color: white;
       text-decoration: none;
       padding: 1em;
@@ -69,8 +69,8 @@ body.quick_reservation {
       }
       label {
         width: 100%;
-        border: 1px solid #005B8A;
-        color: #005B8A;
+        border: 1px solid $linkColor;
+        color: $linkColor;
         text-align: center;
         position: relative;
         top: -20px;
@@ -80,7 +80,7 @@ body.quick_reservation {
         opacity: 0; // doing this instead of display:none so that browser validation information is shown
       }
       input[type="radio"]:checked + label {
-        background-color: #005B8A;
+        background-color: $linkColor;
         color: white;
       }
       select {
@@ -88,7 +88,7 @@ body.quick_reservation {
         height: 4em;
       }
       input[type="submit"] {
-        background-color: #005B8A;
+        background-color: $linkColor;
         color: white;
         width: 100%;
         padding: 1em 0;
@@ -102,7 +102,7 @@ body.quick_reservation {
     text-align: center;
     padding-top: 1em;
     a {
-      color: #005B8A; 
+      color: $linkColor; 
     }
   }
 }
