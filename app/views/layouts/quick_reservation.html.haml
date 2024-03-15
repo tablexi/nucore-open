@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+%html{lang: "en"}
+  %head
+    = render "/shared/head"
+  %body.quick_reservation
+    #content{ role: "main" }
+      .container#quick_reservation
+        = render partial: "shared/flashes"
+
+        = yield
+    %footer.quick_reservation
+      %p= "#{link_to t(:app_name), root_path} | #{link_to t('.my_reservation'), reservations_path}"
