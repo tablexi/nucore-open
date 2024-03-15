@@ -32,9 +32,9 @@ class AddToOrderForm
       facility_id: current_facility.id
     )
 
-    return add_to_order!(order_project) if @original_order.facility.id == @facility_id
-
-    if order_project.nil?
+    if @original_order.facility.id == @facility_id
+      add_to_order!(order_project)
+    elsif order_project.nil?
       create_cross_core_project_and_add_order!
     else
       facility_order_in_project = order_project.order_details.find { |od| od.order.facility_id == @facility_id }&.order
