@@ -65,6 +65,8 @@ window.MergeOrder = class MergeOrder {
             return product_field.append(
               '<option value="' +
                 product.id +
+                '" data-timed-product="' +
+                product.time_based +
                 '">' +
                 product.name +
                 "</option>"
