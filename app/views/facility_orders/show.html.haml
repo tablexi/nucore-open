@@ -8,7 +8,7 @@
     = banner_date_label @order, :ordered_at
     = banner_label @order, :user
     = banner_label @order, :created_by_user
-    - project_id = @order_details.first&.project_id
+    - project_id = @cross_core_order_details_by_facility.present? ? @order_details.first&.project_id : nil
     - if project_id
       %dl.span2
         %dt= t("views.facility_orders.show.cross_core_project_id")
