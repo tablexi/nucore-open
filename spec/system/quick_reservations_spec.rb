@@ -203,7 +203,7 @@ RSpec.describe "Reserving an instrument using quick reservations", feature_setti
 
     context "when the user does have the required training" do
       before do
-        stub_research_safety_lookup(user, valid: [research_safety_certificate])
+        stub_research_safety_lookup(user, valid: [research_safety_certificate], number_of_times: 2)
       end
 
       it "can start a reservation right now" do
