@@ -3,12 +3,15 @@
 require "rails_helper"
 
 RSpec.describe "Reserving an instrument using quick reservations", feature_setting: { walkup_reservations: true, reload_routes: true } do
+  include ResearchSafetyTestHelpers
+
   let(:user) { create(:user) }
   let!(:user_2) { create(:user) }
   let!(:admin_user) { create(:user, :administrator) }
   let!(:instrument) { create(:setup_instrument, :timer, min_reserve_mins: 5) }
   let(:intervals) { instrument.quick_reservation_intervals }
   let(:facility) { instrument.facility }
+  let(:research_safety_certificate) { create(:research_safety_certificate) }
   let!(:account) { create(:nufs_account, :with_account_owner, owner: user) }
   let!(:price_policy) { create(:instrument_price_policy, price_group: PriceGroup.base, product: instrument) }
   let!(:reservation) {}
@@ -175,6 +178,40 @@ RSpec.describe "Reserving an instrument using quick reservations", feature_setti
       visit show_problems_facility_reservations_path(facility)
       expect(page).to have_content(reservation.order.id)
       expect(page).to have_content("Missing Actuals")
+    end
+  end
+
+  context "when the instrument requires training" do
+    let!(:certification_requirement) do
+      ProductResearchSafetyCertificationRequirement.create(
+        product: instrument,
+        research_safety_certificate: research_safety_certificate,
+      )
+    end
+
+    context "when the user does not have the required training" do
+      before do
+        stub_research_safety_lookup(user, invalid: [research_safety_certificate])
+      end
+
+      it "cannot start a reservation" do
+        choose "30 mins"
+        click_button "Create Reservation"
+        expect(page).to have_content("Validation failed: Missing Certificates: #{research_safety_certificate.name}. Please contact your Research Safety program to complete your training.")
+      end
+    end
+
+    context "when the user does have the required training" do
+      before do
+        stub_research_safety_lookup(user, valid: [research_safety_certificate])
+      end
+
+      it "can start a reservation right now" do
+        choose "30 mins"
+        click_button "Create Reservation"
+        expect(page).to have_content("9:31 AM - 10:01 AM")
+        expect(page).to have_content("End Reservation")
+      end
     end
   end
 end

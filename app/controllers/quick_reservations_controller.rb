@@ -56,8 +56,8 @@ class QuickReservationsController < ApplicationController
       end
     else
       # failed to save reservation
-      flash[:error] = creator.error
-      render :new
+      flash[:error] = creator.error.html_safe
+      render(:new) and return
     end
 
     redirect_to facility_instrument_quick_reservation_path(
