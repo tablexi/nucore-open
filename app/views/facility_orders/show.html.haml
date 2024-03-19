@@ -15,7 +15,7 @@
         = link_to facility_project_path(current_facility, project_id) do
           %dd= project_id
       %dl.span2
-        %dt= t("views.facility_orders.show.gross_project_value")
+        %dt= t("views.facility_orders.show.cross_core_project_total")
         - gross_order_value = @order.total + @cross_core_orders_by_facility.values.sum(&:total)
         %dd= number_to_currency gross_order_value
     - if @merge_orders.blank? && current_ability.can?(:send_receipt, @order)
