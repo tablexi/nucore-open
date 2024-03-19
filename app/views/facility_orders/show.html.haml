@@ -14,6 +14,10 @@
         %dt= t("views.facility_orders.show.cross_core_project_id")
         = link_to facility_project_path(current_facility, project_id) do
           %dd= project_id
+      %dl.span2
+        %dt= t("views.facility_orders.show.gross_project_value")
+        - gross_order_value = @order.total + @cross_core_orders_by_facility.values.sum(&:total)
+        %dd= number_to_currency gross_order_value
     - if @merge_orders.blank? && current_ability.can?(:send_receipt, @order)
       .pull-right= render "send_receipt"
 
@@ -51,5 +55,26 @@
     %table.order-list.table.table-striped.table-hover
       = render "order_table_headers", cross_core: true
       = render "order_table", order_details: order_details, cross_core: true
+
+      %tfoot
+        %tr
+          %td
+          %td
+          %td
+          %td
+          %td
+          %td
+          %td
+          %td
+          %td.currency
+            %strong
+              = number_to_currency @cross_core_orders_by_facility[facility].cost
+          %td.currency
+            %strong
+              = number_to_currency @cross_core_orders_by_facility[facility].subsidy
+          %td.currency
+            %strong
+              = number_to_currency @cross_core_orders_by_facility[facility].total
+          %td
 
 #order-detail-modal.modal.hide.fade{ data: { backdrop: "static" } }
