@@ -218,8 +218,9 @@ RSpec.describe "Adding to an existing order" do
 
         expect(page).to have_content("#{product2.name} was successfully added to this order.")
         expect(page).to have_content("Cross Core Project ID")
-        expect(page).to have_content(facility2.to_s)
+        expect(page).to have_content(facility2.to_s), count: 2
         expect(page).to have_content(user.full_name), count: 2
+        expect(page).to have_content("Gross Project Value")
       end
     end
 
