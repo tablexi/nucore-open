@@ -209,6 +209,18 @@ RSpec.describe "Adding to an existing order" do
         select_from_chosen product2.name, from: "add_to_order_form[product_id]"
         expect(page).to have_button("Add to Cross-Core Order")
       end
+
+      it "creates a new order for the selected facility" do
+        expect(page).not_to have_content("Cross Core Project ID")
+        select_from_chosen facility2.name, from: "add_to_order_form[facility_id]"
+        select_from_chosen product2.name, from: "add_to_order_form[product_id]"
+        click_button "Add to Cross-Core Order"
+
+        expect(page).to have_content("#{product2.name} was successfully added to this order.")
+        expect(page).to have_content("Cross Core Project ID")
+        expect(page).to have_content(facility2.to_s)
+        expect(page).to have_content(user.full_name), count: 2
+      end
     end
 
   end
