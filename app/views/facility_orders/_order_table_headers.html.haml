@@ -8,7 +8,6 @@
     %th.badges{scope: "col"}= t("views.facility_orders.show.status")
     %th{scope: "col"}= Product.model_name.human
     - if cross_core
-      %th{scope: "col"}= Facility.model_name.human
       %th{scope: "col"}= t("views.facility_orders.show.order_by")
       %th{scope: "col"}= t("views.facility_orders.show.order_date")
     %th{scope: "col"}= t("views.facility_orders.show.actions")
