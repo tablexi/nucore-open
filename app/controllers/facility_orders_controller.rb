@@ -119,7 +119,21 @@ class FacilityOrdersController < ApplicationController
   def load_cross_core_order_details
     project = Projects::Project.find_by(name: "#{current_facility.abbreviation}-#{@order.id}")
 
-    @cross_core_order_details = project.present? ? project.order_details.where.not(order_id: @order.id) : []
+    @cross_core_order_details_by_facility = {}
+    @cross_core_orders_by_facility = {}
+
+    if project.present?
+      grouped_project_order_details = project.order_details.group_by(&:order_id)
+      grouped_project_order_details.each_key.each do |order_id|
+        next if order_id == @order.id
+
+        order = Order.find(order_id)
+        order_facility = order.facility.to_s
+
+        @cross_core_order_details_by_facility[order_facility] = grouped_project_order_details[order_id]
+        @cross_core_orders_by_facility[order_facility] = order
+      end
+    end
   end
 
 end
