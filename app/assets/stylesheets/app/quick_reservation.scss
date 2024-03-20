@@ -1,5 +1,7 @@
 body.quick_reservation {
   padding: 0;
+  $reservationLabelColor: $secondaryColor;
+  $reservationLinkColor: $secondaryColor;
 
   header {
     text-align: center;
@@ -60,12 +62,12 @@ body.quick_reservation {
         clear: both;
       }
       dd.underline {
-        border-bottom: 3px solid $linkColor;
+        border-bottom: 3px solid $secondaryColor;
         float: left;
       }
     }
     a.end_link {
-      background-color: $linkColor;
+      background-color: $reservationLabelColor;
       color: white;
       text-decoration: none;
       padding: 1em;
@@ -88,8 +90,8 @@ body.quick_reservation {
       }
       label {
         width: 100%;
-        border: 1px solid $primaryColor;
-        color: $primaryColor;
+        border: 1px solid $reservationLabelColor;
+        color: $reservationLabelColor;
         text-align: center;
         position: relative;
         top: -20px;
@@ -99,7 +101,7 @@ body.quick_reservation {
         opacity: 0; // doing this instead of display:none so that browser validation information is shown
       }
       input[type="radio"]:checked + label {
-        background-color: $primaryColor;
+        background-color: $reservationLabelColor;
         color: white;
       }
       select {
@@ -122,7 +124,7 @@ body.quick_reservation {
     padding-top: 1em;
     margin: 0 20px;
     a {
-      color: $primaryColor; 
+      color: $reservationLinkColor; 
     }
   }
 }
