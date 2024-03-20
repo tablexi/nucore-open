@@ -1,9 +1,10 @@
+= content_for :h1 do
+  = "#{@facility.abbreviation} / #{@instrument.name}"
+
 - if @walkup_available
-  %h1= "#{@facility.abbreviation} / #{@instrument.name}"
   %h2= t(".reservation_details")
 - else
   %div.reservation_notice
-    %h1= "#{@facility.abbreviation} / #{@instrument.name}"
     %h2= t(".reserved")
     %p= t(".reserved_message")
 
