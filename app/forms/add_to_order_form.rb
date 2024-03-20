@@ -33,7 +33,7 @@ class AddToOrderForm
       add_to_order!
     end
 
-    return unless SettingsHelper.feature_on?(:cross_core_projects)
+    return true unless SettingsHelper.feature_on?(:cross_core_projects)
 
     if @order_project.nil?
       create_cross_core_project_and_add_order!
