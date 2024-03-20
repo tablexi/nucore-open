@@ -20,6 +20,17 @@ class QuickReservationsController < ApplicationController
   def new
     redirect_to facility_instrument_quick_reservation_path(@facility, @instrument, @reservation) if @reservation
 
+    # Set up records to authorize against, these are not used in the view
+    build_order
+    @reservation = NextAvailableReservationFinder.new(@instrument).next_available_for(current_user, current_user)
+    @reservation.order_detail = @order_detail
+    authorize! :new, @reservation
+
+    # Check if the user can create a reservation
+    instrument_for_cart = InstrumentForCart.new(@instrument, quick_reservation: true)
+    @can_add_to_cart = instrument_for_cart.purchasable_by?(current_user, current_user)
+    flash.now[:notice] = instrument_for_cart.error_message if instrument_for_cart.error_message
+
     interval = @instrument.quick_reservation_intervals.first
     @walkup_available = @instrument.walkup_available?(interval:)
   end
@@ -37,34 +48,39 @@ class QuickReservationsController < ApplicationController
 
     build_order
     creator = ReservationCreator.new(@order, @order_detail, params)
+    @reservation = creator.reservation
 
     if creator.save(current_user)
+      # Check if the user can create a reservation
+      facility_ability = Ability.new(session_user, @order.facility, self)
+      @order.being_purchased_by_admin = facility_ability.can?(:act_as, @order.facility)
+      authorize! :create, @reservation
+      
       @order.transaction do
         order_purchaser.purchase!
       end
 
       if order_purchaser.success?
-        if creator.reservation.can_switch_instrument_on? && creator.reservation.start_reservation!
+        if @reservation.can_switch_instrument_on? && @reservation.start_reservation!
           flash[:notice] = "Reservation started"
         else
           # failed to start
-          flash[:error] = creator.reservation.errors.full_messages.join("<br>").html_safe
+          flash[:error] = @reservation.errors.full_messages.join("<br>").html_safe
         end
       else
         # failed to purchase order
         flash[:error] = order_purchaser.errors.join("<br>").html_safe
       end
+      redirect_to facility_instrument_quick_reservation_path(
+        @facility,
+        @instrument,
+        @reservation
+      )
     else
       # failed to save reservation
-      flash[:error] = creator.error
-      render :new
+      flash[:error] = creator.error.html_safe
+      render(:new)
     end
-
-    redirect_to facility_instrument_quick_reservation_path(
-      @facility,
-      @instrument,
-      creator.reservation
-    )
   end
 
   # POST /facilities/:facility_id/instruments/:instrument_id/quick_reservations/start
@@ -85,6 +101,10 @@ class QuickReservationsController < ApplicationController
   end
 
   private
+
+  def ability_resource
+    @reservation
+  end
 
   def reservation_params
     params.permit(:reservation, :order_account)

@@ -4,18 +4,15 @@ body.quick_reservation {
       font-size: 2em;
       border: none;
     }
-    h1.gray {
-      color: $navbarActiveBorderColor;
-      font-size: 1.5em;
-      margin-bottom: -1em;
-    }
+
     h2 {
+      &.gray {
+        color: $navbarActiveBorderColor;
+      }
       font-size: 1.5em;
     }
+
     div.reservation_notice {
-      h1 {
-        margin-bottom: 0;
-      }
       h2 {
         margin: 0;
         line-height: 1em;
@@ -32,6 +29,7 @@ body.quick_reservation {
         font-weight: bold;
       }
     }
+
     dl {
       width: 100%;
       dt {
@@ -49,6 +47,7 @@ body.quick_reservation {
         float: left;
       }
     }
+
     a.end_link {
       background-color: $linkColor;
       color: white;
@@ -59,10 +58,12 @@ body.quick_reservation {
       text-align: center;
       border-radius: 5px;
     }
+
     .disabled {
       opacity: 0.65;
       pointer-events: none;
     }
+
     form {
       margin-top: 1em;
       width: 100%;
@@ -101,12 +102,13 @@ body.quick_reservation {
       }
     }
   }
+
   footer.quick_reservation {
     border-top: 1px solid $navbarActiveBorderColor;
     text-align: center;
     padding-top: 1em;
     a {
-      color: $linkColor; 
+      color: $linkColor;
     }
   }
 }

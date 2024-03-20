@@ -3,12 +3,16 @@
 require "rails_helper"
 
 RSpec.describe "Reserving an instrument using quick reservations", feature_setting: { walkup_reservations: true, reload_routes: true } do
+  include ResearchSafetyTestHelpers
+
   let(:user) { create(:user) }
   let!(:user_2) { create(:user) }
   let!(:admin_user) { create(:user, :administrator) }
   let!(:instrument) { create(:setup_instrument, :timer, min_reserve_mins: 5) }
+  let!(:product_user) {}
   let(:intervals) { instrument.quick_reservation_intervals }
   let(:facility) { instrument.facility }
+  let(:research_safety_certificate) { create(:research_safety_certificate) }
   let!(:account) { create(:nufs_account, :with_account_owner, owner: user) }
   let!(:price_policy) { create(:instrument_price_policy, price_group: PriceGroup.base, product: instrument) }
   let!(:reservation) {}
@@ -142,7 +146,7 @@ RSpec.describe "Reserving an instrument using quick reservations", feature_setti
       let(:start_at) { Time.current + intervals.first.minutes - 5.minutes }
 
       it "can create a reservation for later on" do
-        expect(page).to have_content("Someone has a reservation comping up. Next available start time is")
+        expect(page).to have_content("The next available start time is")
         expect(page).to have_content("Reservation Time 10:10 AM")
         expect(page).to have_content("15 mins")
         expect(page).to have_content("30 mins")
@@ -175,6 +179,82 @@ RSpec.describe "Reserving an instrument using quick reservations", feature_setti
       visit show_problems_facility_reservations_path(facility)
       expect(page).to have_content(reservation.order.id)
       expect(page).to have_content("Missing Actuals")
+    end
+  end
+
+  context "when the instrument requires training" do
+    let!(:certification_requirement) do
+      ProductResearchSafetyCertificationRequirement.create(
+        product: instrument,
+        research_safety_certificate: research_safety_certificate,
+      )
+    end
+
+    context "when the user does not have the required training" do
+      before do
+        stub_research_safety_lookup(user, invalid: [research_safety_certificate])
+      end
+
+      it "cannot start a reservation" do
+        choose "30 mins"
+        click_button "Create Reservation"
+        expect(page).to have_content("Validation failed: Missing Certificates: #{research_safety_certificate.name}. Please contact your Research Safety program to complete your training.")
+      end
+    end
+
+    context "when the user does have the required training" do
+      before do
+        stub_research_safety_lookup(user, valid: [research_safety_certificate], number_of_times: 2)
+      end
+
+      it "can start a reservation right now" do
+        choose "30 mins"
+        click_button "Create Reservation"
+        expect(page).to have_content("9:31 AM - 10:01 AM")
+        expect(page).to have_content("End Reservation")
+      end
+    end
+  end
+
+  context "when the user has no payment sources" do
+    let!(:account) {}
+
+    it "cannot create a reservation" do
+      expect(page).not_to have_content("Create Reservation")
+      expect(page).to have_content("Sorry, but we could not find a valid payment source that you can use to reserve this instrument")
+    end
+  end
+
+  context "when the instrument has an access list" do
+    let!(:instrument) { create(:instrument_requiring_approval, :timer, min_reserve_mins: 5) }
+
+    context "when a non-admin user is on the list" do
+      let!(:product_user) { create(:product_user, product: instrument, user: user) }
+
+      it "can start a reservation right now" do
+        choose "30 mins"
+        click_button "Create Reservation"
+        expect(page).to have_content("9:31 AM - 10:01 AM")
+        expect(page).to have_content("End Reservation")
+      end
+    end
+
+    context "when a non-admin user is NOT on the list" do
+      it "cannot create a reservation" do
+        expect(page).not_to have_content("Create Reservation")
+        expect(page).to have_content("This instrument requires approval to purchase")
+      end
+    end
+
+    context "when an admin user is NOT on the list" do
+      let(:user) { admin_user }
+
+      it "can start a reservation right now" do
+        choose "30 mins"
+        click_button "Create Reservation"
+        expect(page).to have_content("9:31 AM - 10:01 AM")
+        expect(page).to have_content("End Reservation")
+      end
     end
   end
 end
