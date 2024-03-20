@@ -19,8 +19,9 @@
   = form_with url: facility_instrument_quick_reservations_path(@facility, @instrument) do |f|
     %fieldset
       %legend= t(".reservation_length")
-      - @possible_reservation_data.each do |res_data|
-        = f.radio_button "reservation[duration_mins]", res_data[:duration_mins], required: true
+      - @possible_reservation_data.each_with_index do |res_data, index|
+        - checked_value = index == 0 ? "checked" : ""
+        = f.radio_button "reservation[duration_mins]", res_data[:duration_mins], required: true, checked: checked_value
         = f.label "reservation[duration_mins]_#{res_data[:duration_mins]}", "#{res_data[:duration_mins]} mins"
     %fieldset
       - accounts = @current_user.accounts_for_product(@instrument)
