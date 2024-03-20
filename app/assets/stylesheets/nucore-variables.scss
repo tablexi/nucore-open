@@ -3,7 +3,7 @@
 /* Header */
 $headerFont: Georgia, 'Times New Roman', Times, serif;
 $headerColor: black;
-$headerBackgroundColor: white;
+$headerBackgroundColor: $primaryColor;
 $headerBackgroundColorHighLight: darken($headerBackgroundColor, 5%);
 
 /* Login, Cart, etc Links */
