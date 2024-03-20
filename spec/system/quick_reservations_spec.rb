@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rails_helper"
+
 RSpec.describe "Reserving an instrument using quick reservations", feature_setting: { walkup_reservations: true, reload_routes: true, user_based_price_groups: true } do
   include ResearchSafetyTestHelpers
 
