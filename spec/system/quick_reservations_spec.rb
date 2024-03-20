@@ -9,6 +9,7 @@ RSpec.describe "Reserving an instrument using quick reservations", feature_setti
   let!(:user_2) { create(:user) }
   let!(:admin_user) { create(:user, :administrator) }
   let!(:instrument) { create(:setup_instrument, :timer, min_reserve_mins: 5) }
+  let!(:product_user) {}
   let(:intervals) { instrument.quick_reservation_intervals }
   let(:facility) { instrument.facility }
   let(:research_safety_certificate) { create(:research_safety_certificate) }
@@ -205,6 +206,48 @@ RSpec.describe "Reserving an instrument using quick reservations", feature_setti
       before do
         stub_research_safety_lookup(user, valid: [research_safety_certificate], number_of_times: 2)
       end
+
+      it "can start a reservation right now" do
+        choose "30 mins"
+        click_button "Create Reservation"
+        expect(page).to have_content("9:31 AM - 10:01 AM")
+        expect(page).to have_content("End Reservation")
+      end
+    end
+  end
+
+  context "when the user has no payment sources" do
+    let!(:account) {}
+
+    it "cannot create a reservation" do
+      expect(page).not_to have_content("Create Reservation")
+      expect(page).to have_content("Sorry, but we could not find a valid payment source that you can use to reserve this instrument")
+    end
+  end
+
+  context "when the instrument has an access list" do
+    let!(:instrument) { create(:instrument_requiring_approval, :timer, min_reserve_mins: 5) }
+
+    context "when a non-admin user is on the list" do
+      let!(:product_user) { create(:product_user, product: instrument, user: user) }
+
+      it "can start a reservation right now" do
+        choose "30 mins"
+        click_button "Create Reservation"
+        expect(page).to have_content("9:31 AM - 10:01 AM")
+        expect(page).to have_content("End Reservation")
+      end
+    end
+
+    context "when a non-admin user is NOT on the list" do
+      it "cannot create a reservation" do
+        expect(page).not_to have_content("Create Reservation")
+        expect(page).to have_content("This instrument requires approval to purchase")
+      end
+    end
+
+    context "when an admin user is NOT on the list" do
+      let(:user) { admin_user }
 
       it "can start a reservation right now" do
         choose "30 mins"

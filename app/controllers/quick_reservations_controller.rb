@@ -26,6 +26,10 @@ class QuickReservationsController < ApplicationController
     @reservation.order_detail = @order_detail
     authorize! :new, @reservation
 
+    instrument_for_cart = InstrumentForCart.new(@instrument, quick_reservation: true)
+    @can_add_to_cart = instrument_for_cart.purchasable_by?(current_user, current_user)
+    flash.now[:notice] = instrument_for_cart.error_message if instrument_for_cart.error_message
+
     interval = @instrument.quick_reservation_intervals.first
     @walkup_available = @instrument.walkup_available?(interval:)
   end
