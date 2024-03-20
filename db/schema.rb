@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_26_142637) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_19_182716) do
   create_table "account_facility_joins", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "facility_id", null: false
     t.integer "account_id", null: false
@@ -443,7 +443,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_26_142637) do
     t.string "state", limit: 50
     t.integer "merge_with_order_id"
     t.integer "order_import_id"
+    t.integer "cross_core_project_id"
     t.index ["account_id"], name: "fk_rails_144e25bef6"
+    t.index ["cross_core_project_id"], name: "index_orders_on_cross_core_project_id"
     t.index ["facility_id"], name: "index_orders_on_facility_id"
     t.index ["merge_with_order_id"], name: "index_orders_on_merge_with_order_id"
     t.index ["order_import_id"], name: "index_orders_on_order_import_id"
@@ -1036,6 +1038,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_26_142637) do
   add_foreign_key "orders", "facilities"
   add_foreign_key "orders", "order_imports"
   add_foreign_key "orders", "orders", column: "merge_with_order_id"
+  add_foreign_key "orders", "projects", column: "cross_core_project_id"
   add_foreign_key "orders", "users"
   add_foreign_key "payments", "accounts"
   add_foreign_key "payments", "statements"
