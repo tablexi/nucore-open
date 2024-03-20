@@ -217,9 +217,20 @@ RSpec.describe "Adding to an existing order" do
         click_button "Add to Cross-Core Order"
 
         expect(page).to have_content("#{product2.name} was successfully added to this order.")
-        expect(page).to have_content("Cross Core Project ID")
-        expect(page).to have_content(facility2.to_s)
+        expect(page).to have_content(facility2.to_s), count: 2
         expect(page).to have_content(user.full_name), count: 2
+
+        order.reload
+
+        project = order.cross_core_project
+        expect(project).to be_present
+
+        expect(page).to have_content("Cross Core Project ID")
+        expect(page).to have_content(project.id)
+
+        project_total = project.orders.sum(&:total)
+        expect(page).to have_content("Cross-Core Project Total")
+        expect(page).to have_content(project_total)
       end
     end
 

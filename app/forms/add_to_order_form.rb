@@ -27,21 +27,18 @@ class AddToOrderForm
 
     @facility_id = @facility_id&.to_i
 
-    order_project = Projects::Project.find_by(
-      name: "#{current_facility.abbreviation}-#{original_order.id}",
-      facility_id: current_facility.id
-    )
+    @order_project = original_order.cross_core_project
 
     if @original_order.facility.id == @facility_id
-      add_to_order!(order_project)
-    elsif order_project.nil?
+      add_to_order!
+    elsif @order_project.nil?
       create_cross_core_project_and_add_order!
     else
-      facility_order_in_project = order_project.order_details.find { |od| od.order.facility_id == @facility_id }&.order
+      facility_order_in_project = @order_project.orders.find { |o| o.facility_id == @facility_id }
 
       if facility_order_in_project.present?
         @merge_order = facility_order_in_project
-        add_to_order!(order_project)
+        add_to_order!
       else # Create new order for facility and add to the project
         create_cross_core_project_and_add_order!
       end
@@ -121,7 +118,7 @@ class AddToOrderForm
 
   private
 
-  def add_to_order!(project = nil)
+  def add_to_order!
     OrderDetail.transaction do
       item_adder_params = @original_order.facility_id == @facility_id ? params : params.merge(ordered_at: Time.zone.now)
 
@@ -131,43 +128,48 @@ class AddToOrderForm
         order_detail.set_default_status!
         order_detail.change_status!(order_status) if order_status.present?
 
-        order_detail.update!(project_id: project.id) if project.present?
+        order_detail.update!(project_id: @order_project.id) if @order_project.present?
 
         if merge_order.to_be_merged? && !order_detail.valid_for_purchase?
           @notifications = true
           MergeNotification.create_for!(created_by, order_detail)
         end
       end
+
+      merge_order.update!(cross_core_project: @order_project) if @order_project.present?
     end
   end
 
   def create_cross_core_project_and_add_order!
     Projects::Project.transaction do
-      project = Projects::Project.find_or_initialize_by(
+      @order_project ||= Projects::Project.new(
         name: "#{current_facility.abbreviation}-#{original_order.id}",
         facility_id: current_facility.id
       )
 
       # Update original order's order details to be included in the project
-      if project.new_record?
-        project.save!
+      if @order_project.new_record?
+        @order_project.save!
         original_order.order_details.each do |od|
-          od.update!(project_id: project.id)
+          od.update!(project_id: @order_project.id)
         end
       end
+
+      original_order.update!(cross_core_project: @order_project)
 
       product_order = Order.find_or_create_by!(
         facility: product_facility,
         account_id:,
         user_id: original_order.user_id,
         created_by: created_by.id,
+        cross_core_project: @order_project
       )
 
       product_order.add(product, quantity, params.merge(ordered_at: Time.zone.now)).each do |order_detail|
         order_detail.set_default_status!
         order_detail.change_status!(order_status) if order_status.present?
 
-        order_detail.update!(project_id: project.id)
+        order_detail.update!(project_id: @order_project.id)
       end
     end
   end
