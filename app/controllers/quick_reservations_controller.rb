@@ -26,6 +26,7 @@ class QuickReservationsController < ApplicationController
     @reservation.order_detail = @order_detail
     authorize! :new, @reservation
 
+    # Check if the user can create a reservation
     instrument_for_cart = InstrumentForCart.new(@instrument, quick_reservation: true)
     @can_add_to_cart = instrument_for_cart.purchasable_by?(current_user, current_user)
     flash.now[:notice] = instrument_for_cart.error_message if instrument_for_cart.error_message
@@ -49,12 +50,12 @@ class QuickReservationsController < ApplicationController
     creator = ReservationCreator.new(@order, @order_detail, params)
     @reservation = creator.reservation
 
-
     if creator.save(current_user)
       # Check if the user can create a reservation
       facility_ability = Ability.new(session_user, @order.facility, self)
       @order.being_purchased_by_admin = facility_ability.can?(:act_as, @order.facility)
       authorize! :create, @reservation
+      
       @order.transaction do
         order_purchaser.purchase!
       end

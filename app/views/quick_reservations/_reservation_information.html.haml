@@ -1,6 +1,7 @@
 = content_for :h1 do
   = "#{@facility.abbreviation} / #{@instrument.name}"
-  %h2.gray= "#{t(".order_number")}: #{reservation.order_detail}"
+
+%h2.gray= "#{t(".order_number")}: #{reservation.order_detail}"
 
 %dl
   %dt= t(".reservation_date")
