@@ -32,7 +32,14 @@ class ProductsController < ApplicationController
   def available_for_cross_core_ordering
     respond_to do |format|
       format.js do
-        @facility_products = current_facility.products.mergeable_into_order.cross_core_available.alphabetized.map { |p| { id: p.id, name: p.name, time_based: p.order_quantity_as_time? } }
+        query = current_facility.products.mergeable_into_order
+
+        original_order_facility = params[:original_order_facility]&.to_i
+        unless original_order_facility.present? && (current_facility.id == original_order_facility)
+          query = query.cross_core_available
+        end
+
+        @facility_products = query.alphabetized.map { |p| { id: p.id, name: p.name, time_based: p.order_quantity_as_time? } }
 
         render json: @facility_products
       end
