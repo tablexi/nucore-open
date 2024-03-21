@@ -187,8 +187,10 @@ RSpec.describe "Adding to an existing order" do
 
   describe "adding a product from another facility", :js, feature_setting: { cross_core_projects: true } do
     let(:facility2) { create(:setup_facility) }
-    let(:product) { create(:setup_item, :with_facility_account) }
-    let!(:product2) { create(:setup_item, :with_facility_account, facility: facility2) }
+    let(:product) { create(:setup_item, :with_facility_account, cross_core_ordering_available: true) }
+    let!(:product2) { create(:setup_item, :with_facility_account, facility: facility2, cross_core_ordering_available: true) }
+    let!(:product3) { create(:setup_item, :with_facility_account, facility:, cross_core_ordering_available: false) }
+    let!(:product4) { create(:setup_item, :with_facility_account, facility: facility2, cross_core_ordering_available: false) }
 
     before do
       visit facility_order_path(facility, order)
@@ -212,8 +214,14 @@ RSpec.describe "Adding to an existing order" do
 
       it "creates a new order for the selected facility" do
         expect(page).not_to have_content("Cross Core Project ID")
+        expect(page.has_selector?("option", text: product.name, visible: false)).to be(true)
+        expect(page.has_selector?("option", text: product3.name, visible: false)).to be(true)
+
         select_from_chosen facility2.name, from: "add_to_order_form[facility_id]"
         select_from_chosen product2.name, from: "add_to_order_form[product_id]"
+
+        expect(page.has_selector?("option", text: product4.name, visible: false)).to be(false)
+
         click_button "Add to Cross-Core Order"
 
         expect(page).to have_content("#{product2.name} was successfully added to this order.")
