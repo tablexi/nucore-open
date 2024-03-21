@@ -42,10 +42,8 @@ class ProductsController < ApplicationController
     original_order_facility = params[:original_order_facility]&.to_i
 
     query = current_facility.products.mergeable_into_order
-
-    unless original_order_facility.present? && (current_facility.id == original_order_facility)
-      query = query.cross_core_available
-    end
+    adding_to_original_order = current_facility.id == original_order_facility
+    query = query.cross_core_available unless adding_to_original_order
 
     @facility_products = query.alphabetized.map { |p| { id: p.id, name: p.name, time_based: p.order_quantity_as_time? } }
   end
