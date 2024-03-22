@@ -98,7 +98,7 @@ class FacilityOrdersController < ApplicationController
   end
 
   def load_merge_orders
-    project_order_ids = SettingsHelper.feature_on?(:cross_core_projects) ? @order.cross_core_project.orders.pluck(:id) : @order.id
+    project_order_ids = SettingsHelper.feature_on?(:cross_core_projects) && @order.cross_core_project_id.present? ? @order.cross_core_project.orders.pluck(:id) : @order.id
 
     @merge_orders = Order.where(merge_with_order_id: project_order_ids, created_by: current_user.id)
   end
@@ -127,7 +127,7 @@ class FacilityOrdersController < ApplicationController
     @cross_core_orders_by_facility = {}
 
     if project.present?
-      project_orders = project.orders.where.not(id: @order.id)
+      project_orders = project.orders.where.not(facility_id: @order.facility_id)
 
       project_orders.each do |order|
         order_facility = order.facility.to_s

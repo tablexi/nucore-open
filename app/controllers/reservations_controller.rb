@@ -412,7 +412,10 @@ class ReservationsController < ApplicationController
     return @original_project_order if defined?(@original_project_order)
 
     project = @order.cross_core_project
-    @original_project_order = project.orders.find { |order| order.facility_id == project.facility_id }
+
+    @original_project_order = if project.present?
+                                project.orders.find { |order| order.facility_id == project.facility_id }
+                              end
   end
 
 end
