@@ -7,6 +7,7 @@ class ReservationsController < ApplicationController
   before_action :check_acting_as, only: [:switch_instrument, :list]
   before_action :load_basic_resources, only: [:new, :create, :edit, :update]
   before_action :load_and_check_resources, only: [:move, :switch_instrument]
+  before_action :set_accounts, only: [:new, :create]
   authorize_resource only: [:edit, :update, :move]
 
   include TranslationHelper
@@ -108,7 +109,11 @@ class ReservationsController < ApplicationController
       flash[:error] = I18n.t("controllers.reservations.create.admin_hold_warning") if creator.reservation.conflicting_admin_reservation?
 
       if creator.merged_order?
-        redirect_to facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
+        if original_project_order.present?
+          redirect_to facility_order_path(original_project_order.facility, original_project_order.merge_order || original_project_order)
+        else
+          redirect_to facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
+        end
       elsif creator.instrument_only_order?
         redirect_params = {}
         redirect_params[:send_notification] = "1" if params[:send_notification] == "1"
@@ -393,6 +398,21 @@ class ReservationsController < ApplicationController
   def duration_change_valid?
     validator = Reservations::DurationChangeValidations.new(@reservation)
     validator.valid?
+  end
+
+  def set_accounts
+    return unless SettingsHelper.feature_on?(:cross_core_projects)
+
+    return if @order.cross_core_project_id.nil?
+
+    @accounts = AvailableAccountsFinder.new(original_project_order.user, original_project_order.facility)
+  end
+
+  def original_project_order
+    return @original_project_order if defined?(@original_project_order)
+
+    project = @order.cross_core_project
+    @original_project_order = project.orders.find { |order| order.facility_id == project.facility_id }
   end
 
 end

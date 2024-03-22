@@ -177,6 +177,14 @@ class Ability
     if resource.is_a?(Reservation) && user.facility_administrator_of?(resource.product.facility)
       can :read, ProductAccessory
       can :manage, Reservation
+    elsif controller.is_a?(ReservationsController) && resource.is_a?(Reservation)
+      project = resource.order_detail.order.cross_core_project
+
+      return if project.nil?
+
+      original_order = project.orders.first
+
+      can :manage, Reservation if user.facility_administrator_of?(original_order.facility)
     end
 
     if resource.is_a?(OrderDetail) && user.facility_administrator_of?(resource.facility)

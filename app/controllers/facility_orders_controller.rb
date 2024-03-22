@@ -98,7 +98,9 @@ class FacilityOrdersController < ApplicationController
   end
 
   def load_merge_orders
-    @merge_orders = Order.where(merge_with_order_id: @order.id, created_by: current_user.id)
+    project_order_ids = SettingsHelper.feature_on?(:cross_core_projects) ? @order.cross_core_project.orders.pluck(:id) : @order.id
+
+    @merge_orders = Order.where(merge_with_order_id: project_order_ids, created_by: current_user.id)
   end
 
   def load_add_to_order_form
