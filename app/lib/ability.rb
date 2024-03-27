@@ -187,8 +187,20 @@ class Ability
       can :manage, Reservation if user.facility_administrator_of?(original_order.facility)
     end
 
-    if resource.is_a?(OrderDetail) && user.facility_administrator_of?(resource.facility)
-      can :manage, OrderDetail, order: { facility_id: resource.order.facility_id }
+    if resource.is_a?(OrderDetail)
+      if user.facility_administrator_of?(resource.facility)
+        can :manage, OrderDetail, order: { facility_id: resource.order.facility_id }
+      end
+
+      if SettingsHelper.feature_on?(:cross_core_projects)
+        project = resource.order.cross_core_project
+
+        if project.present?
+          original_order = project.orders.first
+
+          can [:add_accessories, :new, :show, :update, :cancel], OrderDetail if user.facility_administrator_of?(original_order.facility)
+        end
+      end
     end
 
     if resource.is_a?(Facility) && user.facility_administrator_of?(resource)
