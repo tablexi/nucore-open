@@ -24,6 +24,7 @@ class AccessoriesController < ApplicationController
     @order_details = update_data.order_details
 
     if update_data.valid?
+      # TODO: If it's cross core project, redirect to the project order
       flash[:notice] = t("controllers.accessories.create.success", accessories: helpers.pluralize(update_data.persisted_count, "accessory"))
       respond_success
     else
