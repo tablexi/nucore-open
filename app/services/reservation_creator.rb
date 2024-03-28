@@ -42,7 +42,7 @@ class ReservationCreator
         else
           @success = :default
         end
-      rescue OrderPurchaseValidatorError => e
+      rescue OrderPurchaseValidatorError, ResearchSafetyAdapters::ScishieldApiError => e
         @error = e.message
         raise ActiveRecord::Rollback
       rescue ActiveRecord::RecordInvalid => e
