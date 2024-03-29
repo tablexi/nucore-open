@@ -50,7 +50,7 @@ module ResearchSafetyAdapters
       response = training_api_request(email)
       response.body
     rescue Net::OpenTimeout
-      raise ScishieldApiError, "API request failed"
+      raise ScishieldApiError, I18n.t("services.research_safety_adapters.scishield_api_client.request_failed")
     end
 
     def training_api_request(email)
