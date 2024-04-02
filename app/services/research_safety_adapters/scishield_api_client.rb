@@ -19,14 +19,14 @@ module ResearchSafetyAdapters
 
       http_status_error || certification_data_error
     end
-    
+
     def token
       return @token if @token.present?
       return nil unless keys_present?
 
       now = Time.current.to_i
       payload = {
-        iat: now,
+        iat: now - 2.minutes.to_i, # SciShield Support suggested setting this a couple of minutes into that past to make requests more reliable. There may be an issue with the API related to the time change
         exp: now + 3600,
         drupal: { uid: KEY }
       }
