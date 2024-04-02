@@ -98,9 +98,20 @@ class FacilityOrdersController < ApplicationController
   end
 
   def load_merge_orders
-    project_order_ids = SettingsHelper.feature_on?(:cross_core_projects) && @order.cross_core_project_id.present? ? @order.cross_core_project.orders.pluck(:id) : @order.id
+    missing_reservation_order_ids = []
 
-    @merge_orders = Order.where(merge_with_order_id: project_order_ids, created_by: current_user.id)
+    if SettingsHelper.feature_on?(:cross_core_projects) && @order.cross_core_project_id.present?
+      project_order_ids = @order.cross_core_project.orders.pluck(:id)
+
+      if project_order_ids.length > 1
+        orders_with_only_one_order_detail = @order.cross_core_project.orders.select { |order| order.order_details.count == 1 }
+        missing_reservation_order_ids = orders_with_only_one_order_detail.filter { |order| order.order_details.first.product.is_a?(Instrument) && order.order_details.first.reservation.nil? }.pluck(:id)
+      end
+    else
+      project_order_ids = @order.id
+    end
+
+    @merge_orders = Order.where(merge_with_order_id: project_order_ids, created_by: current_user.id).or(Order.where(id: missing_reservation_order_ids))
   end
 
   def load_add_to_order_form
