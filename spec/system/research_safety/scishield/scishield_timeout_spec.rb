@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "scishield timeout" do
+RSpec.describe "Scishield timeout", safety_adapter_class: ResearchSafetyAdapters::ScishieldApiAdapter do
   let!(:user) { create(:user) }
   let(:admin) { create(:user, :administrator) }
   let!(:instrument) { FactoryBot.create(:setup_instrument) }
@@ -19,8 +19,6 @@ RSpec.describe "scishield timeout" do
   end
 
   before do
-    Settings.research_safety_adapter.class_name = "ResearchSafetyAdapters::ScishieldApiAdapter"
-
     # This will cause ResearchSafetyAdapters::ScishieldApiClient#certifications_for
     # to raise ResearchSafetyAdapters::ScishieldApiError
     allow_any_instance_of(ResearchSafetyAdapters::ScishieldApiClient).to(
