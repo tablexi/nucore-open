@@ -185,6 +185,15 @@ class Ability
       original_order = project.orders.first
 
       can :manage, Reservation if user.facility_administrator_of?(original_order.facility)
+    elsif controller.is_a?(FacilityOrderDetailsController) && resource.is_a?(Facility) && SettingsHelper.feature_on?(:cross_core_projects)
+      can [:destroy], OrderDetail do |order_detail|
+        project = order_detail.order.cross_core_project
+
+        return false if project.blank?
+
+        original_order = project.orders.first
+        user.facility_administrator_of?(original_order.facility) || user.facility_administrator_of?(order_detail.order.facility)
+      end
     end
 
     if resource.is_a?(OrderDetail)
