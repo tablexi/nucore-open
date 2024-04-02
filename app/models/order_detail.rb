@@ -545,7 +545,7 @@ class OrderDetail < ApplicationRecord
     return I18n.t("not_open", model: account.type_string, scope: "activerecord.errors.models.account") if account.respond_to?(:account_open?) && !account.account_open?(product.account, fulfillment_time: fulfilled_time)
 
     # is the user approved for the product
-    return "You are not approved to purchase this #{product.class.name.downcase}" unless product.can_be_used_by?(order.user) || order.created_by_user.can_override_restrictions?(product)
+    return "You are not approved to purchase this #{product.class.name.downcase}" unless product.can_be_used_by?(order.user) || order.created_by_user.can_override_restrictions?(product) || (order.cross_core_project.present? && product.can_be_used_by?(order.created_by_user))
 
     # are reservation requirements met
     response = validate_reservation
