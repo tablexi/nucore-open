@@ -8,6 +8,7 @@ class ReservationsController < ApplicationController
   before_action :load_basic_resources, only: [:new, :create, :edit, :update]
   before_action :load_and_check_resources, only: [:move, :switch_instrument]
   before_action :set_accounts, only: [:new, :create]
+  before_action :alternative_cancel_path, only: [:new]
   authorize_resource only: [:edit, :update, :move]
 
   include TranslationHelper
@@ -418,4 +419,19 @@ class ReservationsController < ApplicationController
                               end
   end
 
+  def alternative_cancel_path
+    return unless SettingsHelper.feature_on?(:cross_core_projects)
+
+    return if @order.cross_core_project_id.blank?
+
+    current_user_facilities = current_user.facilities
+    facility_orders = @order_detail.order.cross_core_project.orders.where(facility: current_user_facilities)
+
+    if facility_orders.count.zero?
+      @alternative_cancel_path = root_path
+    else
+      facility_order = facility_orders.first
+      @alternative_cancel_path = facility_order_path(facility_order.facility, facility_order)
+    end
+  end
 end
