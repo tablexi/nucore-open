@@ -43,7 +43,16 @@ class FacilityOrderDetailsController < ApplicationController
       end
     else
       flash[:notice] = I18n.t "controllers.facility_order_details.destroy.notice"
+
+      if @order_detail.order.cross_core_project.present?
+        return redirect_back(fallback_location: root_path)
+      end
+
       return redirect_to facility_order_path(current_facility, @order)
+    end
+
+    if @order_detail.order.cross_core_project.present?
+      return redirect_back(fallback_location: root_path)
     end
 
     redirect_to facility_order_path(current_facility, @order.merge_order)
