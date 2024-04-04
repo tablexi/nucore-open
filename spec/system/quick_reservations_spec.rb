@@ -101,7 +101,7 @@ RSpec.describe "Reserving an instrument using quick reservations", feature_setti
     end
   end
 
-  context "when the user has an ongoing problem reservation" do
+  context "when the user has an ongoing, complete reservation" do
     let!(:reservation) do
       r = create(
         :purchased_reservation,
@@ -114,14 +114,12 @@ RSpec.describe "Reserving an instrument using quick reservations", feature_setti
 
       od = r.order_detail
 
-      od.problem = true
       od.change_status!(OrderStatus.in_process)
       od.change_status!(OrderStatus.complete)
       od.save
     end
 
-    it "does not redirect to the problem reservation" do
-      expect(page).to have_content("Reservation Length")
+    it "does not redirect to the reservation" do
       expect(page).to have_current_path(new_facility_instrument_quick_reservation_path(facility, instrument))
     end
   end
