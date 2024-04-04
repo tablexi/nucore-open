@@ -35,7 +35,7 @@ class AddToOrderForm
 
     return true unless SettingsHelper.feature_on?(:cross_core_projects)
 
-    if @order_project.nil? || order_for_selected_facility.nil?
+    if order_for_selected_facility.nil?
       create_cross_core_project_and_add_order!
     else
       add_to_order!

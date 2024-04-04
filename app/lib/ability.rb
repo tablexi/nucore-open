@@ -191,8 +191,7 @@ class Ability
 
         return false if project.blank?
 
-        original_order = project.orders.first
-        user.facility_administrator_of?(original_order.facility) || user.facility_administrator_of?(order_detail.order.facility)
+        user.facility_administrator_of?(project.facility) || user.facility_administrator_of?(order_detail.order.facility)
       end
     end
 
@@ -205,9 +204,7 @@ class Ability
         project = resource.order.cross_core_project
 
         if project.present?
-          original_order = project.orders.first
-
-          can [:add_accessories, :new, :show, :update, :cancel], OrderDetail if user.facility_administrator_of?(original_order.facility)
+          can [:add_accessories, :new, :show, :update, :cancel], OrderDetail if user.facility_administrator_of?(project.facility)
         end
       end
     end
