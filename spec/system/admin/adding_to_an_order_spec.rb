@@ -195,12 +195,39 @@ RSpec.describe "Adding to an existing order" do
         expect(project.orders.last.order_details.last.product).to eq(instrument)
       end
 
-      xit "brings you back to the facility order path on 'Cancel'" do
+      it "brings you back to the facility order path on 'Cancel'" do
         click_link "Make a Reservation"
         click_link "Cancel"
 
         expect(current_path).to eq(facility_order_path(facility, order))
         expect(page).to have_link("Make a Reservation")
+      end
+
+      it "sets the merge_with_order_id until the reservation is created" do
+        expect(page).to have_content("The following order details need your attention.")
+
+        # This is the first order for this facility so it doesn't have a merge_order
+        project = order.reload.cross_core_project
+        expect(project.orders.last.merge_with_order_id).to eq(nil)
+        second_facility_order = project.orders.last
+
+        click_link "Make a Reservation"
+        click_button "Create"
+
+        visit facility_order_path(facility, order)
+        select_from_chosen facility2.name, from: "add_to_order_form[facility_id]"
+        select_from_chosen instrument.name, from: "add_to_order_form[product_id]"
+        fill_in "add_to_order_form[quantity]", with: "1"
+        click_button "Add to Cross-Core Order"
+
+        # This is the second order for this facility so it has a merge_order set
+        expect(project.reload.orders.last.merge_with_order_id).to eq(second_facility_order.id)
+
+        click_link "Make a Reservation"
+        click_button "Create"
+
+        # After the reservation is created, the merge_order is cleared
+        expect(project.reload.orders.last.merge_with_order_id).to eq(nil)
       end
     end
   end
