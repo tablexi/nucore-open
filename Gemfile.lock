@@ -614,7 +614,7 @@ GEM
       rubocop-rspec_rails (~> 2.28)
     rubocop-rspec_rails (2.28.1)
       rubocop (~> 1.40)
-    ruby-ole (1.2.12.2)
+    ruby-ole (1.2.13.1)
     ruby-progressbar (1.13.0)
     ruby-saml (1.15.0)
       nokogiri (>= 1.13.10)
