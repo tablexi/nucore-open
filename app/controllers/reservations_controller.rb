@@ -7,8 +7,8 @@ class ReservationsController < ApplicationController
   before_action :check_acting_as, only: [:switch_instrument, :list]
   before_action :load_basic_resources, only: [:new, :create, :edit, :update]
   before_action :load_and_check_resources, only: [:move, :switch_instrument]
-  before_action :set_accounts, only: [:new, :create]
-  before_action :alternative_cancel_path, only: [:new]
+  before_action :set_accounts_for_cross_core_project, only: [:new, :create]
+  before_action :set_cross_core_cancel_path, only: [:new]
   authorize_resource only: [:edit, :update, :move]
 
   include TranslationHelper
@@ -401,12 +401,12 @@ class ReservationsController < ApplicationController
     validator.valid?
   end
 
-  def set_accounts
+  def set_accounts_for_cross_core_project
     return unless SettingsHelper.feature_on?(:cross_core_projects)
 
     return if @order.cross_core_project_id.nil?
 
-    @accounts = AvailableAccountsFinder.new(original_project_order.user, original_project_order.facility)
+    @accounts_for_cross_core_project = AvailableAccountsFinder.new(original_project_order.user, original_project_order.facility)
   end
 
   def original_project_order
@@ -419,7 +419,7 @@ class ReservationsController < ApplicationController
                               end
   end
 
-  def alternative_cancel_path
+  def set_cross_core_cancel_path
     return unless SettingsHelper.feature_on?(:cross_core_projects)
 
     return if @order.cross_core_project_id.blank?
@@ -428,10 +428,10 @@ class ReservationsController < ApplicationController
     facility_orders = @order_detail.order.cross_core_project.orders.where(facility: current_user_facilities)
 
     if facility_orders.count.zero?
-      @alternative_cancel_path = root_path
+      @cross_core_cancel_path = root_path
     else
       facility_order = facility_orders.first
-      @alternative_cancel_path = facility_order_path(facility_order.facility, facility_order)
+      @cross_core_cancel_path = facility_order_path(facility_order.facility, facility_order)
     end
   end
 end

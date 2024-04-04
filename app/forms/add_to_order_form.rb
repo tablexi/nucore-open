@@ -35,7 +35,7 @@ class AddToOrderForm
 
     return true unless SettingsHelper.feature_on?(:cross_core_projects)
 
-    if @order_project.nil? || facility_order_in_project.nil?
+    if @order_project.nil? || order_for_selected_facility.nil?
       create_cross_core_project_and_add_order!
     else
       add_to_order!
@@ -220,24 +220,24 @@ class AddToOrderForm
     return @merge_order if defined?(@merge_order)
 
     products = product.is_a?(Bundle) ? product.products : [product]
-    order = facility_order_in_project || original_order
+    target_order = order_for_selected_facility || original_order
     @merge_order = if products.any?(&:requires_merge?)
                      Order.create!(
-                       merge_with_order_id: order.id,
-                       facility_id: order.facility_id,
+                       merge_with_order_id: target_order.id,
+                       facility_id: target_order.facility_id,
                        account_id: account_id,
-                       user_id: order.user_id,
+                       user_id: target_order.user_id,
                        created_by: created_by.id,
                      )
                    else
-                     order
+                     target_order
                    end
   end
 
-  def facility_order_in_project
+  def order_for_selected_facility
     return unless @order_project
 
-    @facility_order_in_project ||= @order_project.orders.find { |o| o.facility_id == @facility_id }
+    @order_for_selected_facility ||= @order_project.orders.find { |o| o.facility_id == @facility_id }
   end
 
   def backdate(order_detail)
