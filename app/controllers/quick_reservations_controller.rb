@@ -6,7 +6,7 @@ class QuickReservationsController < ApplicationController
   before_action :authenticate_user!
   load_resource :facility, find_by: :url_name
   load_resource :instrument, through: :facility, find_by: :url_name
-  before_action :get_startable_reservation, only: [:start, :new]
+  before_action :set_actionable_reservation, only: [:start, :new]
   before_action :prepare_reservation_data, only: [:new, :create]
 
   # GET /facilities/:facility_id/instruments/:instrument_id/quick_reservations/:id
@@ -127,14 +127,12 @@ class QuickReservationsController < ApplicationController
     @reservation_data = @possible_reservation_data.first
   end
 
-  def get_startable_reservation
-    reservations = current_user.reservations.where(product_id: @instrument.id)
+  def set_actionable_reservation
+    reservations = current_user.reservations.where(product_id: @instrument.id).joins(:order_detail).merge(OrderDetail.new_or_inprocess)
     startable = reservations.find(&:startable_now?)
     ongoing = reservations.ongoing.first
 
     @reservation = ongoing || startable
-
-    @reservation = nil if @reservation&.order_detail&.problem?
   end
 
   def build_order
