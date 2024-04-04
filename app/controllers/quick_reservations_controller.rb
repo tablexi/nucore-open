@@ -134,7 +134,7 @@ class QuickReservationsController < ApplicationController
 
     @reservation = ongoing || startable
 
-    @reservation&.order_detail&.problem? ? nil : @reservation
+    @reservation = nil if @reservation&.order_detail&.problem?
   end
 
   def build_order
