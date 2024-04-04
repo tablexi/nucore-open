@@ -142,7 +142,7 @@ class ReservationsController < ApplicationController
 
     authorize! :new, @reservation
 
-    unless @instrument.can_be_used_by?(@order_detail.user) || (@order_detail.order.cross_core_project.present? && @instrument.can_be_used_by?(@order_detail.order.created_by_user))
+    unless @instrument.can_be_used_by?(@order_detail.user_for_order)
       flash[:notice] = text(".acting_as_not_on_approval_list")
     end
     set_windows
