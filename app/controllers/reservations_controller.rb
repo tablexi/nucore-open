@@ -414,9 +414,9 @@ class ReservationsController < ApplicationController
 
     project = @order.cross_core_project
 
-    @original_project_order = if project.present?
-                                project.orders.find { |order| order.facility_id == project.facility_id }
-                              end
+    return if project.blank?
+
+    @original_project_order = project.orders.find { |order| order.facility_id == project.facility_id }
   end
 
   def set_cross_core_cancel_path
