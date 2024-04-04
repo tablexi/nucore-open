@@ -150,7 +150,7 @@ class FacilityOrdersController < ApplicationController
   end
 
   def missing_reservation_order_ids(project_order_ids)
-    return [] if project_order_ids.empty?
+    return [] unless project_order_ids.length > 1
 
     orders_with_only_one_order_detail = @order.cross_core_project.orders.select { |order| order.order_details.count == 1 }
     orders_with_only_one_order_detail.filter { |order| order.order_details.first.product.is_a?(Instrument) && order.order_details.first.reservation.nil? }.pluck(:id)
