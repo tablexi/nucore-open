@@ -133,6 +133,8 @@ class QuickReservationsController < ApplicationController
     ongoing = reservations.ongoing.first
 
     @reservation = ongoing || startable
+
+    @reservation&.order_detail&.problem? ? nil : @reservation
   end
 
   def build_order
