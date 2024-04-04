@@ -228,6 +228,7 @@ class AddToOrderForm
                        account_id: account_id,
                        user_id: target_order.user_id,
                        created_by: created_by.id,
+                       cross_core_project: @order_project,
                      )
                    else
                      target_order
