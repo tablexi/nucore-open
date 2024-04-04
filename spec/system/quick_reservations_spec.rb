@@ -281,4 +281,14 @@ RSpec.describe "Reserving an instrument using quick reservations", feature_setti
       end
     end
   end
+
+  context "when the insturment has no schedule rules" do
+    let!(:instrument) do
+      create(:setup_instrument, :timer, min_reserve_mins: 5, skip_schedule_rules: true)
+    end
+
+    it "shows an error message" do
+      expect(page).to have_content(I18n.t("models.instrument_for_cart.schedule_not_available"))
+    end
+  end
 end
