@@ -216,7 +216,6 @@ RSpec.describe "Adding to an existing order" do
 
         visit facility_order_path(facility, order)
         wait_for_ajax
-        puts page.html
         select_from_chosen facility2.name, from: "add_to_order_form[facility_id]"
         select_from_chosen instrument.name, from: "add_to_order_form[product_id]"
         fill_in "add_to_order_form[quantity]", with: "1"
