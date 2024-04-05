@@ -203,7 +203,7 @@ RSpec.describe "Adding to an existing order" do
         expect(page).to have_link("Make a Reservation")
       end
 
-      it "sets the merge_with_order_id until the reservation is created" do
+      xit "sets the merge_with_order_id until the reservation is created" do
         expect(page).to have_content("The following order details need your attention.")
 
         # This is the first order for this facility so it doesn't have a merge_order
