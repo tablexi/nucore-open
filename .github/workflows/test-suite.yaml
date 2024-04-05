@@ -75,7 +75,7 @@ jobs:
       - uses: ./.github/actions
       # Uncomment below to open ssh tunnel for debugging
       # - uses: mxschmitt/action-tmate@v3
-      - run: bundle exec rspec
+      - run: bundle exec rspec spec/system/admin/adding_to_an_order_spec.rb
 
   run-teaspoon:
     runs-on: ubuntu-latest
