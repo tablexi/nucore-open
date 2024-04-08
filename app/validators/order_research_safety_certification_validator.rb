@@ -43,7 +43,7 @@ class OrderResearchSafetyCertificationValidator
   end
 
   def user
-    order_details.first.user_for_order
+    order_details.first.user
   end
 
   def missing_certificates_for(order_detail)
