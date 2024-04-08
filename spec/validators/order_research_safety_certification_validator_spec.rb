@@ -17,7 +17,7 @@ RSpec.describe OrderResearchSafetyCertificationValidator do
   let!(:certification_req_p2_cA) { FactoryBot.create(:product_certification_requirement, research_safety_certificate: certificate_a, product: product_two) }
   let!(:order_detail_two) { FactoryBot.create(:order_detail, order: order_by_user, product: product_two) }
 
-  describe "#valid?" do
+  describe "#valid?", feature_setting: { cross_core_projects: true } do
     subject(:validator) { described_class.new([order_detail_one, order_detail_two]) }
 
     context "with one invalid product" do
