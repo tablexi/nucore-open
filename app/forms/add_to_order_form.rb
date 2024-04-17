@@ -31,6 +31,7 @@ class AddToOrderForm
 
     if @original_order.facility.id == @facility_id
       add_to_order!
+      return true
     end
 
     return true unless SettingsHelper.feature_on?(:cross_core_projects)
