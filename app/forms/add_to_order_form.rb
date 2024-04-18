@@ -31,10 +31,7 @@ class AddToOrderForm
 
     if @original_order.facility.id == @facility_id
       add_to_order!
-      return true
-    end
-
-    if SettingsHelper.feature_on?(:cross_core_projects)
+    elsif SettingsHelper.feature_on?(:cross_core_projects)
       if order_for_selected_facility.nil?
         create_cross_core_project_and_add_order!
       else
