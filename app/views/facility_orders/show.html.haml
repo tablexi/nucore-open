@@ -14,8 +14,7 @@
         %dl.span2
           %dt= t("views.facility_orders.show.cross_core_project_id")
           %dd
-            = link_to facility_project_path(current_facility, project_id) do
-              = project_id
+            = link_to project_id, facility_project_path(current_facility, project_id)
         %dl.span2
           %dt= t("views.facility_orders.show.cross_core_project_total")
           - gross_order_value = @order.total + @cross_core_orders_by_facility.values.sum(&:total)
