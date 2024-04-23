@@ -46,6 +46,7 @@ window.MergeOrder = class MergeOrder {
 
     const product_field = this.$form.find(".js--edit-order__product");
     const facility_field = this.$form.find(".js--edit-order__facility");
+    const account_field = this.$form.find(".js--edit-order__account");
     const button = this.$form.find(".js--edit-order__button");
 
     if (!facility_field || !button) return;
@@ -56,14 +57,16 @@ window.MergeOrder = class MergeOrder {
 
     return facility_field.on("change", (event) => {
       const selectedElement = $(event.target).find(":selected");
-      const url = selectedElement.data("products-path");
+      const productsUrl = selectedElement.data("products-path");
+      const accountsUrl = selectedElement.data("accounts-path");
       const originalOrderFacility = selectedElement.data("original-order-facility");
+      const originalOrder = selectedElement.data("original-order");
       const facility_id = $(event.target).val();
 
-      return $.ajax({
+      $.ajax({
         type: "get",
         data: { facility_id, original_order_facility: originalOrderFacility },
-        url,
+        url: productsUrl,
         success(data) {
           // Populate dropdown
           product_field.empty();
@@ -91,6 +94,32 @@ window.MergeOrder = class MergeOrder {
           button.val(buttonText);
 
           return product_field.trigger("change");
+        },
+      });
+
+      return $.ajax({
+        type: "get",
+        data: { order_id: originalOrder },
+        url: accountsUrl,
+        success(data) {
+          // Populate dropdown
+          account_field.empty();
+          data = JSON.parse(data);
+          data.forEach(function (account) {
+            return account_field.append(
+              '<option value="' +
+                account.id +
+                '">' +
+                account.description +
+                " / " +
+                account.account_number +
+                "</option>"
+            );
+          });
+
+          account_field.trigger("chosen:updated");
+
+          return account_field.trigger("change");
         },
       });
     });

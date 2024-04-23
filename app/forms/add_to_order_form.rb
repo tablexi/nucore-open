@@ -92,7 +92,9 @@ class AddToOrderForm
         f.id,
         {
           "data-products-path": Rails.application.routes.url_helpers.available_for_cross_core_ordering_facility_products_path(f, format: :js),
+          "data-accounts-path": Rails.application.routes.url_helpers.accounts_available_for_order_facility_accounts_path(f, format: :js),
           "data-original-order-facility": @original_order.facility_id,
+          "data-original-order": @original_order.id,
         }
       ]
     end
