@@ -169,10 +169,7 @@ class FacilityAccountsController < ApplicationController
 
   def set_facility_accounts_for_user
     order_id = params[:order_id]&.to_i
-
-    return unless order_id
-
-    order = Order.find(order_id)
+    order = Order.find(order_id) if order_id
 
     return unless order
 

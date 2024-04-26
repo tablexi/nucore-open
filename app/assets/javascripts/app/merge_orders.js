@@ -44,18 +44,18 @@ window.MergeOrder = class MergeOrder {
   initCrossCoreOrdering() {
     if (!this.$form.length) { return; }
 
-    const product_field = this.$form.find(".js--edit-order__product");
-    const facility_field = this.$form.find(".js--edit-order__facility");
-    const account_field = this.$form.find(".js--edit-order__account");
+    const productField = this.$form.find(".js--edit-order__product");
+    const facilityField = this.$form.find(".js--edit-order__facility");
+    const accountField = this.$form.find(".js--edit-order__account");
     const button = this.$form.find(".js--edit-order__button");
 
-    if (!facility_field || !button) return;
+    if (!facilityField || !button) return;
 
     const originalFacilityId = button.data("original-facility");
     const defaultButtonText = button.data("default-button-text");
     const crossCoreButtonText = button.data("cross-core-button-text");
 
-    return facility_field.on("change", (event) => {
+    return facilityField.on("change", (event) => {
       const selectedElement = $(event.target).find(":selected");
       const productsUrl = selectedElement.data("products-path");
       const accountsUrl = selectedElement.data("accounts-path");
@@ -63,7 +63,7 @@ window.MergeOrder = class MergeOrder {
       const originalOrder = selectedElement.data("original-order");
       const facility_id = $(event.target).val();
       const includeBlank = JSON.parse(
-        account_field.data("include-blank")
+        accountField.data("include-blank")
       );
 
       $.ajax({
@@ -72,10 +72,10 @@ window.MergeOrder = class MergeOrder {
         url: productsUrl,
         success(data) {
           // Populate dropdown
-          product_field.empty();
+          productField.empty();
           data = JSON.parse(data);
           data.forEach(function (product) {
-            return product_field.append(
+            return productField.append(
               '<option value="' +
                 product.id +
                 '" data-timed-product="' +
@@ -86,7 +86,7 @@ window.MergeOrder = class MergeOrder {
             );
           });
 
-          product_field.trigger("chosen:updated");
+          productField.trigger("chosen:updated");
 
           // Update button text
           const buttonText =
@@ -96,7 +96,7 @@ window.MergeOrder = class MergeOrder {
 
           button.val(buttonText);
 
-          return product_field.trigger("change");
+          return productField.trigger("change");
         },
       });
 
@@ -106,15 +106,15 @@ window.MergeOrder = class MergeOrder {
         url: accountsUrl,
         success(data) {
           // Populate dropdown
-          account_field.empty();
+          accountField.empty();
           data = JSON.parse(data);
 
           if (includeBlank) {
-            account_field.append('<option value=""></option>');
+            accountField.append('<option value=""></option>');
           }
 
           data.forEach(function (account) {
-            return account_field.append(
+            return accountField.append(
               '<option value="' +
                 account.id +
                 '">' +
@@ -125,9 +125,9 @@ window.MergeOrder = class MergeOrder {
             );
           });
 
-          account_field.trigger("chosen:updated");
+          accountField.trigger("chosen:updated");
 
-          return account_field.trigger("change");
+          return accountField.trigger("change");
         },
       });
     });
