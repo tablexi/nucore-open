@@ -29,6 +29,7 @@
   = render "order_table", order_details: @order_details, cross_core: false
   = render "order_table_footer", order: @order, cross_core: false
 
+%h2= t("views.facility_orders.show.cross_core_orders_header")
 - if SettingsHelper.feature_on?(:cross_core_projects) && @cross_core_order_details_by_facility.present?
   #accordion
     - @cross_core_order_details_by_facility.each do |facility, order_details|
