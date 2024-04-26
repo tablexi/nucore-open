@@ -275,7 +275,7 @@ RSpec.describe "Adding to an existing order" do
 
     context "with admin role" do
       let(:user) { create(:user, :facility_administrator, facility:) }
-      let!(:other_account) { create(:account, :with_account_owner, owner: order.user, description: "Other Account", facility: facility2) }
+      let!(:other_account) { create(:account, :with_account_owner, type: "CreditCardAccount", owner: order.user, description: "Other Account", facility: facility2) }
 
       it "changes the button text" do
         expect(page).to have_button("Add To Order")
@@ -292,8 +292,7 @@ RSpec.describe "Adding to an existing order" do
 
         select_from_chosen facility2.name, from: "add_to_order_form[facility_id]"
         select_from_chosen cross_core_product_facility2.name, from: "add_to_order_form[product_id]"
-        # This fails because the account is not valid for the facility
-        # select_from_chosen other_account.to_s, from: "Payment Source"
+        select_from_chosen other_account.to_s, from: "Payment Source"
 
         expect(page.has_selector?("option", text: product2.name, visible: false)).to be(false)
 
