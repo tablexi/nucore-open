@@ -118,9 +118,7 @@ window.MergeOrder = class MergeOrder {
               '<option value="' +
                 account.id +
                 '">' +
-                account.description +
-                " / " +
-                account.account_number +
+                account.label +
                 "</option>"
             );
           });

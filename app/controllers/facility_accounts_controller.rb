@@ -168,13 +168,13 @@ class FacilityAccountsController < ApplicationController
   end
 
   def set_facility_accounts_for_user
-    order_id = params[:order_id]&.to_i
+    order_id = params[:order_id]
     order = Order.find(order_id) if order_id
 
     return unless order
 
     order_user = order.user
-    @facility_accounts_for_user = AvailableAccountsFinder.new(order_user, current_facility).accounts
+    @facility_accounts_for_user = AvailableAccountsFinder.new(order_user, current_facility).accounts.map { |a| { id: a.id, label: a.to_s } }
   end
 
 end
