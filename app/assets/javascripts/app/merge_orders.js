@@ -62,6 +62,9 @@ window.MergeOrder = class MergeOrder {
       const originalOrderFacility = selectedElement.data("original-order-facility");
       const originalOrder = selectedElement.data("original-order");
       const facility_id = $(event.target).val();
+      const includeBlank = JSON.parse(
+        account_field.data("include-blank")
+      );
 
       $.ajax({
         type: "get",
@@ -105,6 +108,11 @@ window.MergeOrder = class MergeOrder {
           // Populate dropdown
           account_field.empty();
           data = JSON.parse(data);
+
+          if (includeBlank) {
+            account_field.append('<option value=""></option>');
+          }
+
           data.forEach(function (account) {
             return account_field.append(
               '<option value="' +

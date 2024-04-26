@@ -33,12 +33,12 @@
           include_blank: false,
           label: OrderDetail.human_attribute_name(:order_status)
         - if enable_cross_core_changes
-          -# TODO: include_blank and hint should work when data comes from server
           = f.input :account_id,
             collection: @add_to_order_form.available_accounts,
-            include_blank: !@order.account.active?,
             hint: @order.account.active? ? "" : t(".original_account_inactive", account: @order.account),
-            input_html: { class: "js--edit-order__account js--chosen" }
+            include_blank: !@order.account.active?,
+            input_html: { class: "js--edit-order__account js--chosen",
+              data: { "include-blank" => !@order.account.active? } }
         - else
           = f.input :account_id,
             collection: @add_to_order_form.available_accounts,
