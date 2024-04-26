@@ -82,7 +82,7 @@ class AddToOrderForm
   end
 
   def available_accounts
-    AvailableAccountsFinder.new(original_order.user, current_facility)
+    AvailableAccountsFinder.new(original_order.user, product_facility)
   end
 
   def facilities_options
