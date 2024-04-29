@@ -169,6 +169,37 @@ RSpec.describe "Adding to an existing order" do
       end
     end
 
+    describe "from same facility (with feature flag on)", :js, feature_setting: { cross_core_projects: true } do
+      let(:product) { create(:setup_item, :with_facility_account) }
+      let!(:instrument) { create(:setup_instrument, facility: facility) }
+      let(:user) { create(:user, :facility_administrator, facility:) }
+
+      before do
+        visit facility_order_path(facility, order)
+        fill_in "add_to_order_form[quantity]", with: "1"
+        select_from_chosen instrument.name, from: "add_to_order_form[product_id]"
+        click_button "Add To Order"
+      end
+
+      it "requires a reservation to be set up before adding to the order" do
+        expect(page).to have_content("The following order details need your attention.")
+
+        click_link "Make a Reservation"
+        click_button "Create"
+
+        expect(order.reload.order_details.count).to be(2)
+        expect(order.order_details.last.product).to eq(instrument)
+      end
+
+      it "brings you back to the facility order path on 'Cancel'" do
+        click_link "Make a Reservation"
+        click_link "Cancel"
+
+        expect(current_path).to eq(facility_order_path(facility, order))
+        expect(page).to have_link("Make a Reservation")
+      end
+    end
+
     describe "from another facility", :js, feature_setting: { cross_core_projects: true } do
       let(:facility2) { create(:setup_facility) }
       let(:product) { create(:setup_item, :with_facility_account) }
