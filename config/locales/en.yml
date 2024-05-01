@@ -400,6 +400,7 @@ en:
     index:
       no_new_or_inprocess_orders: There are no "New" or "In Process" orders.
     edit:
+      actions: Actions
       missing_form_modal:
         header: Action Required - Missing Form
         body_html: |

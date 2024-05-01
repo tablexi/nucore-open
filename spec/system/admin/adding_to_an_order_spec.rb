@@ -181,6 +181,11 @@ RSpec.describe "Adding to an existing order" do
         click_button "Add To Order"
       end
 
+      it "is accessible" do
+        click_button "OK"
+        expect(page).to be_axe_clean
+      end
+
       it "requires a reservation to be set up before adding to the order" do
         expect(page).to have_content("Your order includes order details that need your attention.")
 
