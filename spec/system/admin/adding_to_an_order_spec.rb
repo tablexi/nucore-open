@@ -116,7 +116,7 @@ RSpec.describe "Adding to an existing order" do
     end
 
     it "requires a file to be uploaded before adding to the order" do
-      expect(page).to have_content("The following order details need your attention.")
+      expect(page).to have_content("Your order includes order details that need your attention.")
     end
 
     describe "after uploading the file" do
@@ -151,7 +151,7 @@ RSpec.describe "Adding to an existing order" do
       end
 
       it "requires a reservation to be set up before adding to the order" do
-        expect(page).to have_content("The following order details need your attention.")
+        expect(page).to have_content("Your order includes order details that need your attention.")
 
         click_link "Make a Reservation"
         click_button "Create"
@@ -182,8 +182,9 @@ RSpec.describe "Adding to an existing order" do
       end
 
       it "requires a reservation to be set up before adding to the order" do
-        expect(page).to have_content("The following order details need your attention.")
+        expect(page).to have_content("Your order includes order details that need your attention.")
 
+        click_button "OK"
         click_link "Make a Reservation"
         click_button "Create"
 
@@ -192,6 +193,7 @@ RSpec.describe "Adding to an existing order" do
       end
 
       it "brings you back to the facility order path on 'Cancel'" do
+        click_button "OK"
         click_link "Make a Reservation"
         click_link "Cancel"
 
@@ -216,8 +218,9 @@ RSpec.describe "Adding to an existing order" do
         end
 
         it "requires a reservation to be set up before adding to the order" do
-          expect(page).to have_content("The following order details need your attention.")
+          expect(page).to have_content("Your order includes order details that need your attention.")
 
+          click_button "OK"
           click_link "Make a Reservation"
           click_button "Create"
 
@@ -228,6 +231,7 @@ RSpec.describe "Adding to an existing order" do
         end
 
         it "brings you back to the facility order path on 'Cancel'" do
+          click_button "OK"
           click_link "Make a Reservation"
           click_link "Cancel"
 
@@ -260,6 +264,7 @@ RSpec.describe "Adding to an existing order" do
           # This is the second order for this facility so it has a merge_order set
           expect(project.reload.orders.last.merge_with_order_id).to eq(second_facility_order.id)
 
+          click_button "OK"
           click_link "Make a Reservation"
           click_button "Create"
 

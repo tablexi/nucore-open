@@ -403,12 +403,12 @@ en:
       missing_form_modal:
         header: Action Required - Missing Form
         body_html: |
-          Your order includes order details that have not been added successfully. <br>
+          Your order includes order details that need your attention. <br>
           Before you can add anything else to this order you need to address them. <br>
           Please click the "Complete Online Order Form" button below to complete the form (required).
         ok: OK
       attention_html: |
-        Your order includes order details that have not been added successfully. <br>
+        Your order includes order details that need your attention. <br>
         Before you can add anything else to this order you need to address them. <br>
         Please click the button below to complete the form (required).
       head:
