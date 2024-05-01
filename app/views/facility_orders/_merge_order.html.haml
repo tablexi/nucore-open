@@ -1,6 +1,8 @@
 - if @merge_orders.present?
+  = render "merge_order_missing_form_reminder"
   .well
-    %p.alert.alert-info= t("facility_orders.edit.attention")
+    %p.alert.alert-error
+      = t("facility_orders.edit.attention_html")
     %table.table.table-striped.table-hover
       %thead
         %tr
