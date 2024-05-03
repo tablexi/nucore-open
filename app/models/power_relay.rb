@@ -41,6 +41,13 @@ module PowerRelay
     end
   end
 
+  # This method will toggle the secondary outlet to match the primary outlet.
+  # Useful to sync up the outlets whenever the secondary outlet changes.
+  def activate_secondary_outlet
+    primary_outlet_status = relay_connection.status(outlet)
+    relay_connection.toggle(secondary_outlet, primary_outlet_status)
+  end
+
   # Returns:
   # boolean - The current on/off status of the outlet (and secondary outlet, if configured).
   def query_status
