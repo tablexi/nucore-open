@@ -1,11 +1,7 @@
 #merge-order-missing-order-info-reminder.modal.hide.fade{ data: { backdrop: "static" } }
   .modal-header
-    = modal_close_button
-    %h3= text("facility_orders.edit.missing_order_info_modal.header")
+    - # We're skipping the modal_close_button here to force users to read the message and take action
+    %h3= text("facility_orders.edit.missing_order_form_modal.header")
   .modal-body
-    %p.alert.alert-error
-      = t("facility_orders.edit.missing_order_info_modal.body_html")
-  .modal-footer
-    %button.btn{ type: "button", data: { dismiss: "modal" } }= text("facility_orders.edit.missing_order_info_modal.ok")
-
+    = render partial: "merge_order_table", locals: { modal: true }
 = javascript_tag "$('#merge-order-missing-order-info-reminder').modal('show');"
