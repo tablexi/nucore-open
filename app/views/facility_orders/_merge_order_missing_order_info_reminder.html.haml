@@ -1,11 +1,11 @@
-#merge-order-missing-form-reminder.modal.hide.fade{ data: { backdrop: "static" } }
+#merge-order-missing-order-info-reminder.modal.hide.fade{ data: { backdrop: "static" } }
   .modal-header
     = modal_close_button
-    %h3= text("facility_orders.edit.missing_form_modal.header")
+    %h3= text("facility_orders.edit.missing_order_info_modal.header")
   .modal-body
     %p.alert.alert-error
-      = t("facility_orders.edit.missing_form_modal.body_html")
+      = t("facility_orders.edit.missing_order_info_modal.body_html")
   .modal-footer
-    %button.btn{ type: "button", data: { dismiss: "modal" } }= text("facility_orders.edit.missing_form_modal.ok")
+    %button.btn{ type: "button", data: { dismiss: "modal" } }= text("facility_orders.edit.missing_order_info_modal.ok")
 
-= javascript_tag "$('#merge-order-missing-form-reminder').modal('show');"
+= javascript_tag "$('#merge-order-missing-order-info-reminder').modal('show');"
