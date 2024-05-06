@@ -116,12 +116,14 @@ RSpec.describe "Adding to an existing order" do
     end
 
     it "requires a file to be uploaded before adding to the order" do
-      expect(page).to have_content("Your order includes order details that need your attention.")
+      expect(page).to have_content("Your order includes one or more incomplete items.")
     end
 
     describe "after uploading the file" do
       before do
-        click_link "Upload Order Form"
+        within("#merge-order-missing-order-info-reminder") do
+          click_link "Upload Order Form"
+        end
         attach_file "stored_file[file]", Rails.root.join("spec", "files", "template1.txt")
         click_button "Upload"
       end
@@ -151,9 +153,11 @@ RSpec.describe "Adding to an existing order" do
       end
 
       it "requires a reservation to be set up before adding to the order" do
-        expect(page).to have_content("Your order includes order details that need your attention.")
+        expect(page).to have_content("Your order includes one or more incomplete items.")
 
-        click_link "Make a Reservation"
+        within("#merge-order-missing-order-info-reminder") do
+          click_link "Make a Reservation"
+        end
         click_button "Create"
 
         expect(order.reload.order_details.count).to be(2)
@@ -161,7 +165,9 @@ RSpec.describe "Adding to an existing order" do
       end
 
       it "brings you back to the facility order path on 'Cancel'" do
-        click_link "Make a Reservation"
+        within("#merge-order-missing-order-info-reminder") do
+          click_link "Make a Reservation"
+        end
         click_link "Cancel"
 
         expect(current_path).to eq(facility_order_path(facility, order))
@@ -182,15 +188,14 @@ RSpec.describe "Adding to an existing order" do
       end
 
       it "is accessible" do
-        click_button "OK"
         expect(page).to be_axe_clean
       end
 
       it "requires a reservation to be set up before adding to the order" do
-        expect(page).to have_content("Your order includes order details that need your attention.")
-
-        click_button "OK"
-        click_link "Make a Reservation"
+        expect(page).to have_content("Your order includes one or more incomplete items.")
+        within("#merge-order-missing-order-info-reminder") do
+          click_link "Make a Reservation"
+        end
         click_button "Create"
 
         expect(order.reload.order_details.count).to be(2)
@@ -198,8 +203,9 @@ RSpec.describe "Adding to an existing order" do
       end
 
       it "brings you back to the facility order path on 'Cancel'" do
-        click_button "OK"
-        click_link "Make a Reservation"
+        within("#merge-order-missing-order-info-reminder") do
+          click_link "Make a Reservation"
+        end
         click_link "Cancel"
 
         expect(current_path).to eq(facility_order_path(facility, order))
@@ -225,10 +231,11 @@ RSpec.describe "Adding to an existing order" do
         end
 
         it "requires a reservation to be set up before adding to the order" do
-          expect(page).to have_content("Your order includes order details that need your attention.")
+          expect(page).to have_content("Your order includes one or more incomplete items.")
 
-          click_button "OK"
-          click_link "Make a Reservation"
+          within("#merge-order-missing-order-info-reminder") do
+            click_link "Make a Reservation"
+          end
           select facility2_account.to_s, from: "Payment Source"
           click_button "Create"
 
@@ -240,8 +247,10 @@ RSpec.describe "Adding to an existing order" do
         end
 
         it "brings you back to the facility order path on 'Cancel'" do
-          click_button "OK"
-          click_link "Make a Reservation"
+
+          within("#merge-order-missing-order-info-reminder") do
+            click_link "Make a Reservation"
+          end
           click_link "Cancel"
 
           expect(current_path).to eq(facility_order_path(facility, order))
@@ -273,8 +282,9 @@ RSpec.describe "Adding to an existing order" do
           # This is the second order for this facility so it has a merge_order set
           expect(project.reload.orders.last.merge_with_order_id).to eq(second_facility_order.id)
 
-          click_button "OK"
-          click_link "Make a Reservation"
+          within("#merge-order-missing-order-info-reminder") do
+            click_link "Make a Reservation"
+          end
           click_button "Create"
 
           # After the reservation is created, the merge_order is cleared
