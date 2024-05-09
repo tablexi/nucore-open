@@ -38,13 +38,28 @@ module ResearchSafetyAdapters
     end
 
     def api_unavailable?
-      # Test API responses for 10 random users
-      users.sample(batch_size).map do |user|
-        puts "Testing user: #{user.email}"
-        response_is_invalid = api_client.invalid_response?(user.email)
-        puts "Invalid response: #{response_is_invalid}"
-        response_is_invalid
-      end.all?
+      retries = 0
+      begin
+        # Test API responses for 10 random users
+        users.sample(batch_size).map do |user|
+          puts "Testing user: #{user.email}"
+          response_is_invalid = api_client.invalid_response?(user.email)
+          puts "Invalid response: #{response_is_invalid}"
+          response_is_invalid
+        end.all?
+      rescue Net::OpenTimeout => e
+        retries += 1
+        if retries < retry_max
+          puts "Timeout error: #{e.message}"
+          puts "retrying in #{batch_sleep_time / 2} seconds"
+          sleep(batch_sleep_time / 2) # just doing one batch, so no need to sleep the full time
+          retry
+        else
+          puts "Timeout error: #{e.message}"
+          puts "Max retries reached, aborting"
+          true
+        end
+      end
     end
 
     def fetch_user_certs
