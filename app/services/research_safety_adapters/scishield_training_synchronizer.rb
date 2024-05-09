@@ -65,7 +65,7 @@ module ResearchSafetyAdapters
         sleep(batch_sleep_time)
 
         user_batch.each do |user|
-          adapter = ScishieldApiAdapter.new(user, api_client)
+          adapter = ScishieldApiAdapter.new(user)
           retries = 0
           retry_sleep_time = batch_sleep_time
 
