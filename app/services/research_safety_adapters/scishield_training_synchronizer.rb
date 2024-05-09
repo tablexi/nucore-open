@@ -12,47 +12,7 @@ module ResearchSafetyAdapters
         Rails.logger.error(msg)
         Rollbar.error(msg) if defined?(Rollbar)
       else
-        user_certs = {}
-
-        # In some cases, making many requests in a row results in the API not
-        # responding. Making requests in batches with sleep in between seems
-        # to make the API work in most cases where this is a problem. `sleep`
-        # is put first here because `api_unavailable?` will have already made
-        # 10 API requests.
-        users.in_batches(of: batch_size) do |user_batch|
-          sleep(batch_sleep_time)
-
-          user_batch.each do |user|
-            adapter = ScishieldApiAdapter.new(user, api_client)
-            retries = 0
-            retry_sleep_time = batch_sleep_time
-
-            begin
-              cert_names = adapter.certified_course_names_from_api
-              user_certs[user.id.to_s] = cert_names if cert_names.presence
-            rescue => e
-              # Sometimes the sleep between batches is not enough and failures
-              # happen. Sleeping before retrying an individual request seems to
-              # allow that request to succeed. Each retry sleeps 25% longer than
-              # the previous try.
-              if retries < retry_max
-                retry_sleep_time *= 1.25
-                msg = "ScishieldTrainingSynchronizer#synchronize request for user id #{user.id} failed, retrying in #{retry_sleep_time} seconds. Error: #{e.message}"
-
-                Rails.logger.warn(msg)
-                Rollbar.warn(msg) if defined?(Rollbar)
-
-                retries += 1
-                sleep(retry_sleep_time)
-                retry
-              else
-                Rails.logger.error(e.message)
-                Rollbar.error(e.message) if defined?(Rollbar)
-              end
-            end
-          end
-        end
-
+        user_certs = fetch_user_certs
         ScishieldTraining.transaction do
           ScishieldTraining.delete_all
 
@@ -83,6 +43,50 @@ module ResearchSafetyAdapters
         sleep(batch_sleep_time / 2)
         api_client.invalid_response?(user.email)
       end.all?
+    end
+
+    def fetch_user_certs
+      certs = {}
+
+      # In some cases, making many requests in a row results in the API not
+      # responding. Making requests in batches with sleep in between seems
+      # to make the API work in most cases where this is a problem. `sleep`
+      # is put first here because `api_unavailable?` will have already made
+      # 10 API requests.
+      users.in_batches(of: batch_size) do |user_batch|
+        sleep(batch_sleep_time)
+
+        user_batch.each do |user|
+          adapter = ScishieldApiAdapter.new(user, api_client)
+          retries = 0
+          retry_sleep_time = batch_sleep_time
+
+          begin
+            cert_names = adapter.certified_course_names_from_api
+            certs[user.id.to_s] = cert_names if cert_names.presence
+          rescue => e
+            # Sometimes the sleep between batches is not enough and failures
+            # happen. Sleeping before retrying an individual request seems to
+            # allow that request to succeed. Each retry sleeps 25% longer than
+            # the previous try.
+            if retries < retry_max
+              retry_sleep_time *= 1.25
+              msg = "ScishieldTrainingSynchronizer#synchronize request for user id #{user.id} failed, retrying in #{retry_sleep_time} seconds. Error: #{e.message}"
+
+              Rails.logger.warn(msg)
+              Rollbar.warn(msg) if defined?(Rollbar)
+
+              retries += 1
+              sleep(retry_sleep_time)
+              retry
+            else
+              Rails.logger.error(e.message)
+              Rollbar.error(e.message) if defined?(Rollbar)
+            end
+          end
+        end
+      end
+      certs
     end
 
     def users
