@@ -18,6 +18,23 @@ RSpec.describe "Scishield timeout", safety_adapter_class: ResearchSafetyAdapters
     )
   end
 
+  describe "api_unavailable?" do
+    before do
+      # Raise a Net::OpenTimeout error when calling ScishieldApiClient#invalid_response?
+      allow_any_instance_of(ResearchSafetyAdapters::ScishieldApiClient).to(
+        receive(:invalid_response?).and_raise(Net::OpenTimeout)
+      )
+      # We just want to test the retry logic, so we'll set the retry_max to 2
+      allow_any_instance_of(ResearchSafetyAdapters::ScishieldTrainingSynchronizer).to(
+        receive(:retry_max).and_return(2)
+      )
+    end
+
+    it "returns true instead of failing with a Net::OpenTimeout error" do
+      expect(ResearchSafetyAdapters::ScishieldTrainingSynchronizer.new.api_unavailable?).to be true
+    end
+  end
+
   describe "Net::OpenTimeout errors when the user does not have a ScishieldTraining record" do
     before do
       # This will cause ResearchSafetyAdapters::ScishieldApiClient#certifications_for
