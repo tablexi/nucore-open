@@ -53,7 +53,13 @@ module ResearchSafetyAdapters
       # to make the API work in most cases where this is a problem. `sleep`
       # is put first here because `api_unavailable?` will have already made
       # 10 API requests.
+      puts users.size
+      puts batch_size
+      total_batches = users.size / batch_size
+      puts "#{total_batches} batches to be processed"
+      batch_number = 1
       users.in_batches(of: batch_size) do |user_batch|
+        puts "starting batch #{batch_number} of #{total_batches}"
         sleep(batch_sleep_time)
 
         user_batch.each do |user|
