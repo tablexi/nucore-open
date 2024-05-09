@@ -40,7 +40,7 @@ module ResearchSafetyAdapters
     def api_unavailable?
       retries = 0
       begin
-        # Test API responses for 10 random users
+        # Test API responses for `batch_size` random users
         users.sample(batch_size).map do |user|
           puts "Testing user: #{user.email}"
           response_is_invalid = api_client.invalid_response?(user.email)
@@ -74,8 +74,9 @@ module ResearchSafetyAdapters
       puts batch_size
       total_batches = users.size / batch_size
       puts "#{total_batches} batches to be processed"
-      batch_number = 1
+      batch_number = 0
       users.in_batches(of: batch_size) do |user_batch|
+        batch_number += 1
         puts "starting batch #{batch_number} of #{total_batches}"
         sleep(batch_sleep_time)
 
