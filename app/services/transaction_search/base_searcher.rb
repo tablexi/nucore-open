@@ -26,6 +26,10 @@ module TransactionSearch
       nil
     end
 
+    def value_method(_option)
+      nil
+    end
+
     def label
       nil
     end
