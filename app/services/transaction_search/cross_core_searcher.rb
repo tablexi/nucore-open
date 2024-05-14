@@ -27,8 +27,7 @@ module TransactionSearch
     end
 
     def label
-      # TODO: Use translation
-      "Cross-Core?"
+      I18n.t("shared.cross_core_label")
     end
 
     def input_type
