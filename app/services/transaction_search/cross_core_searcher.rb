@@ -4,7 +4,7 @@ module TransactionSearch
 
   class CrossCoreSearcher < BaseSearcher
     def options
-      ["yes", "no", "both"]
+      ["both", "yes", "no"]
     end
 
     def search(params)
@@ -28,7 +28,11 @@ module TransactionSearch
 
     def label
       # TODO: Use translation
-      "Only Cross-Core?"
+      "Cross-Core?"
+    end
+
+    def input_type
+      :select
     end
 
   end

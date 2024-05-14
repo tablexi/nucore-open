@@ -16,7 +16,7 @@ module NewInprocessController
     ]
 
     if SettingsHelper.feature_on?(:cross_core_order_view)
-      searchers.insert(2, TransactionSearch::CrossCoreSearcher)
+      searchers << TransactionSearch::CrossCoreSearcher
     end
 
     @search = TransactionSearch::Searcher.new(*searchers).search(order_details, @search_form)
