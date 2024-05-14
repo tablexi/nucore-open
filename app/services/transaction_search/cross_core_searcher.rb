@@ -3,14 +3,8 @@
 module TransactionSearch
 
   class CrossCoreSearcher < BaseSearcher
-    OPTIONS_MAP = {
-      yes: true,
-      no: false,
-      both: nil,
-    }.freeze
-
     def options
-      OPTIONS_MAP.keys.map(&:to_s)
+      ["yes", "no", "both"]
     end
 
     def search(params)
@@ -19,9 +13,9 @@ module TransactionSearch
       params = params.first
 
       # Based on params, filter by cross_core_project_id present in order_detail.order
-      if params == OPTIONS_MAP[:no].to_s
+      if params == "no"
         order_details.joins(:order).where(orders: { cross_core_project_id: nil })
-      elsif params == OPTIONS_MAP[:yes].to_s
+      elsif params == "yes"
         order_details.joins(:order).where(orders: { original_cross_core_order: false }).where.not(orders: { cross_core_project_id: nil })
       else
         order_details
@@ -30,10 +24,6 @@ module TransactionSearch
 
     def label_method
       :capitalize
-    end
-
-    def value_method(option)
-      OPTIONS_MAP[option.to_sym]
     end
 
     def label
