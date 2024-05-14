@@ -22,7 +22,7 @@ module TransactionSearch
       if params == OPTIONS_MAP[:no].to_s
         order_details.joins(:order).where(orders: { cross_core_project_id: nil })
       elsif params == OPTIONS_MAP[:yes].to_s
-        order_details.joins(:order).where.not(orders: { cross_core_project_id: nil })
+        order_details.joins(:order).where(orders: { original_cross_core_order: false }).where.not(orders: { cross_core_project_id: nil })
       else
         order_details
       end
