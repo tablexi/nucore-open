@@ -145,7 +145,9 @@ en:
       logo_file: "logo.jpg"
     problem_order_details:
       assign_price_policies: Assign Price Policies
+      cross_core_icon_tooltip: "Cross core order from %{facility}"
       th:
+        ordered_by: Ordered By
         quantity_and_product: "Quantity / Product"
         problem: Problem
         actual_start: Actual Start Date
