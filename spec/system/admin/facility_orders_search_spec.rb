@@ -53,4 +53,81 @@ RSpec.describe "Facility Orders Search" do
       end
     end
   end
+
+  context "cross-core orders", :js, feature_setting: { cross_core_order_view: true } do
+    # cross_core_order_originating_facility is a purchased order that originates in Facility (item)
+    # facility2_item is ordered and that new order is added to cross_core_project
+
+    # cross_core_order_originating_facility2 is a purchased order that originates in Facility2 (facility2_item)
+    # item is ordered and that new order is added to cross_core_project2
+
+    # cross_core_project has cross_core_order_originating_facility order and another one for Facility2
+    # cross_core_project2 has cross_core_order_originating_facility2 order and another one for Facility
+
+    # Facility has 3 orders (2 from Facility, 1 from Facility2)
+    # Facility2 has 2 orders (1 from Facility, 1 from Facility2)
+
+    let!(:cross_core_order_originating_facility) { create(:purchased_order, product: item, account: accounts.first) }
+    let!(:order_for_facility) { create(:purchased_order, product: item, account: accounts.first) }
+
+    let(:facility2) { create(:setup_facility) }
+    let(:facility2_item) { create(:setup_item, facility: facility2) }
+    let(:facility2_item2) { create(:setup_item, facility: facility2) }
+    let!(:cross_core_order_originating_facility2) { create(:purchased_order, product: facility2_item, account: accounts.first) }
+
+    let(:cross_core_project) { create(:project, facility:, name: "#{facility.abbreviation}-#{cross_core_order_originating_facility.id}") }
+    let(:cross_core_project2) { create(:project, facility: facility2, name: "#{facility2.abbreviation}-#{cross_core_order_originating_facility2.id}") }
+
+    # First order originates in facility, second order originates in facility2
+    let!(:cross_core_orders) do
+      [
+        create(:purchased_order, cross_core_project:, product: facility2_item, account: accounts.last),
+        create(:purchased_order, cross_core_project: cross_core_project2, product: item, account: accounts.last),
+      ]
+    end
+
+    before do
+      cross_core_order_originating_facility.update!(cross_core_project:)
+      cross_core_order_originating_facility.reload
+
+      cross_core_order_originating_facility2.update!(cross_core_project: cross_core_project2)
+      cross_core_order_originating_facility2.reload
+
+      login_as director
+      visit facility_orders_path(facility)
+    end
+
+    context "when selecting Cross-Core" do
+      before do
+        select "Cross core", from: "Cross-Core"
+        click_button "Filter"
+      end
+
+      it "shows only cross core orders placed for Facility" do
+        expect(page).to have_css(".fa-users", count: 1)
+        expect(page).to have_css(".fa-building", count: 1)
+
+        expect(page).to have_content(cross_core_order_originating_facility.id)
+        expect(page).to have_content(cross_core_orders.last.id)
+
+        expect(page).not_to have_content(order_for_facility.id)
+        expect(page).not_to have_content(cross_core_order_originating_facility2.id)
+        expect(page).not_to have_content(cross_core_orders.first.id)
+      end
+    end
+
+    context "when selecting All" do
+      it "shows all orders placed for Facility" do
+        expect(page).to have_css(".fa-users", count: 1)
+        expect(page).to have_css(".fa-building", count: 1)
+
+        expect(page).to have_content(order_for_facility.id)
+        expect(page).to have_content(cross_core_order_originating_facility.id)
+        expect(page).to have_content(cross_core_orders.last.id)
+
+        expect(page).not_to have_content(cross_core_order_originating_facility2.id)
+        expect(page).not_to have_content(cross_core_orders.first.id)
+      end
+    end
+  end
 end
