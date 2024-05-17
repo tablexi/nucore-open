@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_14_183639) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_10_203410) do
   create_table "account_facility_joins", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "facility_id", null: false
     t.integer "account_id", null: false
@@ -444,7 +444,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_14_183639) do
     t.integer "merge_with_order_id"
     t.integer "order_import_id"
     t.integer "cross_core_project_id"
-    t.boolean "original_cross_core_order", default: false, null: false
     t.index ["account_id"], name: "fk_rails_144e25bef6"
     t.index ["cross_core_project_id"], name: "index_orders_on_cross_core_project_id"
     t.index ["facility_id"], name: "index_orders_on_facility_id"
