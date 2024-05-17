@@ -9,6 +9,10 @@ RSpec.describe "Facility Orders Search" do
   let(:item2) { create(:setup_item, facility: facility) }
   let(:accounts) { create_list(:setup_account, 2) }
 
+  before do
+    login_as director
+  end
+
   context "same facility orders" do
     let!(:orders) do
       accounts.map do |account|
@@ -31,7 +35,6 @@ RSpec.describe "Facility Orders Search" do
 
     context "new and in process orders tab" do
       it "can do a basic search" do
-        login_as director
         visit facility_orders_path(facility)
 
         select item.to_s, from: "Products"
@@ -43,7 +46,6 @@ RSpec.describe "Facility Orders Search" do
 
     context "problem orders tab" do
       it "can do a basic search" do
-        login_as director
         visit show_problems_facility_orders_path(facility)
 
         select item.to_s, from: "Products"
@@ -92,41 +94,99 @@ RSpec.describe "Facility Orders Search" do
 
       cross_core_order_originating_facility2.update!(cross_core_project: cross_core_project2)
       cross_core_order_originating_facility2.reload
-
-      login_as director
-      visit facility_orders_path(facility)
     end
 
-    context "when selecting Cross-Core" do
+    context "New / In process tab" do
       before do
-        select "Cross core", from: "Cross-Core"
-        click_button "Filter"
+        visit facility_orders_path(facility)
       end
 
-      it "shows only cross core orders placed for Facility" do
-        expect(page).to have_css(".fa-users", count: 1)
-        expect(page).to have_css(".fa-building", count: 1)
+      context "when selecting Cross-Core" do
+        before do
+          select "Cross core", from: "Cross-Core"
+          click_button "Filter"
+        end
 
-        expect(page).to have_content(cross_core_order_originating_facility.id)
-        expect(page).to have_content(cross_core_orders.last.id)
+        it "shows only cross core orders placed for Facility" do
+          expect(page).to have_css(".fa-users", count: 1)
+          expect(page).to have_css(".fa-building", count: 1)
 
-        expect(page).not_to have_content(order_for_facility.id)
-        expect(page).not_to have_content(cross_core_order_originating_facility2.id)
-        expect(page).not_to have_content(cross_core_orders.first.id)
+          expect(page).to have_content(cross_core_order_originating_facility.id)
+          expect(page).to have_content(cross_core_orders.last.id)
+
+          expect(page).not_to have_content(order_for_facility.id)
+          expect(page).not_to have_content(cross_core_order_originating_facility2.id)
+          expect(page).not_to have_content(cross_core_orders.first.id)
+        end
+      end
+
+      context "when selecting All" do
+        it "shows all orders placed for Facility" do
+          expect(page).to have_css(".fa-users", count: 1)
+          expect(page).to have_css(".fa-building", count: 1)
+
+          expect(page).to have_content(order_for_facility.id)
+          expect(page).to have_content(cross_core_order_originating_facility.id)
+          expect(page).to have_content(cross_core_orders.last.id)
+
+          expect(page).not_to have_content(cross_core_order_originating_facility2.id)
+          expect(page).not_to have_content(cross_core_orders.first.id)
+        end
       end
     end
 
-    context "when selecting All" do
-      it "shows all orders placed for Facility" do
-        expect(page).to have_css(".fa-users", count: 1)
-        expect(page).to have_css(".fa-building", count: 1)
+    context "Problem orders tab" do
+      let!(:cross_core_orders) do
+        [
+          create(:complete_order, cross_core_project:, product: facility2_item, account: accounts.last),
+          create(:complete_order, cross_core_project: cross_core_project2, product: item, account: accounts.last),
+        ]
+      end
 
-        expect(page).to have_content(order_for_facility.id)
-        expect(page).to have_content(cross_core_order_originating_facility.id)
-        expect(page).to have_content(cross_core_orders.last.id)
+      let!(:order_for_facility) { create(:complete_order, product: item, account: accounts.first) }
 
-        expect(page).not_to have_content(cross_core_order_originating_facility2.id)
-        expect(page).not_to have_content(cross_core_orders.first.id)
+      before do
+        cross_core_orders.each do |order|
+          order.order_details.first.update(price_policy: nil)
+        end
+
+        order_for_facility.order_details.first.update(price_policy: nil)
+
+        visit show_problems_facility_orders_path(facility)
+      end
+
+      context "when selecting Cross-Core" do
+        before do
+          select "Cross core", from: "Cross-Core"
+          click_button "Filter"
+        end
+
+        it "shows only cross core orders placed for Facility" do
+          expect(page).to have_css(".fa-users", count: 1)
+          expect(page).to have_css(".fa-building", count: 0)
+
+          expect(page).to have_content(cross_core_orders.last.id)
+
+          expect(page).not_to have_content(cross_core_order_originating_facility.id)
+          expect(page).not_to have_content(order_for_facility.id)
+
+          expect(page).not_to have_content(cross_core_order_originating_facility2.id)
+          expect(page).not_to have_content(cross_core_orders.first.id)
+        end
+      end
+
+      context "when selecting All" do
+        it "shows all orders placed for Facility" do
+          expect(page).to have_css(".fa-users", count: 1)
+          expect(page).to have_css(".fa-building", count: 0)
+
+          expect(page).to have_content(order_for_facility.id)
+          expect(page).to have_content(cross_core_orders.last.id)
+
+          expect(page).not_to have_content(cross_core_order_originating_facility.id)
+          expect(page).not_to have_content(cross_core_order_originating_facility2.id)
+          expect(page).not_to have_content(cross_core_orders.first.id)
+        end
       end
     end
   end
