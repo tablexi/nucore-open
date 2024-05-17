@@ -120,7 +120,7 @@ en:
     all: All
     cancel: Cancel
     create: Create
-    cross_core_label: Cross-Core?
+    cross_core_label: Cross-Core
     confirm_message: Are you sure?
     delete: Delete
     dispute: Dispute
