@@ -4,6 +4,7 @@ en:
       index:
         cross_core_icon_tooltip: "Cross core order from %{facility}"
         ordered_by: "Ordered By"
+        price_group: "Price Group"
       show:
         cross_core_orders_header: "Cross-Core Orders"
         cross_core_project_id: "Cross-Core Project ID"
