@@ -36,11 +36,7 @@
         - if cross_core_order_view_enabled
           %td
             = order_detail.order.created_by_user.full_name
-            - if order_detail.order.cross_core_project.present?
-              - if order_detail.order.cross_core_project.facility == current_facility
-                %i.fa.fa-building{ data: { toggle: "tooltip" }, title: t(".cross_core_icon_tooltip", facility: order_detail.order.cross_core_project.facility.abbreviation)}
-              - else
-                %i.fa.fa-users{ data: { toggle: "tooltip" }, title: t(".cross_core_icon_tooltip", facility: order_detail.order.cross_core_project.facility.abbreviation)}
+            = render "shared/cross_core_facility_abbreviation_order_details", order_detail: order_detail, current_facility: current_facility
         %td= problem_order_date(order_detail, local_assigns[:show_reservation_start_at])
         %td= order_detail.order.user
         %td.centered= order_detail.quantity

@@ -2,7 +2,6 @@ en:
   views:
     facility_orders:
       index:
-        cross_core_icon_tooltip: "Cross core order from %{facility}"
         ordered_by: "Ordered By"
       show:
         cross_core_orders_header: "Cross-Core Orders"

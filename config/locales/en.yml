@@ -121,6 +121,8 @@ en:
     cancel: Cancel
     create: Create
     cross_core_label: Cross-Core
+    cross_core_facility_abbreviation_order_details:
+      cross_core_icon_tooltip: "Cross core order from %{facility}"
     confirm_message: Are you sure?
     delete: Delete
     dispute: Dispute
@@ -145,7 +147,6 @@ en:
       logo_file: "logo.jpg"
     problem_order_details:
       assign_price_policies: Assign Price Policies
-      cross_core_icon_tooltip: "Cross core order from %{facility}"
       th:
         ordered_by: Ordered By
         quantity_and_product: "Quantity / Product"
