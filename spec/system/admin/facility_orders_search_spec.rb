@@ -57,18 +57,6 @@ RSpec.describe "Facility Orders Search" do
   end
 
   context "cross-core orders", :js, feature_setting: { cross_core_order_view: true } do
-    # cross_core_order_originating_facility is a purchased order that originates in Facility (item)
-    # facility2_item is ordered and that new order is added to cross_core_project
-
-    # cross_core_order_originating_facility2 is a purchased order that originates in Facility2 (facility2_item)
-    # item is ordered and that new order is added to cross_core_project2
-
-    # cross_core_project has cross_core_order_originating_facility order and another one for Facility2
-    # cross_core_project2 has cross_core_order_originating_facility2 order and another one for Facility
-
-    # Facility has 3 orders (2 from Facility, 1 from Facility2)
-    # Facility2 has 2 orders (1 from Facility, 1 from Facility2)
-
     let!(:cross_core_order_originating_facility) { create(:purchased_order, product: item, account: accounts.first) }
     let!(:order_for_facility) { create(:purchased_order, product: item, account: accounts.first) }
 
@@ -108,8 +96,8 @@ RSpec.describe "Facility Orders Search" do
         end
 
         it "shows only cross core orders placed for Facility" do
-          expect(page).to have_css(".fa-users", count: 1)
-          expect(page).to have_css(".fa-building", count: 1)
+          expect(page).to have_css(".fa-users", count: 1) # cross_core_orders.last
+          expect(page).to have_css(".fa-building", count: 1) # cross_core_order_originating_facility
 
           expect(page).to have_content(cross_core_order_originating_facility.id)
           expect(page).to have_content(cross_core_orders.last.id)
@@ -122,8 +110,8 @@ RSpec.describe "Facility Orders Search" do
 
       context "when selecting All" do
         it "shows all orders placed for Facility" do
-          expect(page).to have_css(".fa-users", count: 1)
-          expect(page).to have_css(".fa-building", count: 1)
+          expect(page).to have_css(".fa-users", count: 1) # cross_core_orders.last
+          expect(page).to have_css(".fa-building", count: 1) # cross_core_order_originating_facility
 
           expect(page).to have_content(order_for_facility.id)
           expect(page).to have_content(cross_core_order_originating_facility.id)
@@ -162,7 +150,7 @@ RSpec.describe "Facility Orders Search" do
         end
 
         it "shows only cross core orders placed for Facility" do
-          expect(page).to have_css(".fa-users", count: 1)
+          expect(page).to have_css(".fa-users", count: 1) # cross_core_orders.last
           expect(page).to have_css(".fa-building", count: 0)
 
           expect(page).to have_content(cross_core_orders.last.id)
@@ -177,8 +165,8 @@ RSpec.describe "Facility Orders Search" do
 
       context "when selecting All" do
         it "shows all orders placed for Facility" do
-          expect(page).to have_css(".fa-users", count: 1)
-          expect(page).to have_css(".fa-building", count: 0)
+          expect(page).to have_css(".fa-users", count: 1) # cross_core_orders.last
+          expect(page).to have_css(".fa-building", count: 0) # order_for_facility is not a cross-core order so it doesn't have an icon
 
           expect(page).to have_content(order_for_facility.id)
           expect(page).to have_content(cross_core_orders.last.id)
