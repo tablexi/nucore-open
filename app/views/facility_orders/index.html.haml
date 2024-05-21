@@ -40,15 +40,13 @@
               %td.centered= link_to od.order_id, facility_order_path(current_facility, od.order)
               %td.centered= link_to od.id, manage_order_detail_path(od), class: "manage-order-detail"
               - if cross_core_order_view_enabled
-                %td
-                  = od.order.created_by_user.full_name
+                %td= od.order.created_by_user.full_name
               %td= od.order.user.full_name
               %td= format_usa_datetime(od.ordered_at)
               %td.centered= OrderDetailPresenter.new(od).wrapped_quantity
               = render partial: "shared/order_detail_cell", locals: { od: od }
               - if cross_core_order_view_enabled
-                %td
-                  = render "shared/cross_core_facility_abbreviation_order_details", order_detail: od, current_facility: current_facility
+                %td= render "shared/cross_core_facility_abbreviation_order_details", order_detail: od, current_facility: current_facility
               %td= od.assigned_user
               %td= od.order_status
               %td.currency
