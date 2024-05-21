@@ -13,7 +13,7 @@ module TransactionSearch
       params = params.first
 
       if params == "cross_core"
-        order_details.joins(:order).where.not(orders: { cross_core_project_id: nil })
+        order_details.where.not(orders: { cross_core_project_id: nil })
       else
         order_details
       end
