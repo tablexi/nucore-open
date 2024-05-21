@@ -2,5 +2,7 @@
   = display_tab text("new_in_process"), facility_orders_path, action: :index
   - if current_ability.can?(:show_problems, Order)
     = display_tab text("problem_orders"), show_problems_facility_orders_path, action: :show_problems
+  - if current_ability.can?(:show_cross_core_orders, Order)
+    = display_tab text("cross_core_orders"), show_cross_core_facility_orders_path, action: :show_cross_core
   - if current_ability.can?(:new, OrderImport)
     = tab text("add_new"), new_facility_order_import_path(current_facility), (controller.controller_name == 'facility_orders_import')

@@ -5,6 +5,7 @@ class FacilityOrdersController < ApplicationController
   include SortableColumnController
   include NewInprocessController
   include ProblemOrderDetailsController
+  include CrossCoreOrderDetailsController
   include TabCountHelper
 
   admin_tab     :all

@@ -10,4 +10,5 @@ en:
         tabnav_order:
           new_in_process: New / In Process
           problem_orders: Problem Orders
+          cross_core_orders: Cross-Core Orders
           add_new: Add New
