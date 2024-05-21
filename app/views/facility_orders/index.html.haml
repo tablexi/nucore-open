@@ -27,6 +27,8 @@
             %th.nowrap= sortable "ordered_at", Order.human_attribute_name(:ordered_at)
             %th.nowrap= OrderDetail.human_attribute_name(:quantity)
             %th.nowrap.order-note= sortable "product_name", OrderDetail.human_attribute_name(:product)
+            - if cross_core_order_view_enabled
+              %th.nowrap= Facility.model_name.human
             %th.nowrap= sortable "assigned_to", OrderDetail.human_attribute_name(:assigned_user)
             %th.nowrap= sortable "status"
             - # OrderDetail.human_attribute_name(:actual_cost) returns "Price".  Despite the :actual_ prefix, these order details are new/in process, so most will have estimated costs, but could be actual or unassigned.
@@ -40,11 +42,13 @@
               - if cross_core_order_view_enabled
                 %td
                   = od.order.created_by_user.full_name
-                  = render "shared/cross_core_facility_abbreviation_order_details", order_detail: od, current_facility: current_facility
               %td= od.order.user.full_name
               %td= format_usa_datetime(od.ordered_at)
               %td.centered= OrderDetailPresenter.new(od).wrapped_quantity
               = render partial: "shared/order_detail_cell", locals: { od: od }
+              - if cross_core_order_view_enabled
+                %td
+                  = render "shared/cross_core_facility_abbreviation_order_details", order_detail: od, current_facility: current_facility
               %td= od.assigned_user
               %td= od.order_status
               %td.currency
