@@ -46,7 +46,7 @@
             = link_to new_facility_order_order_detail_accessory_path(current_facility, order_detail.order, order_detail), class: ["has_accessories", "persistent", "undecorated"] do
               = tooltip_icon "fa fa-plus-square", t("product_accessories.pick_accessories.title")
         - if cross_core_order_view_enabled
-          %td= render "shared/cross_core_facility_abbreviation_order_details", order_detail: order_detail, current_facility: current_facility
+          %td= render "shared/cross_core_facility_abbreviation_order_details", order_detail: order_detail, current_facility: current_facility, icon: true
         %td= order_detail.account
         %td.centered
           = order_detail_badges(order_detail)
