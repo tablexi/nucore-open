@@ -167,4 +167,13 @@ class FacilityOrdersController < ApplicationController
     orders_with_only_one_order_detail.filter { |order| order.order_details.first.product.is_a?(Instrument) && order.order_details.first.reservation.nil? }.pluck(:id)
   end
 
+  # def init_cross_core_sort_params
+  #   @cross_core_sort_params = {
+  #     "facility" => "facilities.name",
+  #     "order_number" => ["order_details.order_id", "order_details.id"],
+  #     "ordered_at" => "order_details.ordered_at",
+  #     "status" => "order_statuses.name",
+  #   }
+  # end
+
 end
