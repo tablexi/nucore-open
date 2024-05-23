@@ -169,7 +169,7 @@ class Ability
     can :available_for_cross_core_ordering, Product if controller.is_a?(ProductsController)
 
     if SettingsHelper.feature_on?(:cross_core_order_view) && resource.is_a?(Facility) && user.facility_administrator_of?(resource)
-      can :show_cross_core_orders, Order
+      can :show_cross_core, Order
     end
 
     if controller.is_a?(FacilityAccountsController) && user.facility_administrator_of_any_facility?
@@ -434,6 +434,11 @@ class Ability
     end
 
     can [:show_problems], [Order, Reservation]
+
+    if SettingsHelper.feature_on?(:cross_core_order_view)
+      can :show_cross_core, Order
+    end
+
     can [:activate, :deactivate], ExternalService
   end
 
