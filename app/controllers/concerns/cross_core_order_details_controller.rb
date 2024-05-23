@@ -16,7 +16,7 @@ module CrossCoreOrderDetailsController
     ]
 
     @search = TransactionSearch::Searcher.new(*searchers).search(order_details, @search_form)
-    @order_details = @search.order_details.includes(:order_status).reorder(sort_clause)
+    @order_details = @search.order_details.includes(:order_status).reorder(cross_core_sort_clause)
 
     respond_to do |format|
       format.html { @order_details = @order_details.paginate(page: params[:page]) }
@@ -46,6 +46,20 @@ module CrossCoreOrderDetailsController
       "ordered_at" => "order_details.ordered_at",
       "status" => "order_statuses.name",
     }
+  end
+
+  def cross_core_sort_clause
+    Array(lookup_hash[sort_column]).map do |clause|
+      [clause, sort_direction].join(" ")
+    end.join(", ")
+  end
+
+  def sort_direction
+    params[:dir] == "desc" ? "desc" : "asc"
+  end
+
+  def sort_column
+    lookup_hash.key?(params[:sort]) ? params[:sort] : lookup_hash.keys.first
   end
 
 end
