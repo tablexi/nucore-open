@@ -5,6 +5,7 @@ module TabCountHelper
   ACTIONS_TO_COUNT_TYPE = {
     index: :new_or_in_process_orders,
     show_problems: :problem_order_details,
+    show_cross_core: :cross_core_order_details,
   }.freeze
 
   def tab_counts

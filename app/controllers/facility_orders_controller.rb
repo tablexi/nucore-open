@@ -126,6 +126,16 @@ class FacilityOrdersController < ApplicationController
                     .item_and_service_orders
   end
 
+  def cross_core_order_details
+    project_ids = current_facility.order_details.joins(:order).pluck(:cross_core_project_id).compact.uniq
+
+    OrderDetail
+      .joins(:order)
+      .joins(order: :facility)
+      .where(orders: { cross_core_project_id: project_ids })
+      .where.not(orders: { facility_id: current_facility.id })
+  end
+
   def problem_order_details
     current_facility.problem_plain_order_details
   end
