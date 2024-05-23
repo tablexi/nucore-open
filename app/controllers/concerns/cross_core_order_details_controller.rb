@@ -5,6 +5,8 @@ module CrossCoreOrderDetailsController
   extend ActiveSupport::Concern
 
   def show_cross_core
+    @lookup_hash = cross_core_lookup_hash
+
     order_details = cross_core_order_details
 
     @search_form = TransactionSearch::SearchForm.new(params[:search], defaults: { date_range_field: "ordered_at", allowed_date_fields: ["ordered_at"] })
@@ -16,7 +18,7 @@ module CrossCoreOrderDetailsController
     ]
 
     @search = TransactionSearch::Searcher.new(*searchers).search(order_details, @search_form)
-    @order_details = @search.order_details.includes(:order_status).reorder(cross_core_sort_clause)
+    @order_details = @search.order_details.includes(:order_status).reorder(sort_clause)
 
     respond_to do |format|
       format.html { @order_details = @order_details.paginate(page: params[:page]) }
@@ -29,17 +31,7 @@ module CrossCoreOrderDetailsController
     raise NotImplementedError
   end
 
-  # This method is overriding the one in NewInprocessController, which causes problems, as the hash is not the same for both controllers
-  # def sort_lookup_hash
-  #   {
-  #     "facility" => "facilities.name",
-  #     "order_number" => ["order_details.order_id", "order_details.id"],
-  #     "ordered_at" => "order_details.ordered_at",
-  #     "status" => "order_statuses.name",
-  #   }
-  # end
-
-  def lookup_hash
+  def cross_core_lookup_hash
     {
       "facility" => "facilities.name",
       "order_number" => ["order_details.order_id", "order_details.id"],
@@ -48,18 +40,9 @@ module CrossCoreOrderDetailsController
     }
   end
 
-  def cross_core_sort_clause
-    Array(lookup_hash[sort_column]).map do |clause|
-      [clause, sort_direction].join(" ")
-    end.join(", ")
-  end
-
-  def sort_direction
-    params[:dir] == "desc" ? "desc" : "asc"
-  end
-
-  def sort_column
-    lookup_hash.key?(params[:sort]) ? params[:sort] : lookup_hash.keys.first
+  # We want to allow different tabs that use different data structure to sort using the SortableColumnController concern.
+  def sort_lookup_hash
+    @lookup_hash
   end
 
 end
