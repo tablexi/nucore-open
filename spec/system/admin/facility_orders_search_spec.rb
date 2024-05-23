@@ -177,5 +177,40 @@ RSpec.describe "Facility Orders Search" do
         end
       end
     end
+
+    context "Cross-Core orders tab" do
+      let(:facility3) { create(:setup_facility) }
+      let(:facility3_item) { create(:setup_item, facility: facility3) }
+      let!(:cross_core_order_originating_facility3) { create(:purchased_order, product: facility3_item, account: accounts.first) }
+
+      # First order originates in facility, second order originates in facility2
+      let!(:cross_core_orders) do
+        [
+          create(:purchased_order, cross_core_project:, product: facility2_item, account: accounts.last),
+          create(:purchased_order, cross_core_project:, product: facility3_item, account: accounts.last),
+          create(:purchased_order, cross_core_project: cross_core_project2, product: item, account: accounts.last),
+          create(:purchased_order, cross_core_project: cross_core_project2, product: facility3_item, account: accounts.last),
+        ]
+      end
+
+      before do
+        visit show_cross_core_facility_orders_path(facility)
+      end
+
+      it "shows no icons" do
+        expect(page).to have_css(".fa-users", count: 0)
+        expect(page).to have_css(".fa-building", count: 0)
+      end
+
+      it "shows only cross core orders placed for Facility" do
+        expect(page).to have_content(cross_core_orders[0].order_details.first)
+        expect(page).to have_content(cross_core_orders[1].order_details.first)
+        expect(page).to have_content(cross_core_order_originating_facility2.order_details.first)
+        expect(page).to have_content(cross_core_orders[3].order_details.first)
+
+        expect(page).not_to have_content(cross_core_orders[2].order_details.first)
+        expect(page).not_to have_content(cross_core_order_originating_facility.order_details.first)
+      end
+    end
   end
 end
