@@ -5,7 +5,6 @@ module NewInprocessController
   include OrderDetailsCsvExport
 
   def index
-    @lookup_hash = new_inprocess_lookup_hash
     order_details = new_or_in_process_orders.joins(:order)
 
     @search_form = TransactionSearch::SearchForm.new(params[:search], defaults: { date_range_field: "ordered_at", allowed_date_fields: ["ordered_at"] })
@@ -37,12 +36,7 @@ module NewInprocessController
     raise NotImplementedError
   end
 
-  # We want to allow different tabs that use different data structure to sort using the SortableColumnController concern.
   def sort_lookup_hash
-    @lookup_hash
-  end
-
-  def new_inprocess_lookup_hash
     {
       "order_number" => ["order_details.order_id", "order_details.id"],
       "assigned_to" => ["assigned_users.last_name", "assigned_users.first_name", "order_statuses.name", "order_details.ordered_at"],

@@ -208,7 +208,6 @@ Rails.application.routes.draw do
         post "assign_price_policies_to_problem_orders"
         post "batch_update"
         get "show_problems"
-        get "show_cross_core"
         get "tab_counts"
       end
 

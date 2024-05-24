@@ -5,7 +5,6 @@ class FacilityOrdersController < ApplicationController
   include SortableColumnController
   include NewInprocessController
   include ProblemOrderDetailsController
-  include CrossCoreOrderDetailsController
   include TabCountHelper
 
   admin_tab     :all
@@ -124,16 +123,6 @@ class FacilityOrdersController < ApplicationController
     current_facility.order_details
                     .new_or_inprocess
                     .item_and_service_orders
-  end
-
-  def cross_core_order_details
-    project_ids = current_facility.order_details.joins(:order).pluck(:cross_core_project_id).compact.uniq
-
-    OrderDetail
-      .joins(:order)
-      .joins(order: :facility)
-      .where(orders: { cross_core_project_id: project_ids })
-      .where.not(orders: { facility_id: current_facility.id })
   end
 
   def problem_order_details

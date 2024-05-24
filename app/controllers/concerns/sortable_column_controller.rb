@@ -20,10 +20,6 @@ module SortableColumnController
     raise NotImplementedError
   end
 
-  # def lookup_hash
-  #   init_cross_core_sort_params || sort_lookup_hash
-  # end
-
   def sort_direction
     params[:dir] == "desc" ? "desc" : "asc"
   end
