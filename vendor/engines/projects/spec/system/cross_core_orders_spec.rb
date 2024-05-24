@@ -52,14 +52,49 @@ RSpec.describe "Cross Core Orders", :js, feature_setting: { cross_core_order_vie
     expect(page).to have_css(".fa-building", count: 0)
   end
 
-  it "shows only cross core orders placed for Facility" do
-    expect(page).to have_content(cross_core_orders[0].order_details.first)
-    expect(page).to have_content(cross_core_orders[1].order_details.first)
-    expect(page).to have_content(cross_core_order_originating_facility2.order_details.first)
-    expect(page).to have_content(cross_core_orders[3].order_details.first)
+  context "when selecting Other - default" do
+    it "shows all cross core orders placed for other facilities" do
+      expect(page).to have_content(cross_core_orders[0].order_details.first)
+      expect(page).to have_content(cross_core_orders[1].order_details.first)
+      expect(page).to have_content(cross_core_orders[3].order_details.first)
+      expect(page).to have_content(cross_core_order_originating_facility2.order_details.first)
 
-    expect(page).not_to have_content(cross_core_orders[2].order_details.first)
-    expect(page).not_to have_content(cross_core_order_originating_facility.order_details.first)
+      expect(page).not_to have_content(cross_core_orders[2].order_details.first)
+      expect(page).not_to have_content(cross_core_order_originating_facility.order_details.first)
+    end
   end
 
+  context "when selecting All" do
+    before do
+      select "All", from: "Participating Facilities"
+      click_button "Filter"
+    end
+
+    it "shows all cross core orders placed for any facility" do
+      expect(page).to have_content(cross_core_orders[0].order_details.first)
+      expect(page).to have_content(cross_core_orders[1].order_details.first)
+      expect(page).to have_content(cross_core_orders[2].order_details.first)
+      expect(page).to have_content(cross_core_orders[3].order_details.first)
+
+      expect(page).to have_content(cross_core_order_originating_facility2.order_details.first)
+      expect(page).to have_content(cross_core_order_originating_facility.order_details.first)
+    end
+  end
+
+  context "when selecting Current" do
+    before do
+      select "Current", from: "Participating Facilities"
+      click_button "Filter"
+    end
+
+    it "shows only cross core orders placed for current facility" do
+      expect(page).to have_content(cross_core_orders[2].order_details.first)
+      expect(page).to have_content(cross_core_order_originating_facility.order_details.first)
+
+      expect(page).not_to have_content(cross_core_orders[0].order_details.first)
+      expect(page).not_to have_content(cross_core_orders[1].order_details.first)
+      expect(page).not_to have_content(cross_core_orders[3].order_details.first)
+      expect(page).not_to have_content(cross_core_order_originating_facility2.order_details.first)
+    end
+  end
 end

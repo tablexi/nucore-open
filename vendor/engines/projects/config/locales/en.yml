@@ -27,6 +27,8 @@ en:
   projects:
     projects:
       cross_core_orders:
+        # TODO: This should use the preferred term for "facility" (e.g. "facility" or "core")
+        filter_label: "Participating Facilities"
         head: "Cross Core Orders"
         no_orders: There are no orders for your Cross Core projects.
       edit:

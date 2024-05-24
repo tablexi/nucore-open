@@ -26,12 +26,13 @@ module Projects
 
       order_details = cross_core_order_details
 
-      @search_form = TransactionSearch::SearchForm.new(params[:search], defaults: { date_range_field: "ordered_at", allowed_date_fields: ["ordered_at"] })
+      @search_form = TransactionSearch::SearchForm.new(params[:search], defaults: { date_range_field: "ordered_at", allowed_date_fields: ["ordered_at"], cross_core_facilties: "other", current_facility_id: current_facility.id })
       searchers = [
         TransactionSearch::ProductSearcher,
         TransactionSearch::OrderedForSearcher,
         TransactionSearch::OrderStatusSearcher,
         TransactionSearch::DateRangeSearcher,
+        CrossCoreFacilitySearcher,
       ]
 
       @search = TransactionSearch::Searcher.new(*searchers).search(order_details, @search_form)
@@ -80,7 +81,6 @@ module Projects
         .joins(:order)
         .joins(order: :facility)
         .where(orders: { cross_core_project_id: project_ids })
-        .where.not(orders: { facility_id: current_facility.id })
     end
 
     def sort_lookup_hash
