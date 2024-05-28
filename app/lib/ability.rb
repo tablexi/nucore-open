@@ -260,7 +260,7 @@ class Ability
     can :available_for_cross_core_ordering, Product if controller.is_a?(FacilityOrdersController) || controller.is_a?(ProductsController)
 
     if controller.is_a?(FacilityAccountsController) && user.facility_staff_of_any_facility?
-      can [:accounts_available_for_order, :show], Account
+      can [:accounts_available_for_order], Account
     end
 
     if controller.is_a?(FacilityOrderDetailsController) && resource.is_a?(Facility) && SettingsHelper.feature_on?(:cross_core_projects)
