@@ -33,6 +33,8 @@
             %th.nowrap= sortable "status"
             - # OrderDetail.human_attribute_name(:actual_cost) returns "Price".  Despite the :actual_ prefix, these order details are new/in process, so most will have estimated costs, but could be actual or unassigned.
             %th.nowrap.currency= OrderDetail.human_attribute_name(:actual_cost)
+            - if cross_core_order_view_enabled
+              %th.nowrap= PriceGroup.model_name.human
         %tbody
           - @order_details.each do |od|
             %tr
@@ -51,6 +53,8 @@
               %td= od.order_status
               %td.currency
                 =  OrderDetailPresenter.new(od).wrapped_total
+              - if cross_core_order_view_enabled
+                %td= od.price_group&.name || od.estimated_price_group_name
         = render partial: "table_controls"
 
     = will_paginate(@order_details)

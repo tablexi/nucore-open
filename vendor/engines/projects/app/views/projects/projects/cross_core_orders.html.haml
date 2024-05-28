@@ -25,6 +25,7 @@
             %th.nowrap= Projects::Project.model_name.human
             %th.nowrap= sortable "status"
             %th.nowrap.currency= OrderDetail.human_attribute_name(:actual_cost)
+            %th.nowrap= PriceGroup.model_name.human
         %tbody
           - @order_details.each do |od|
             %tr
@@ -40,6 +41,7 @@
               %td= od.order_status
               %td.currency
                 =  OrderDetailPresenter.new(od).wrapped_total
+              %td= od.price_group&.name || od.estimated_price_group_name
 
       = will_paginate(@order_details)
       = render partial: "/price_display_footnote", locals: { admin: true }
