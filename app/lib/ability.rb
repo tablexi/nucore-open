@@ -257,36 +257,10 @@ class Ability
 
 
   def facility_staff_abilities(user, resource, controller)
-    if controller.is_a?(FacilityOrdersController) || controller.is_a?(ProductsController)
-      can :available_for_cross_core_ordering, Product
-    elsif controller.is_a?(FacilityAccountsController) && user.facility_staff_of_any_facility?
-      can [:accounts_available_for_order], Account
-    elsif controller.is_a?(FacilityOrderDetailsController) && resource.is_a?(Facility) && SettingsHelper.feature_on?(:cross_core_projects)
-      can [:destroy], OrderDetail do |order_detail|
-        project = order_detail.order.cross_core_project
+    cross_core_abilities(user, resource, controller)
 
-        project.present? && (user.facility_staff_or_above_of?(project.facility) || user.facility_staff_or_above_of?(order_detail.order.facility))
-      end
-    elsif controller.is_a?(ReservationsController) && resource.is_a?(Reservation)
-      project = resource.order_detail.order.cross_core_project
-
-      if project.present?
-        can :manage, Reservation if user.facility_staff_or_above_of?(project.facility)
-      end
-    end
-
-    if resource.is_a?(OrderDetail)
-      if user.facility_staff_or_above_of?(resource.facility)
-        can :manage, OrderDetail, order: { facility_id: resource.order.facility_id }
-      end
-
-      if SettingsHelper.feature_on?(:cross_core_projects)
-        project = resource.order.cross_core_project
-
-        if project.present?
-          can [:add_accessories, :new, :show, :update, :cancel], OrderDetail if user.facility_staff_or_above_of?(project.facility)
-        end
-      end
+    if resource.is_a?(OrderDetail) && user.facility_staff_or_above_of?(resource.facility)
+      can :manage, OrderDetail, order: { facility_id: resource.order.facility_id }
     end
 
     if resource.is_a?(Reservation) && user.facility_staff_of?(resource.product.facility)
@@ -440,6 +414,34 @@ class Ability
 
   def editable_global_group?(resource)
     resource.global? && resource.admin_editable?
+  end
+
+  def cross_core_abilities(user, resource, controller)
+    if controller.is_a?(FacilityOrdersController) || controller.is_a?(ProductsController)
+      can :available_for_cross_core_ordering, Product
+    elsif controller.is_a?(FacilityAccountsController) && user.facility_staff_of_any_facility?
+      can [:accounts_available_for_order], Account
+    elsif controller.is_a?(FacilityOrderDetailsController) && resource.is_a?(Facility) && SettingsHelper.feature_on?(:cross_core_projects)
+      can [:destroy], OrderDetail do |order_detail|
+        project = order_detail.order.cross_core_project
+
+        project.present? && (user.facility_staff_or_above_of?(project.facility) || user.facility_staff_or_above_of?(order_detail.order.facility))
+      end
+    elsif controller.is_a?(ReservationsController) && resource.is_a?(Reservation)
+      project = resource.order_detail.order.cross_core_project
+
+      if project.present?
+        can :manage, Reservation if user.facility_staff_or_above_of?(project.facility)
+      end
+    end
+
+    if resource.is_a?(OrderDetail) && SettingsHelper.feature_on?(:cross_core_projects)
+      project = resource.order.cross_core_project
+
+      if project.present?
+        can [:add_accessories, :new, :show, :update, :cancel], OrderDetail if user.facility_staff_or_above_of?(project.facility)
+      end
+    end
   end
 
 
