@@ -257,21 +257,17 @@ class Ability
 
 
   def facility_staff_abilities(user, resource, controller)
-    can :available_for_cross_core_ordering, Product if controller.is_a?(FacilityOrdersController) || controller.is_a?(ProductsController)
-
-    if controller.is_a?(FacilityAccountsController) && user.facility_staff_of_any_facility?
+    if controller.is_a?(FacilityOrdersController) || controller.is_a?(ProductsController)
+      can :available_for_cross_core_ordering, Product
+    elsif controller.is_a?(FacilityAccountsController) && user.facility_staff_of_any_facility?
       can [:accounts_available_for_order], Account
-    end
-
-    if controller.is_a?(FacilityOrderDetailsController) && resource.is_a?(Facility) && SettingsHelper.feature_on?(:cross_core_projects)
+    elsif controller.is_a?(FacilityOrderDetailsController) && resource.is_a?(Facility) && SettingsHelper.feature_on?(:cross_core_projects)
       can [:destroy], OrderDetail do |order_detail|
         project = order_detail.order.cross_core_project
 
         project.present? && (user.facility_staff_or_above_of?(project.facility) || user.facility_staff_or_above_of?(order_detail.order.facility))
       end
-    end
-
-    if controller.is_a?(ReservationsController) && resource.is_a?(Reservation)
+    elsif controller.is_a?(ReservationsController) && resource.is_a?(Reservation)
       project = resource.order_detail.order.cross_core_project
 
       if project.present?
