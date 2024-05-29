@@ -39,6 +39,8 @@ module Projects
       :select
     end
 
+    # Translation scope cannot be inferred, so we need to specify it.
+    # Returns empty string because label includes the complete path.
     def translation_scope
       ""
     end
