@@ -403,6 +403,7 @@ class Ability
     end
 
     can [:show_problems], [Order, Reservation]
+
     can [:activate, :deactivate], ExternalService
   end
 
