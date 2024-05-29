@@ -66,7 +66,7 @@ RSpec.describe "Cross Core Orders", :js, feature_setting: { cross_core_order_vie
 
   context "when selecting All" do
     before do
-      select "All", from: "Participating Facilities"
+      select "All", from: "Participating facilities"
       click_button "Filter"
     end
 
@@ -91,7 +91,7 @@ RSpec.describe "Cross Core Orders", :js, feature_setting: { cross_core_order_vie
 
   context "when selecting Current" do
     before do
-      select "Current", from: "Participating Facilities"
+      select "Current", from: "Participating facilities"
       click_button "Filter"
     end
 
