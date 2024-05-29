@@ -33,11 +33,11 @@ module Users
       end
     end
 
-    def facility_staff_of_any_facility?
+    def facility_staff_or_manager_of_any_facility?
       user_roles.find { |r| [UserRole::FACILITY_ADMINISTRATOR, UserRole::FACILITY_SENIOR_STAFF, UserRole::FACILITY_STAFF].include?(r.role) }.present?
     end
 
-    def facility_staff_or_above_of?(facility)
+    def facility_staff_or_manager_of?(facility)
       manager_of?(facility) || facility_staff_of?(facility)
     end
 
