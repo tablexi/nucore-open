@@ -3,6 +3,7 @@
 module Projects
 
   class CrossCoreFacilitySearcher < TransactionSearch::BaseSearcher
+    include TextHelpers::Translation
 
     def self.key
       :cross_core_facilties
@@ -31,11 +32,16 @@ module Projects
     end
 
     def label
-      I18n.t("projects.projects.cross_core_orders.filter_label")
+      text("projects.projects.cross_core_orders.filter_label")
     end
 
     def input_type
       :select
     end
+
+    def translation_scope
+      ""
+    end
   end
+
 end
