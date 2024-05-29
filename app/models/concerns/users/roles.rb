@@ -62,6 +62,7 @@ module Users
 
     def facility_staff_of?(facility)
       return false if facility.blank?
+
       user_roles.staff?(facility) || administrator?
     end
 
