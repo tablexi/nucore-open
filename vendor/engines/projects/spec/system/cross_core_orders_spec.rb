@@ -66,7 +66,7 @@ RSpec.describe "Cross Core Orders", :js, feature_setting: { cross_core_order_vie
 
   context "when selecting All" do
     before do
-      select "All", from: "Participating Facilities"
+      select "All", from: "Participating #{I18n.t("facilities_downcase")}"
       click_button "Filter"
     end
 
@@ -78,12 +78,20 @@ RSpec.describe "Cross Core Orders", :js, feature_setting: { cross_core_order_vie
 
       expect(page).to have_content(cross_core_order_originating_facility2.order_details.first)
       expect(page).to have_content(cross_core_order_originating_facility.order_details.first)
+
+      item_price_group = item.price_policies.first.price_group.name
+      facility2_item_price_group = facility2_item.price_policies.first.price_group.name
+      facility3_item_price_group = facility3_item.price_policies.first.price_group.name
+
+      expect(page).to have_content(item_price_group, count: 2)
+      expect(page).to have_content(facility2_item_price_group, count: 2)
+      expect(page).to have_content(facility3_item_price_group, count: 2)
     end
   end
 
   context "when selecting Current" do
     before do
-      select "Current", from: "Participating Facilities"
+      select "Current", from: "Participating #{I18n.t("facilities_downcase")}"
       click_button "Filter"
     end
 
