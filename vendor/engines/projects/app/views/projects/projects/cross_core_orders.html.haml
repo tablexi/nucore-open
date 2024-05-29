@@ -25,21 +25,24 @@
             %th.nowrap= Projects::Project.model_name.human
             %th.nowrap= sortable "status"
             %th.nowrap.currency= OrderDetail.human_attribute_name(:actual_cost)
+            %th.nowrap= PriceGroup.model_name.human
         %tbody
           - @order_details.each do |od|
             %tr
+              - order_detail = OrderDetailPresenter.new(od)
               %td= od
               %td= od.order.created_by_user.full_name
               %td= od.order.user.full_name
               %td= format_usa_datetime(od.ordered_at)
-              %td.centered= OrderDetailPresenter.new(od).wrapped_quantity
+              %td.centered= order_detail.wrapped_quantity
               = render partial: "shared/order_detail_cell", locals: { od: od }
               %td= od.order.facility.abbreviation.truncate(6)
               -# TODO: This should be a link when we have the project page
               %td= od.order.cross_core_project&.name
               %td= od.order_status
               %td.currency
-                =  OrderDetailPresenter.new(od).wrapped_total
+                =  order_detail.wrapped_total
+              %td= order_detail.price_group_name
 
       = will_paginate(@order_details)
       = render partial: "/price_display_footnote", locals: { admin: true }
