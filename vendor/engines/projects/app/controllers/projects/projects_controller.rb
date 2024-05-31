@@ -26,7 +26,16 @@ module Projects
 
       order_details = cross_core_order_details
 
-      @search_form = TransactionSearch::SearchForm.new(params[:search], defaults: { date_range_field: "ordered_at", allowed_date_fields: ["ordered_at"], cross_core_facilties: "other", current_facility_id: current_facility.id })
+      @search_form = TransactionSearch::SearchForm.new(
+        params[:search],
+        defaults: {
+          date_range_field: "ordered_at",
+          allowed_date_fields: ["ordered_at"],
+          cross_core_facilties: "other",
+          order_statuses: default_order_statuses(order_details),
+          current_facility_id: current_facility.id
+        }
+      )
       searchers = [
         TransactionSearch::ProductSearcher,
         TransactionSearch::OrderedForSearcher,
@@ -73,6 +82,10 @@ module Projects
     helper_method :showing_inactive?
 
     private
+
+    def default_order_statuses(order_details)
+      TransactionSearch::OrderStatusSearcher.new(order_details).options - [OrderStatus.canceled, OrderStatus.reconciled].map(&:id)
+    end
 
     def cross_core_order_details
       project_ids = current_facility.order_details.joins(:order).pluck(:cross_core_project_id).compact.uniq
