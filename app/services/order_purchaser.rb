@@ -42,12 +42,34 @@ class OrderPurchaser
     @errors = order.errors.full_messages
   end
 
+  def purchase_cross_core!
+    # Check if we need this
+    order.order_details_ordered_at = backdate_to if backdate_to
+
+    validate_order!
+    return unless do_additional_validations
+    purchase_order!
+
+    # Check if we need this
+    order_in_the_past! if order_in_past?
+
+    send_purchase_notifications
+
+    @success = true
+  rescue NUCore::OrderDetailUpdateException => e
+    @errors = order.errors.full_messages
+  end
+
   def success?
     @success
   end
 
   def errors
     @errors.compact.uniq
+  end
+
+  def purchase_for_cross_core?
+    order.order_details.all? { |od| !od.product.requires_merge? }
   end
 
   private

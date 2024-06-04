@@ -177,6 +177,9 @@ class AddToOrderForm
 
         order_detail.update!(project_id: @order_project.id)
       end
+
+      order_purchaser = OrderPurchaser.new(order: product_order, acting_as: original_order.user, order_in_past: nil, params: ActionController::Parameters.new(params), user: created_by)
+      order_purchaser.purchase_cross_core! if order_purchaser.purchase_for_cross_core?
     end
   end
 
