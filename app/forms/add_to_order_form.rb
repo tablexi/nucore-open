@@ -163,21 +163,32 @@ class AddToOrderForm
 
       product_order = find_or_create_product_order
 
-      # If the product that is going to be added requires a merge order, then it is created as part of the merge_order method.
-      # Otherwise, just use product_order.
-      target_order = requires_merge? ? merge_order : product_order
+      # If the product that is going to be added requires a merge order,
+      # then we create the merge order as part of the merge_order method.
+      # We don't want to purchase the merge_order yet because we don't have
+      # all the detail needed from the user (reservation time, order form, etc)
+      if requires_merge?
+        merge_order.add(product, quantity, params).each do |order_detail|
+          backdate(order_detail)
 
-      target_order.add(product, quantity, params).each do |order_detail|
-        backdate(order_detail)
+          order_detail.set_default_status!
+          order_detail.change_status!(order_status) if order_status.present?
 
-        order_detail.set_default_status!
-        order_detail.change_status!(order_status) if order_status.present?
+          order_detail.update!(project_id: @order_project.id)
+        end
+      else
+        product_order.add(product, quantity, params).each do |order_detail|
+          backdate(order_detail)
 
-        order_detail.update!(project_id: @order_project.id)
+          order_detail.set_default_status!
+          order_detail.change_status!(order_status) if order_status.present?
+
+          order_detail.update!(project_id: @order_project.id)
+        end
+
+        order_purchaser = OrderPurchaser.new(order: product_order, acting_as: original_order.user, order_in_past: nil, params: ActionController::Parameters.new(params), user: created_by)
+        order_purchaser.purchase_cross_core!
       end
-
-      order_purchaser = OrderPurchaser.new(order: product_order, acting_as: original_order.user, order_in_past: nil, params: ActionController::Parameters.new(params), user: created_by)
-      order_purchaser.purchase_cross_core! if order_purchaser.purchase_for_cross_core?
     end
   end
 
