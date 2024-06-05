@@ -17,9 +17,9 @@ RSpec.describe "Adding to an existing order for cross core", :js, feature_settin
     login_as user
   end
 
-  xdescribe "adding a backdated service with an order form" do
+  describe "adding a backdated service with an order form" do
     let(:product) { create(:setup_service, :with_facility_account, :with_order_form) }
-    let!(:cross_core_product_facility2) { create(:setup_service, :with_facility_account, facility: facility2, cross_core_ordering_available: true) }
+    let!(:cross_core_product_facility2) { create(:setup_service, :with_facility_account, :with_order_form, facility: facility2, cross_core_ordering_available: true) }
     let(:fulfilled_at_string) { I18n.l(1.day.ago.to_date, format: :usa) }
 
     before do
@@ -52,14 +52,18 @@ RSpec.describe "Adding to an existing order for cross core", :js, feature_settin
         click_button "Upload"
       end
 
-      it "sets the expected attributes", :aggregate_failures do
-        project = order.cross_core_project
+      # Skipping because it fails with a JS error. It's redirected to 404.
+      # Will get fixed after actions are in a modal, so user is no longer redirected.
+      xit "sets the expected attributes", :aggregate_failures do
+        project = order.reload.cross_core_project
 
         expect(project).to be_present
         expect(project.orders.count).to be(2)
-        expect(project.orders.last).to be_complete
-        expect(I18n.l(project.orders.last.fulfilled_at.to_date, format: :usa)).to eq(fulfilled_at_string)
-        expect(I18n.l(project.orders.last.ordered_at.to_date, format: :usa)).to eq(fulfilled_at_string)
+
+        order_detail = project.orders.last.order_details.first
+        expect(order_detail).to be_complete
+        expect(I18n.l(order_detail.fulfilled_at.to_date, format: :usa)).to eq(fulfilled_at_string)
+        expect(I18n.l(order_detail.ordered_at.to_date, format: :usa)).to eq(fulfilled_at_string)
       end
     end
   end

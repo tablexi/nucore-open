@@ -126,9 +126,7 @@ class AddToOrderForm
 
   def add_to_order!
     OrderDetail.transaction do
-      item_adder_params = @original_order.facility_id == @facility_id ? params : params.merge(ordered_at: Time.zone.now)
-
-      merge_order.add(product, quantity, item_adder_params).each do |order_detail|
+      merge_order.add(product, quantity, params).each do |order_detail|
         backdate(order_detail)
 
         order_detail.set_default_status!
@@ -163,15 +161,15 @@ class AddToOrderForm
 
       original_order.update!(cross_core_project: @order_project)
 
-      product_order = Order.find_or_create_by!(
-        facility: product_facility,
-        account_id:,
-        user_id: original_order.user_id,
-        created_by: created_by.id,
-        cross_core_project: @order_project
-      )
+      product_order = find_or_create_product_order
 
-      product_order.add(product, quantity, params.merge(ordered_at: Time.zone.now)).each do |order_detail|
+      # If the product that is going to be added requires a merge order, then it is created as part of the merge_order method.
+      # Otherwise, just use product_order.
+      target_order = requires_merge? ? merge_order : product_order
+
+      target_order.add(product, quantity, params).each do |order_detail|
+        backdate(order_detail)
+
         order_detail.set_default_status!
         order_detail.change_status!(order_status) if order_status.present?
 
@@ -222,9 +220,8 @@ class AddToOrderForm
   def merge_order
     return @merge_order if defined?(@merge_order)
 
-    products = product.is_a?(Bundle) ? product.products : [product]
     target_order = order_for_selected_facility || original_order
-    @merge_order = if products.any?(&:requires_merge?)
+    @merge_order = if requires_merge?
                      Order.create!(
                        merge_with_order_id: target_order.id,
                        facility_id: target_order.facility_id,
@@ -233,15 +230,33 @@ class AddToOrderForm
                        created_by: created_by.id,
                        cross_core_project: @order_project,
                      )
-                   else
+                    else
                      target_order
-                   end
+                    end
+  end
+
+  def find_or_create_product_order
+    return order_for_selected_facility if order_for_selected_facility.present?
+
+    Order.create!(
+      facility: product_facility,
+      account_id:,
+      user_id: original_order.user_id,
+      created_by: created_by.id,
+      cross_core_project: @order_project
+    )
+  end
+
+  def requires_merge?
+    products = product.is_a?(Bundle) ? product.products : [product]
+
+    products.any?(&:requires_merge?)
   end
 
   def order_for_selected_facility
     return unless @order_project
 
-    @order_for_selected_facility ||= @order_project.orders.find { |o| o.facility_id == @facility_id }
+    @order_for_selected_facility ||= @order_project.orders.reload.find { |o| o.facility_id == @facility_id }
   end
 
   def backdate(order_detail)
@@ -252,7 +267,7 @@ class AddToOrderForm
     # If we are a merge order (i.e. requires more action like uploading an order form),
     # we do not want to set the ordered_at just yet. It will be set after the issues have
     # been resolved.
-    if merge_order == original_order
+    unless merge_order.to_be_merged?
       order_detail.ordered_at = order_detail.manual_fulfilled_at_time || Time.current
     end
   end

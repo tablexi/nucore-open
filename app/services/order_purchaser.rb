@@ -69,7 +69,7 @@ class OrderPurchaser
   end
 
   def purchase_for_cross_core?
-    order.order_details.all? { |od| !od.product.requires_merge? }
+    order.order_details.present? && order.order_details.all? { |od| !od.product.requires_merge? }
   end
 
   private
