@@ -126,7 +126,7 @@ class AddToOrderForm
 
   def add_to_order!
     OrderDetail.transaction do
-      merge_order.add(product, quantity, params).each do |order_detail|
+      target_order.add(product, quantity, params).each do |order_detail|
         backdate(order_detail)
 
         order_detail.set_default_status!
@@ -134,13 +134,13 @@ class AddToOrderForm
 
         order_detail.update!(project_id: @order_project.id) if @order_project.present?
 
-        if merge_order.to_be_merged? && !order_detail.valid_for_purchase?
+        if target_order.to_be_merged? && !order_detail.valid_for_purchase?
           @notifications = true
           MergeNotification.create_for!(created_by, order_detail)
         end
       end
 
-      merge_order.update!(cross_core_project: @order_project) if @order_project.present?
+      target_order.update!(cross_core_project: @order_project) if @order_project.present?
     end
   end
 
@@ -161,14 +161,15 @@ class AddToOrderForm
 
       original_order.update!(cross_core_project: @order_project)
 
+      # This is the order that will be purchased if we have the details to do so
       product_order = find_or_create_product_order
 
       # If the product that is going to be added requires a merge order,
-      # then we create the merge order as part of the merge_order method.
-      # We don't want to purchase the merge_order yet because we don't have
+      # then we create the merge order as part of the target_order method.
+      # We don't want to purchase the target_order yet because we don't have
       # all the detail needed from the user (reservation time, order form, etc)
       if requires_merge?
-        merge_order.add(product, quantity, params).each do |order_detail|
+        target_order.add(product, quantity, params).each do |order_detail|
           backdate(order_detail)
 
           order_detail.set_default_status!
@@ -228,21 +229,25 @@ class AddToOrderForm
     @order_status ||= OrderStatus.for_facility(current_facility).find(order_status_id) if order_status_id
   end
 
-  def merge_order
-    return @merge_order if defined?(@merge_order)
+  # Returns the order that new order details will be added to.
+  # For cross core orders, this will return the order_for_selected_facility.
+  # For the rest of the orders, it will return the original_order.
+  # For orders that require a merge order, it will always create and return the merge order.
+  def target_order
+    return @target_order if defined?(@target_order)
 
-    target_order = order_for_selected_facility || original_order
-    @merge_order = if requires_merge?
+    parent_order = order_for_selected_facility || original_order
+    @target_order = if requires_merge?
                      Order.create!(
-                       merge_with_order_id: target_order.id,
-                       facility_id: target_order.facility_id,
+                       merge_with_order_id: parent_order.id,
+                       facility_id: parent_order.facility_id,
                        account_id: account_id,
-                       user_id: target_order.user_id,
+                       user_id: parent_order.user_id,
                        created_by: created_by.id,
                        cross_core_project: @order_project,
                      )
                     else
-                     target_order
+                      parent_order
                     end
   end
 
@@ -278,7 +283,7 @@ class AddToOrderForm
     # If we are a merge order (i.e. requires more action like uploading an order form),
     # we do not want to set the ordered_at just yet. It will be set after the issues have
     # been resolved.
-    unless merge_order.to_be_merged?
+    unless target_order.to_be_merged?
       order_detail.ordered_at = order_detail.manual_fulfilled_at_time || Time.current
     end
   end
