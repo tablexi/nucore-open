@@ -43,16 +43,11 @@ class OrderPurchaser
   end
 
   def purchase_cross_core!
-    # Check if we need this
-    order.order_details_ordered_at = backdate_to if backdate_to
-
     validate_order!
     return unless do_additional_validations
     purchase_order!
 
-    # Check if we need this
-    order_in_the_past! if order_in_past?
-
+    # This is only going to notify emails set for the product.
     send_purchase_notifications
 
     @success = true
@@ -66,10 +61,6 @@ class OrderPurchaser
 
   def errors
     @errors.compact.uniq
-  end
-
-  def purchase_for_cross_core?
-    order.order_details.present? && order.order_details.all? { |od| !od.product.requires_merge? }
   end
 
   private
