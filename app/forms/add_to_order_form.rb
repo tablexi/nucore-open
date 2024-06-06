@@ -165,10 +165,10 @@ class AddToOrderForm
       product_order = find_or_create_product_order
 
       # If the product that is going to be added requires a merge order,
-      # then we create the merge order as part of the target_order method.
+      # then the target_order method will create and return the merge order.
       # We don't want to purchase the target_order yet because we don't have
       # all the detail needed from the user (reservation time, order form, etc)
-      if requires_merge?
+      if product_requires_merge?
         target_order.add(product, quantity, params).each do |order_detail|
           backdate(order_detail)
 
@@ -237,20 +237,23 @@ class AddToOrderForm
     return @target_order if defined?(@target_order)
 
     parent_order = order_for_selected_facility || original_order
-    @target_order = if requires_merge?
-                     Order.create!(
-                       merge_with_order_id: parent_order.id,
-                       facility_id: parent_order.facility_id,
-                       account_id: account_id,
-                       user_id: parent_order.user_id,
-                       created_by: created_by.id,
-                       cross_core_project: @order_project,
+    @target_order = if product_requires_merge?
+                      Order.create!(
+                        merge_with_order_id: parent_order.id,
+                        facility_id: parent_order.facility_id,
+                        account_id: account_id,
+                        user_id: parent_order.user_id,
+                        created_by: created_by.id,
+                        cross_core_project: @order_project,
                      )
                     else
                       parent_order
                     end
   end
 
+  # This method is only used for cross core projects.
+  # Create the new order if the project doesn't have a cross core order for the selected facility yet.
+  # If the project already has an order for the selected facility, return that order.
   def find_or_create_product_order
     return order_for_selected_facility if order_for_selected_facility.present?
 
@@ -263,7 +266,10 @@ class AddToOrderForm
     )
   end
 
-  def requires_merge?
+  # Decision to create a merge order is based on whehter the products that will be added require a merge order.
+  # If there are reservations or order forms involved, we need to create a merge order.
+  # This method is used to determine if we should create a merge order and for cross core orders if it should be purchased.
+  def product_requires_merge?
     products = product.is_a?(Bundle) ? product.products : [product]
 
     products.any?(&:requires_merge?)
@@ -272,7 +278,11 @@ class AddToOrderForm
   def order_for_selected_facility
     return unless @order_project
 
-    @order_for_selected_facility ||= @order_project.orders.reload.find { |o| o.facility_id == @facility_id }
+    # When a cross-core product is added from a new facility, we need to create a new order in that facility.
+    # This reload makes sure we get the right order in that case.
+    @order_project.orders.reload
+
+    @order_for_selected_facility ||= @order_project.orders.find { |o| o.facility_id == @facility_id }
   end
 
   def backdate(order_detail)
