@@ -163,7 +163,7 @@ RSpec.describe "Adding to an existing order for cross core", :js, feature_settin
     end
   end
 
-  describe "adding a product from another facility" do
+  describe "adding an item from another facility" do
     let(:product) { create(:setup_item, :with_facility_account, cross_core_ordering_available: false) }
     let!(:product2) { create(:setup_item, :with_facility_account, facility: facility2, cross_core_ordering_available: false) }
     let!(:cross_core_product_facility) { create(:setup_item, :with_facility_account, facility:, cross_core_ordering_available: true) }
