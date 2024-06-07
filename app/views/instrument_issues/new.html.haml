@@ -6,18 +6,4 @@
     %li &raquo;
     %li= @product.name
 
-= content_for :h1 do
-  = @product.name
-
-.row
-  .span12
-    %h2= text("title")
-
-    %p= text("instructions")
-
-.row
-  .span6
-    - url = facility_order_order_detail_issues_path(current_facility, @order_detail.order, @order_detail)
-    = simple_form_for @instrument_issue, url: url, method: :post do |f|
-      = f.input :message, as: :text, input_html: { class: "input-xxlarge", rows: 6 }
-      = f.submit text("submit"), class: "btn btn-primary"
+= render 'instruments/actions/issues', product: @product, order_detail: @order_detail, instrument_issue: @instrument_issue

@@ -1,0 +1,15 @@
+= content_for :h1 do
+  = product.name
+
+.row
+  .span12
+    %h2= text("views.instrument_issues.new.title")
+
+    %p= text("views.instrument_issues.new.instructions")
+
+.row
+  .span6
+    - url = facility_order_order_detail_issues_path(current_facility, order_detail.order, order_detail, redirect_to_order_id:)
+    = simple_form_for instrument_issue, url: url, method: :post do |f|
+      = f.input :message, as: :text, input_html: { class: "input-xxlarge", rows: 6 }
+      = f.submit text("views.instrument_issues.new.submit"), class: "btn btn-primary"
