@@ -30,10 +30,12 @@ class ExampleStatementPdf < StatementPdf
   def generate_document_header(pdf)
     pdf.font_size = 10.5
 
-    pdf.text @facility.to_s, size: 20, font_style: :bold
+    pdf.text @facility.to_s, size: 20, style: :bold
     pdf.text "Invoice ##{@statement.invoice_number}"
     pdf.text "Account: #{@account}"
     pdf.text "Owner: #{@account.owner_user.full_name(suspended_label: false)}"
+    pdf.move_down(10)
+    pdf.text "Items on this statement may have been placed on your behalf by another core facility.", style: :italic if @statement.cross_core?
     pdf.move_down(10)
   end
 

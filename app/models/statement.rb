@@ -117,4 +117,8 @@ class Statement < ApplicationRecord
     end
   end
 
+  def cross_core?
+    order_details.cross_core.any?
+  end
+
 end
