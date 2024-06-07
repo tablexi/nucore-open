@@ -10,13 +10,24 @@ class InstrumentIssuesController < ApplicationController
   before_action :init_instrument_issue, only: %i[new create]
 
   def new
+    redirect_to_order_id = params[:redirect_to_order_id]
+
+    if redirect_to_order_id.present?
+      render partial: "instruments/actions/issues", locals: { product: @product, order_detail: @order_detail, instrument_issue: @instrument_issue, redirect_to_order_id: }
+    end
   end
 
   def create
     @instrument_issue.assign_attributes(create_params)
+    redirect_to_order_id = params[:redirect_to_order_id]
 
     if @instrument_issue.send_notification
-      redirect_to reservations_path, notice: text("create.success")
+      if redirect_to_order_id.present?
+        order = Order.find(redirect_to_order_id)
+        redirect_to facility_order_path(order.facility, order), notice: text("create.success")
+      else
+        redirect_to reservations_path, notice: text("create.success")
+      end
     else
       render :new
     end
@@ -37,7 +48,7 @@ class InstrumentIssuesController < ApplicationController
   end
 
   def init_instrument_issue
-    @instrument_issue = InstrumentIssue.new(product: @product, 
+    @instrument_issue = InstrumentIssue.new(product: @product,
                                             user: current_user,
                                             order_detail: @order_detail)
   end
