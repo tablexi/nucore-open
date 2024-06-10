@@ -35,7 +35,7 @@ class ExampleStatementPdf < StatementPdf
     pdf.text "Account: #{@account}"
     pdf.text "Owner: #{@account.owner_user.full_name(suspended_label: false)}"
     pdf.move_down(10)
-    pdf.text "Items on this statement may have been placed on your behalf by another core facility.", style: :italic if @statement.cross_core?
+    pdf.text "Items on this statement may have been placed on your behalf by another core facility.", style: :italic if @statement.display_cross_core_messsage?
     pdf.move_down(10)
   end
 
