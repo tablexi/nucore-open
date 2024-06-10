@@ -133,7 +133,7 @@ class ReservationUserActionPresenter
   end
 
   def report_an_issue_link
-    if @redirect_to_order_id.present?
+    if modal_display?
       link_to I18n.t("views.instrument_issues.new.title"), new_facility_order_order_detail_issue_path(facility, order, order_detail, redirect_to_order_id: @redirect_to_order_id),
               class: "js--reportAnIssue"
     else
@@ -147,6 +147,10 @@ class ReservationUserActionPresenter
 
   def can_fix_problem?
     OrderDetails::ProblemResolutionPolicy.new(order_detail).user_can_resolve?
+  end
+
+  def modal_display?
+    @redirect_to_order_id.present?
   end
 
 end
