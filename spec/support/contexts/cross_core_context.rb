@@ -28,7 +28,7 @@ RSpec.shared_context "cross core orders" do
   let(:cross_core_project2) { create(:project, facility: facility2, name: "#{facility2.abbreviation}-2") }
   let(:cross_core_project3) { create(:project, facility: facility3, name: "#{facility3.abbreviation}-3") }
 
-  # Create the cross core orders and add them to the relevant projcects
+  # Create the cross core orders and add them to the relevant projects
   let!(:cross_core_orders) do
     [
       create(:purchased_order, cross_core_project:, product: facility2_item, account: accounts.last),
@@ -39,5 +39,5 @@ RSpec.shared_context "cross core orders" do
       create(:purchased_order, cross_core_project: cross_core_project3, product: facility2_item2, account: accounts.last),
     ]
   end
-  
+
 end

@@ -2,6 +2,8 @@
 
 class ExampleStatementPdf < StatementPdf
 
+  include TextHelpers::Translation
+
   def generate(pdf)
     generate_document_header(pdf)
     generate_contact_info(pdf) if @facility.has_contact_info?
@@ -35,7 +37,8 @@ class ExampleStatementPdf < StatementPdf
     pdf.text "Account: #{@account}"
     pdf.text "Owner: #{@account.owner_user.full_name(suspended_label: false)}"
     pdf.move_down(10)
-    pdf.text "Items on this statement may have been placed on your behalf by another core facility.", style: :italic if @statement.display_cross_core_messsage?
+    cross_core_message = text("cross_core_message")
+    pdf.text cross_core_message, style: :italic if @statement.display_cross_core_messsage?
     pdf.move_down(10)
   end
 
@@ -70,6 +73,10 @@ class ExampleStatementPdf < StatementPdf
         number_to_currency(order_detail.actual_total),
       ]
     end
+  end
+
+  def translation_scope
+    "statement_pdf"
   end
 
 end
