@@ -9,21 +9,21 @@ RSpec.describe "Cross Core Orders", :js, feature_setting: { cross_core_order_vie
   let(:item2) { create(:setup_item, facility:) }
   let(:accounts) { create_list(:setup_account, 2) }
 
-  let!(:cross_core_order_originating_facility) { create(:purchased_order, product: item, account: accounts.first) }
+  let!(:originating_order_facility1) { create(:purchased_order, product: item, account: accounts.first) }
   let!(:order_for_facility) { create(:purchased_order, product: item, account: accounts.first) }
 
   let(:facility2) { create(:setup_facility) }
   let(:facility2_item) { create(:setup_item, facility: facility2) }
   let(:facility2_item2) { create(:setup_item, facility: facility2) }
-  let!(:cross_core_order_originating_facility2) { create(:purchased_order, product: facility2_item, account: accounts.first) }
+  let!(:originating_order_facility2) { create(:purchased_order, product: facility2_item, account: accounts.first) }
 
-  let(:cross_core_project) { create(:project, facility:, name: "#{facility.abbreviation}-#{cross_core_order_originating_facility.id}") }
-  let(:cross_core_project2) { create(:project, facility: facility2, name: "#{facility2.abbreviation}-#{cross_core_order_originating_facility2.id}") }
-  let(:cross_core_project3) { create(:project, facility: facility3, name: "#{facility3.abbreviation}-#{cross_core_order_originating_facility3.id}") }
+  let(:cross_core_project) { create(:project, facility:, name: "#{facility.abbreviation}-#{originating_order_facility1.id}") }
+  let(:cross_core_project2) { create(:project, facility: facility2, name: "#{facility2.abbreviation}-#{originating_order_facility2.id}") }
+  let(:cross_core_project3) { create(:project, facility: facility3, name: "#{facility3.abbreviation}-#{originating_order_facility3.id}") }
 
   let(:facility3) { create(:setup_facility) }
   let(:facility3_item) { create(:setup_item, facility: facility3) }
-  let!(:cross_core_order_originating_facility3) { create(:purchased_order, product: facility3_item, account: accounts.first) }
+  let!(:originating_order_facility3) { create(:purchased_order, product: facility3_item, account: accounts.first) }
 
   let!(:cross_core_orders) do
     [
@@ -39,11 +39,11 @@ RSpec.describe "Cross Core Orders", :js, feature_setting: { cross_core_order_vie
   before do
     login_as facility_administrator
 
-    cross_core_order_originating_facility.update!(cross_core_project:)
-    cross_core_order_originating_facility.reload
+    originating_order_facility1.update!(cross_core_project:)
+    originating_order_facility1.reload
 
-    cross_core_order_originating_facility2.update!(cross_core_project: cross_core_project2)
-    cross_core_order_originating_facility2.reload
+    originating_order_facility2.update!(cross_core_project: cross_core_project2)
+    originating_order_facility2.reload
 
     visit cross_core_orders_facility_projects_path(facility)
   end
@@ -58,10 +58,10 @@ RSpec.describe "Cross Core Orders", :js, feature_setting: { cross_core_order_vie
       expect(page).to have_content(cross_core_orders[0].order_details.first)
       expect(page).to have_content(cross_core_orders[1].order_details.first)
       expect(page).to have_content(cross_core_orders[3].order_details.first)
-      expect(page).to have_content(cross_core_order_originating_facility2.order_details.first)
+      expect(page).to have_content(originating_order_facility2.order_details.first)
 
       expect(page).not_to have_content(cross_core_orders[2].order_details.first)
-      expect(page).not_to have_content(cross_core_order_originating_facility.order_details.first)
+      expect(page).not_to have_content(originating_order_facility1.order_details.first)
     end
   end
 
@@ -79,8 +79,8 @@ RSpec.describe "Cross Core Orders", :js, feature_setting: { cross_core_order_vie
       # This is from a cross core order that is not related to facility 1
       expect(page).not_to have_content(cross_core_orders[4].order_details.first)
 
-      expect(page).to have_content(cross_core_order_originating_facility2.order_details.first)
-      expect(page).to have_content(cross_core_order_originating_facility.order_details.first)
+      expect(page).to have_content(originating_order_facility2.order_details.first)
+      expect(page).to have_content(originating_order_facility1.order_details.first)
 
       item_price_group = item.price_policies.first.price_group.name
       facility2_item_price_group = facility2_item.price_policies.first.price_group.name
@@ -100,12 +100,12 @@ RSpec.describe "Cross Core Orders", :js, feature_setting: { cross_core_order_vie
 
     it "shows only cross core orders placed for current facility" do
       expect(page).to have_content(cross_core_orders[2].order_details.first)
-      expect(page).to have_content(cross_core_order_originating_facility.order_details.first)
+      expect(page).to have_content(originating_order_facility1.order_details.first)
 
       expect(page).not_to have_content(cross_core_orders[0].order_details.first)
       expect(page).not_to have_content(cross_core_orders[1].order_details.first)
       expect(page).not_to have_content(cross_core_orders[3].order_details.first)
-      expect(page).not_to have_content(cross_core_order_originating_facility2.order_details.first)
+      expect(page).not_to have_content(originating_order_facility2.order_details.first)
     end
   end
 end
