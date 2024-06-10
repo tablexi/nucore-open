@@ -9,10 +9,6 @@ RSpec.describe "Cross Core Orders", :js, feature_setting: { cross_core_order_vie
   let(:item2) { create(:setup_item, facility:) }
   let(:accounts) { create_list(:setup_account, 2) }
 
-  before do
-    login_as facility_administrator
-  end
-
   let!(:cross_core_order_originating_facility) { create(:purchased_order, product: item, account: accounts.first) }
   let!(:order_for_facility) { create(:purchased_order, product: item, account: accounts.first) }
 
@@ -23,6 +19,7 @@ RSpec.describe "Cross Core Orders", :js, feature_setting: { cross_core_order_vie
 
   let(:cross_core_project) { create(:project, facility:, name: "#{facility.abbreviation}-#{cross_core_order_originating_facility.id}") }
   let(:cross_core_project2) { create(:project, facility: facility2, name: "#{facility2.abbreviation}-#{cross_core_order_originating_facility2.id}") }
+  let(:cross_core_project3) { create(:project, facility: facility3, name: "#{facility3.abbreviation}-#{cross_core_order_originating_facility3.id}") }
 
   let(:facility3) { create(:setup_facility) }
   let(:facility3_item) { create(:setup_item, facility: facility3) }
@@ -34,10 +31,14 @@ RSpec.describe "Cross Core Orders", :js, feature_setting: { cross_core_order_vie
       create(:purchased_order, cross_core_project:, product: facility3_item, account: accounts.last),
       create(:purchased_order, cross_core_project: cross_core_project2, product: item, account: accounts.last),
       create(:purchased_order, cross_core_project: cross_core_project2, product: facility3_item, account: accounts.last),
+      # cross_core_project3 has no order details from facility 1
+      create(:purchased_order, cross_core_project: cross_core_project3, product: facility2_item2, account: accounts.last),
     ]
   end
 
   before do
+    login_as facility_administrator
+
     cross_core_order_originating_facility.update!(cross_core_project:)
     cross_core_order_originating_facility.reload
 
@@ -70,11 +71,13 @@ RSpec.describe "Cross Core Orders", :js, feature_setting: { cross_core_order_vie
       click_button "Filter"
     end
 
-    it "shows all cross core orders placed for any facility" do
+    it "shows all cross core orders related to the current facility" do
       expect(page).to have_content(cross_core_orders[0].order_details.first)
       expect(page).to have_content(cross_core_orders[1].order_details.first)
       expect(page).to have_content(cross_core_orders[2].order_details.first)
       expect(page).to have_content(cross_core_orders[3].order_details.first)
+      # This is from a cross core order that is not related to facility 1
+      expect(page).not_to have_content(cross_core_orders[4].order_details.first)
 
       expect(page).to have_content(cross_core_order_originating_facility2.order_details.first)
       expect(page).to have_content(cross_core_order_originating_facility.order_details.first)
