@@ -123,7 +123,6 @@ class Statement < ApplicationRecord
 
   def cross_core_order_details_from_other_facilities
     cross_core_order_details
-      .joins(order: :cross_core_project)
       .where.not(projects: { facility: facility})
   end
 

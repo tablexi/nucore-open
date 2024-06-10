@@ -88,12 +88,8 @@ module Projects
     end
 
     def cross_core_order_details
-      project_ids = current_facility.order_details.joins(:order).pluck(:cross_core_project_id).compact.uniq
-
-      OrderDetail
-        .joins(:order)
-        .joins(order: :facility)
-        .where(orders: { cross_core_project_id: project_ids })
+      OrderDetail.cross_core
+        .where(projects: { facility: current_facility})
     end
 
     def sort_lookup_hash
