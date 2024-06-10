@@ -8,11 +8,12 @@ class InstrumentIssuesController < ApplicationController
   before_action :init_order_detail
   before_action :init_product
   before_action :init_instrument_issue, only: %i[new create]
+  layout -> { modal? ? false : "application" }
 
   def new
     redirect_to_order_id = params[:redirect_to_order_id]
 
-    if redirect_to_order_id.present?
+    if modal?
       render partial: "instruments/actions/issues", locals: { product: @product, order_detail: @order_detail, instrument_issue: @instrument_issue, redirect_to_order_id: }
     end
   end
@@ -53,4 +54,8 @@ class InstrumentIssuesController < ApplicationController
                                             order_detail: @order_detail)
   end
 
+  def modal?
+    request.xhr?
+  end
+  helper_method :modal?
 end
