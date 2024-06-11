@@ -91,9 +91,9 @@ module Projects
     # Includes all order details from any cross core project that is associated with the current facility,
     # and also all order details from any cross core project that includes an order from the current facility.
     def cross_core_order_details
-      project_ids = current_facility.order_details.joins(:order).pluck(:cross_core_project_id).compact.uniq
+      projects = Projects::Project.for_facility(current_facility)
       OrderDetail.cross_core
-        .where(orders: { cross_core_project_id: project_ids })
+        .where(orders: { cross_core_project_id: projects })
     end
 
     def sort_lookup_hash
