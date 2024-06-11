@@ -464,7 +464,7 @@ GEM
     nokogiri (1.16.5-x86_64-linux)
       racc (~> 1.4)
     numerizer (0.1.1)
-    oj (3.16.3)
+    oj (3.16.4)
       bigdecimal (>= 3.0)
     orm_adapter (0.5.0)
     paper_trail (15.1.0)
