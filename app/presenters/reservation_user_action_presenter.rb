@@ -63,7 +63,7 @@ class ReservationUserActionPresenter
                   end
     confirm_text = I18n.t(confirm_key, scope: "reservations.delete", fee: number_to_currency(canceler.total_cost))
 
-    if @redirect_to_order_id.present?
+    if modal_display?
       path = cancel_order_order_detail_path(order, order_detail, redirect_to_order_id: @redirect_to_order_id)
     end
 
