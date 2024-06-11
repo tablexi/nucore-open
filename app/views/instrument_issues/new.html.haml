@@ -1,3 +1,5 @@
+- modal_view = @redirect_to_order_id.present?
+
 = content_for :breadcrumb do
   %ul.breadcrumb
     %li= link_to "Home", :root
@@ -6,4 +8,31 @@
     %li &raquo;
     %li= @product.name
 
-= render 'instruments/actions/issues', product: @product, order_detail: @order_detail, instrument_issue: @instrument_issue, redirect_to_order_id: nil
+= content_for :h1 do
+  = @product.name
+
+- url = facility_order_order_detail_issues_path(current_facility, @order_detail.order, @order_detail, redirect_to_order_id: @redirect_to_order_id)
+
+- if modal_view
+  .modal
+    .modal-header
+      = modal_close_button
+      %h2= text("title")
+      %p= text("instructions")
+    .modal-body
+      = simple_form_for @instrument_issue, url: url, method: :post do |f|
+        = f.input :message, as: :text, input_html: { class: "input-xxlarge" }
+        = f.submit text("submit"), class: "btn btn-primary"
+    .modal-footer
+      = modal_cancel_button text: "Cancel"
+- else
+  .row
+    .span12
+      %h2= text("title")
+      %p= text("instructions")
+
+  .row
+    .span6
+      = simple_form_for @instrument_issue, url: url, method: :post do |f|
+        = f.input :message, as: :text, input_html: { class: "input-xxlarge", rows: 6 }
+        = f.submit text("submit"), class: "btn btn-primary"

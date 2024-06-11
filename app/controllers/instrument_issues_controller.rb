@@ -11,10 +11,10 @@ class InstrumentIssuesController < ApplicationController
   layout -> { modal? ? false : "application" }
 
   def new
-    redirect_to_order_id = params[:redirect_to_order_id]
+    @redirect_to_order_id = params[:redirect_to_order_id]
 
     if modal?
-      render partial: "instruments/actions/issues", locals: { product: @product, order_detail: @order_detail, instrument_issue: @instrument_issue, redirect_to_order_id: }
+      render layout: false
     end
   end
 
