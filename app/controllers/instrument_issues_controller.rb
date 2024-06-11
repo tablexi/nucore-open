@@ -20,15 +20,9 @@ class InstrumentIssuesController < ApplicationController
 
   def create
     @instrument_issue.assign_attributes(create_params)
-    redirect_to_order_id = params[:redirect_to_order_id]
 
     if @instrument_issue.send_notification
-      if redirect_to_order_id.present?
-        order = Order.find(redirect_to_order_id)
-        redirect_to facility_order_path(order.facility, order), notice: text("create.success")
-      else
-        redirect_to reservations_path, notice: text("create.success")
-      end
+      redirect_to redirect_to_path, notice: text("create.success")
     else
       render :new
     end
@@ -52,6 +46,22 @@ class InstrumentIssuesController < ApplicationController
     @instrument_issue = InstrumentIssue.new(product: @product,
                                             user: current_user,
                                             order_detail: @order_detail)
+  end
+
+  def redirect_to_path
+    redirect_to_order_id = params[:redirect_to_order_id]
+
+    if modal? && redirect_to_order_id.present?
+      order = Order.find(redirect_to_order_id)
+
+      if order.present?
+        facility_order_path(@facility, order.id)
+      else
+        reservations_path
+      end
+    else
+      reservations_path
+    end
   end
 
   def modal?
