@@ -255,3 +255,7 @@ $(function() {
 $(function() {
   new AjaxModal(".js--reportAnIssue", "#js--reportAnIssueModal");
 });
+
+$(function () {
+  new AjaxModal(".js--fixAProblem", "#js--fixAProblem");
+});

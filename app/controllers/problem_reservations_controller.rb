@@ -9,19 +9,26 @@ class ProblemReservationsController < ApplicationController
   before_action :prevent_double_update, only: :update
   before_action { @active_tab = "reservations" }
 
+  layout -> { modal? ? false : "application" }
+
   delegate :editable?, :resolved?, to: :problem_reservation_resolver
 
   def edit
-    render :resolved if !editable? && resolved?
+    if !editable? && resolved?
+      render :resolved
+    elsif modal?
+      @redirect_to_order_id = params[:redirect_to_order_id]
+      render layout: false
+    end
   end
 
   def update
-    if problem_reservation_resolver.resolve(update_params.merge(current_user: current_user))
-      if @order_detail.accessories?
-        redirect_to new_order_order_detail_accessory_path(@order_detail.order, @order_detail), notice: text("update.success")
-      else
-        redirect_to reservations_status_path(status: "all"), notice: text("update.success")
-      end
+    @redirect_to_order_id = params[:redirect_to_order_id]
+
+    if problem_reservation_resolver.resolve(update_params.merge(current_user:))
+      redirect_to redirect_to_path, notice: text("update.success")
+    elsif modal?
+      render :edit, layout: false
     else
       render :edit
     end
@@ -54,5 +61,26 @@ class ProblemReservationsController < ApplicationController
   def ability_resource
     @reservation
   end
+
+  def redirect_to_path
+    redirect_to_order_id = params[:redirect_to_order_id]
+
+    if modal? && redirect_to_order_id.present?
+      order = Order.find(redirect_to_order_id)
+
+      return facility_order_path(@facility, order.id) if order.present?
+    end
+
+    if @order_detail.accessories?
+      new_order_order_detail_accessory_path(@order_detail.order, @order_detail)
+    else
+      reservations_status_path(status: "all")
+    end
+  end
+
+  def modal?
+    request.xhr?
+  end
+  helper_method :modal?
 
 end
