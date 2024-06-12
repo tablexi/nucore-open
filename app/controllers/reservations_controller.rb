@@ -443,9 +443,9 @@ class ReservationsController < ApplicationController
     if redirect_to_order_id.present?
       facility_order = Order.find(redirect_to_order_id)
 
-      redirect_to facility_order_path(facility_order.facility, facility_order)
+      facility_order_path(facility_order.facility, facility_order)
     else
-      redirect_to reservations_status_path(status: "upcoming")
+      reservations_status_path(status: "upcoming")
     end
   end
 end
