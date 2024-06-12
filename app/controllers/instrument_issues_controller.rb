@@ -12,10 +12,8 @@ class InstrumentIssuesController < ApplicationController
 
   def new
     @redirect_to_order_id = params[:redirect_to_order_id]
-
-    if modal?
-      render layout: false
-    end
+    @modal_view = @redirect_to_order_id.present?
+    @form_url = facility_order_order_detail_issues_path(current_facility, @order_detail.order, @order_detail, redirect_to_order_id: @redirect_to_order_id)
   end
 
   def create
@@ -51,12 +49,14 @@ class InstrumentIssuesController < ApplicationController
   def redirect_to_path
     redirect_to_order_id = params[:redirect_to_order_id]
 
+    # This means the request came from a modal on the order show page
     if redirect_to_order_id.present?
       order = Order.find(redirect_to_order_id)
 
       if order.present?
         facility_order_path(order.facility, order)
       else
+        # We shouldn't get here, so this is here just so the user is redirected somewhere
         reservations_path
       end
     else

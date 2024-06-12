@@ -40,5 +40,7 @@ RSpec.shared_context "cross core orders" do
     ]
   end
 
+  # Create an order for a reservation that is cross core.
+  # This order can't be purchased, as it's purchased once the reservation is created.
   let(:cross_core_reservation_order) { create(:setup_order, cross_core_project:, product: facility2_instrument, account: accounts.last) }
 end
