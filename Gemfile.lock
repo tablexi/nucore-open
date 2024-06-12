@@ -475,7 +475,7 @@ GEM
       parallel
     paranoia (2.6.2)
       activerecord (>= 5.1, < 7.1)
-    parser (3.3.2.0)
+    parser (3.3.3.0)
       ast (~> 2.4.1)
       racc
     pdf-core (0.10.0)
@@ -600,8 +600,8 @@ GEM
       parser (>= 3.3.1.0)
     rubocop-capybara (2.20.0)
       rubocop (~> 1.41)
-    rubocop-factory_bot (2.26.0)
-      rubocop (~> 1.41)
+    rubocop-factory_bot (2.26.1)
+      rubocop (~> 1.61)
     rubocop-performance (1.21.0)
       rubocop (>= 1.48.1, < 2.0)
       rubocop-ast (>= 1.31.1, < 2.0)
