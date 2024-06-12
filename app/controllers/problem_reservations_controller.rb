@@ -51,7 +51,12 @@ class ProblemReservationsController < ApplicationController
   end
 
   def load_and_authorize_reservation
-    @reservation = current_user.reservations.find(params[:id])
+    @reservation = if SettingsHelper.feature_on?(:cross_core_projects) && params[:redirect_to_order_id].present?
+                     Reservation.find(params[:id])
+                   else
+                     current_user.reservations.find(params[:id])
+                   end
+
     @order_detail = @reservation.order_detail
 
     raise ActiveRecord::RecordNotFound unless editable? || resolved?
