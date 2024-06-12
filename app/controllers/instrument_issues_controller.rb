@@ -51,11 +51,11 @@ class InstrumentIssuesController < ApplicationController
   def redirect_to_path
     redirect_to_order_id = params[:redirect_to_order_id]
 
-    if modal? && redirect_to_order_id.present?
+    if redirect_to_order_id.present?
       order = Order.find(redirect_to_order_id)
 
       if order.present?
-        facility_order_path(@facility, order.id)
+        facility_order_path(order.facility, order)
       else
         reservations_path
       end
