@@ -2,33 +2,27 @@
 
 require "rails_helper"
 
-RSpec.describe "Reservation actions", :js, feature_setting: { cross_core_order_view: true } do
-  let(:facility) { create(:setup_facility) }
-  let(:facility_administrator) { create(:user, :facility_administrator, facility:) }
-  let(:accounts) { create_list(:setup_account, 2) }
-  let(:item) { create(:setup_item, facility:) }
-  let!(:cross_core_order_originating_facility) { create(:purchased_order, product: item, account: accounts.first) }
+RSpec.describe "Reservation actions", :js, feature_setting: { cross_core_projects: true } do
+  include_context "cross core orders"
 
-  let(:facility2) { create(:setup_facility) }
-  let(:facility2_instrument) { create(:setup_instrument, facility: facility2) }
-  let!(:reservation) { create(:setup_reservation) }
-
-  let(:cross_core_project) { create(:project, facility:, name: "#{facility.abbreviation}-#{cross_core_order_originating_facility.id}") }
+  let!(:reservation) { create(:purchased_reservation, order_detail: cross_core_reservation_order.order_details.first) }
 
   before do
-    cross_core_order_originating_facility.update!(cross_core_project:)
+    allow_any_instance_of(InstrumentIssue).to receive(:send_notification).and_return(true)
+
     login_as facility_administrator
+    visit facility_order_path(facility, originating_order_facility1)
   end
 
-  # Most likely need to set up the reservation doing something like this
-  # @order_detail_reservation = setup_reservation(@authable, @account, @director)
-  # @reservation = place_reservation(@authable, @order_detail_reservation, Time.zone.now + 1.hour)
+  describe "Report an Issue" do
+    it "redirects to original order show" do
+      find("h3", text: cross_core_reservation_order.facility.to_s, match: :first).click
+      find("a", text: "Report an Issue").click
+      fill_in "Message", with: "This is a test issue"
+      click_button "Report Issue"
 
-  xdescribe "" do
-    context "" do
-      it "" do
-        expect(true).to be_truthy
-      end
+      expect(page).to have_content("Thank you. Your issue has been reported.")
+      expect(page).to have_content("Order ##{originating_order_facility1.id}")
     end
   end
 end
