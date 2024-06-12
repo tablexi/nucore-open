@@ -9,6 +9,8 @@
 = content_for :h1 do
   = @product.name
 
+- url = facility_order_order_detail_issues_path(current_facility, @order_detail.order, @order_detail, redirect_to_order_id: @redirect_to_order_id)
+
 - if @modal_view
   .modal
     .modal-header
@@ -16,7 +18,7 @@
       %h2= text("title")
       %p= text("instructions")
     .modal-body
-      = simple_form_for @instrument_issue, url: @form_url, method: :post do |f|
+      = simple_form_for @instrument_issue, url: url, method: :post do |f|
         = f.input :message, as: :text, input_html: { class: "input-xxlarge" }
         = f.submit text("submit"), class: "btn btn-primary"
     .modal-footer
@@ -29,6 +31,6 @@
 
   .row
     .span6
-      = simple_form_for @instrument_issue, url: @form_url, method: :post do |f|
+      = simple_form_for @instrument_issue, url: url, method: :post do |f|
         = f.input :message, as: :text, input_html: { class: "input-xxlarge", rows: 6 }
         = f.submit text("submit"), class: "btn btn-primary"

@@ -13,7 +13,6 @@ class InstrumentIssuesController < ApplicationController
   def new
     @redirect_to_order_id = params[:redirect_to_order_id]
     @modal_view = @redirect_to_order_id.present?
-    @form_url = facility_order_order_detail_issues_path(current_facility, @order_detail.order, @order_detail, redirect_to_order_id: @redirect_to_order_id)
   end
 
   def create
