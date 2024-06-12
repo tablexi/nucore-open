@@ -375,7 +375,7 @@ GEM
     health_check (3.1.0)
       railties (>= 5.0)
     http-accept (1.7.0)
-    http-cookie (1.0.5)
+    http-cookie (1.0.6)
       domain_name (~> 0.5)
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
