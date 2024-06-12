@@ -149,6 +149,9 @@ class ReservationUserActionPresenter
     OrderDetails::ProblemResolutionPolicy.new(order_detail).user_can_resolve?
   end
 
+  # When the action links are in the order show, they should be opened in a modal.
+  # In that case, a redirect_to_order_id is set, so after the user submits the form,
+  # they are redirected back to the proper order show.
   def modal_display?
     @redirect_to_order_id.present?
   end
