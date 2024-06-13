@@ -15,7 +15,7 @@ RSpec.shared_context "cross core orders" do
   # Facility 2 has cross core orders with both Facility 1 and Facility 3
   let(:facility2) { create(:setup_facility) }
   let(:facility2_item) { create(:setup_item, facility: facility2) }
-  let(:facility2_instrument) { create(:setup_instrument, facility: facility2) }
+  let(:facility2_item2) { create(:setup_item, facility: facility2) }
   let!(:originating_order_facility2) { create(:purchased_order, product: facility2_item, account: accounts.first, cross_core_project: cross_core_project2) }
 
   # Facility 3 has cross core orders ONLY with Facility 2
@@ -36,11 +36,7 @@ RSpec.shared_context "cross core orders" do
       create(:purchased_order, cross_core_project: cross_core_project2, product: item, account: accounts.last),
       create(:purchased_order, cross_core_project: cross_core_project2, product: facility3_item, account: accounts.last),
       # cross_core_project3 has no order details from facility 1
-      create(:purchased_order, cross_core_project: cross_core_project3, product: facility2_instrument, account: accounts.last),
+      create(:purchased_order, cross_core_project: cross_core_project3, product: facility2_item2, account: accounts.last),
     ]
   end
-
-  # Create an order for a reservation that is cross core.
-  # This order can't be purchased, as it's purchased once the reservation is created.
-  let(:cross_core_reservation_order) { create(:setup_order, cross_core_project:, product: facility2_instrument, account: accounts.last) }
 end

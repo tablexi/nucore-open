@@ -5,6 +5,8 @@ require "rails_helper"
 RSpec.describe "Reservation actions", :js, feature_setting: { cross_core_projects: true } do
   include_context "cross core orders"
 
+  let(:facility2_instrument) { create(:setup_instrument, facility: facility2) }
+  let(:cross_core_reservation_order) { create(:setup_order, cross_core_project:, product: facility2_instrument, account: accounts.last) }
   let!(:reservation) { create(:purchased_reservation, order_detail: cross_core_reservation_order.order_details.first) }
 
   before do
