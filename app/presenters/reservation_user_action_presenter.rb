@@ -142,7 +142,13 @@ class ReservationUserActionPresenter
   end
 
   def fix_problem_link
-    link_to(I18n.t("views.reservations.my_table.fix_reservation"), edit_problem_reservation_path(reservation))
+    if modal_display?
+      link_to I18n.t("views.reservations.my_table.fix_reservation"), edit_problem_reservation_path(reservation, redirect_to_order_id: @redirect_to_order_id),
+              class: "js--reportAnIssue"
+    else
+      link_to I18n.t("views.reservations.my_table.fix_reservation"), edit_problem_reservation_path(reservation)
+    end
+
   end
 
   def can_fix_problem?
