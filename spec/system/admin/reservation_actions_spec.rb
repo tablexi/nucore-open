@@ -27,4 +27,16 @@ RSpec.describe "Reservation actions", :js, feature_setting: { cross_core_project
       expect(page).to have_content("Order ##{originating_order_facility1.id}")
     end
   end
+
+  describe "Cancel reservation" do
+    it "redirects to original order show" do
+      find("h3", text: cross_core_reservation_order.facility.to_s, match: :first).click
+      accept_confirm do
+        click_link("Cancel")
+      end
+
+      expect(page).to have_content("The reservation has been canceled successfully")
+      expect(page).to have_content("Order ##{originating_order_facility1.id}")
+    end
+  end
 end
