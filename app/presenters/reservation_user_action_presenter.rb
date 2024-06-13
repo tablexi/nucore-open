@@ -132,9 +132,13 @@ class ReservationUserActionPresenter
   end
 
   def move_link
-    link_to I18n.t("reservations.moving_up.link"), order_order_detail_reservation_move_reservation_path(order, order_detail, reservation),
-            class: "move-res",
-            data: { reservation_id: reservation.id }
+    path = if @redirect_to_order_id.present?
+             order_order_detail_reservation_move_reservation_path(order, order_detail, reservation, redirect_to_order_id: @redirect_to_order_id)
+           else
+             order_order_detail_reservation_move_reservation_path(order, order_detail, reservation)
+           end
+
+    link_to I18n.t("reservations.moving_up.link"), path, class: "move-res", data: { reservation_id: reservation.id }
   end
 
   def report_an_issue_link
