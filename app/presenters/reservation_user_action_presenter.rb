@@ -19,7 +19,9 @@ class ReservationUserActionPresenter
     @controller = controller
   end
 
-  def user_actions
+  def user_actions(redirect_to_order_id = nil)
+    @redirect_to_order_id = redirect_to_order_id
+
     actions = []
     actions << accessories_link if accessories?
 
@@ -131,7 +133,12 @@ class ReservationUserActionPresenter
   end
 
   def report_an_issue_link
-    link_to(I18n.t("views.instrument_issues.new.title"), new_facility_order_order_detail_issue_path(facility, order, order_detail))
+    if modal_display?
+      link_to I18n.t("views.instrument_issues.new.title"), new_facility_order_order_detail_issue_path(facility, order, order_detail, redirect_to_order_id: @redirect_to_order_id),
+              class: "js--reportAnIssue"
+    else
+      link_to(I18n.t("views.instrument_issues.new.title"), new_facility_order_order_detail_issue_path(facility, order, order_detail))
+    end
   end
 
   def fix_problem_link
@@ -140,6 +147,13 @@ class ReservationUserActionPresenter
 
   def can_fix_problem?
     OrderDetails::ProblemResolutionPolicy.new(order_detail).user_can_resolve?
+  end
+
+  # When the action links are in the order show, they should be opened in a modal.
+  # In that case, a redirect_to_order_id is set, so after the user submits the form,
+  # they are redirected back to the proper order show.
+  def modal_display?
+    @redirect_to_order_id.present?
   end
 
 end
