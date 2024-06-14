@@ -11,14 +11,7 @@ module Projects
     load_and_authorize_resource through: :current_facility
 
     def index
-      @all_projects = @projects.display_order
-      @projects = @all_projects.active.paginate(page: params[:page])
-    end
-
-    def inactive
-      @all_projects = @projects.display_order
-      @projects = @all_projects.inactive.paginate(page: params[:page])
-      render action: :index
+      @projects = @projects.display_order.paginate(page: params[:page])
     end
 
     def cross_core_orders

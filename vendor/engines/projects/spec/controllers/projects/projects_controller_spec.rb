@@ -48,47 +48,13 @@ RSpec.describe Projects::ProjectsController, type: :controller do
 
           it "shows the index view of active projects" do
             expect(response.code).to eq("200")
-            expect(assigns(:projects)).to match_array(active_projects)
+            expect(assigns(:projects)).to match_array(active_projects + inactive_projects)
           end
         end
 
         facility_operator_roles.each do |role|
           context "as #{role}" do
             it_behaves_like "it allows index views", role
-          end
-        end
-      end
-    end
-
-    describe "GET #inactive" do
-      def do_request
-        get :inactive, params: { facility_id: facility.url_name }
-      end
-
-      describe "when not logged in" do
-        before { do_request }
-
-        it { is_expected.to redirect_to new_user_session_path }
-      end
-
-      describe "when logged in" do
-        shared_examples_for "it allows inactive index views" do |role|
-          let(:user) { FactoryBot.create(:user, role, facility: facility) }
-
-          before(:each) do
-            sign_in user
-            do_request
-          end
-
-          it "shows the index view of inactive projects" do
-            expect(response.code).to eq("200")
-            expect(assigns(:projects)).to match_array(inactive_projects)
-          end
-        end
-
-        facility_operator_roles.each do |role|
-          context "as #{role}" do
-            it_behaves_like "it allows inactive index views", role
           end
         end
       end
