@@ -23,3 +23,4 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "nucore-open"
           heroku_email: "testing+txi@txidigital.com"
+          branch: master
