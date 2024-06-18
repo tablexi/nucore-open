@@ -15,45 +15,66 @@ RSpec.describe "Projects search" do
     visit facility_projects_path(facility)
   end
 
-  describe "Active filter" do
-    context "by default" do
-      it "shows only active projects for current facility" do
-        expect(page).to have_content(active_project.name)
-        expect(page).to have_content(cross_core_project.name)
-        expect(page).not_to have_content(cross_core_project2.name)
-        expect(page).not_to have_content(cross_core_project3.name)
-        expect(page).not_to have_content(inactive_project.name)
-      end
+  context "by default" do
+    it "shows only non cross core active projects for current facility" do
+      expect(page).not_to have_content(cross_core_project.name)
+      expect(page).not_to have_content(cross_core_project2.name)
+      expect(page).not_to have_content(cross_core_project3.name)
+
+      expect(page).to have_content(active_project.name)
+      expect(page).not_to have_content(inactive_project.name)
+    end
+  end
+
+  context "when Active and Cross Core are selected" do
+    before do
+      select "Active", from: "Active/Inactive"
+      select "Yes", from: "Cross Core"
+      click_button "Filter"
     end
 
-    context "when Active is selected" do
-      before do
-        select "Active", from: "Active/Inactive"
-        click_button "Filter"
-      end
+    it "shows only cross core active projects for current facility" do
+      expect(page).to have_content(cross_core_project.name)
+      expect(page).to have_content(cross_core_project2.name)
 
-      it "shows only active projects for current facility" do
-        expect(page).to have_content(active_project.name)
-        expect(page).to have_content(cross_core_project.name)
-        expect(page).not_to have_content(cross_core_project2.name)
-        expect(page).not_to have_content(cross_core_project3.name)
-        expect(page).not_to have_content(inactive_project.name)
-      end
+      expect(page).not_to have_content(cross_core_project3.name)
+
+      expect(page).not_to have_content(active_project.name)
+      expect(page).not_to have_content(inactive_project.name)
+    end
+  end
+
+  context "when Inactive and Cross Core are selected" do
+    before do
+      select "Inactive", from: "Active/Inactive"
+      select "Yes", from: "Cross Core"
+      click_button "Filter"
     end
 
-    context "when Inactive is selected" do
-      before do
-        select "Inactive", from: "Active/Inactive"
-        click_button "Filter"
-      end
+    it "shows only cross core inactive projects for current facility" do
+      expect(page).not_to have_content(cross_core_project.name)
+      expect(page).not_to have_content(cross_core_project2.name)
+      expect(page).not_to have_content(cross_core_project3.name)
 
-      it "shows only inactive projects for current facility" do
-        expect(page).not_to have_content(active_project.name)
-        expect(page).not_to have_content(cross_core_project.name)
-        expect(page).not_to have_content(cross_core_project2.name)
-        expect(page).not_to have_content(cross_core_project3.name)
-        expect(page).to have_content(inactive_project.name)
-      end
+      expect(page).not_to have_content(active_project.name)
+      expect(page).not_to have_content(inactive_project.name)
+    end
+  end
+
+  context "when Inactive and non Cross Core are selected" do
+    before do
+      select "Inactive", from: "Active/Inactive"
+      select "No", from: "Cross Core"
+      click_button "Filter"
+    end
+
+    it "shows only non cross core inactive projects for current facility" do
+      expect(page).not_to have_content(cross_core_project.name)
+      expect(page).not_to have_content(cross_core_project2.name)
+      expect(page).not_to have_content(cross_core_project3.name)
+
+      expect(page).not_to have_content(active_project.name)
+      expect(page).to have_content(inactive_project.name)
     end
   end
 end
