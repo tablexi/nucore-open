@@ -22,8 +22,7 @@ module CrossCoreProjectsSearch
     end
 
     def label
-      # TODO: Use i18n
-      "Active/Inactive"
+      I18n.t("projects.index.active_searcher.label")
     end
 
     def input_type
