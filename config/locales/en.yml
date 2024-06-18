@@ -606,6 +606,7 @@ en:
         label: "Active/Inactive"
       cross_core_searcher:
         label: "Cross Core"
+      no_results: "No projects found"
 
   reservations:
     logout:

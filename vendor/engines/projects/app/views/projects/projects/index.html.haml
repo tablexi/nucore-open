@@ -20,3 +20,6 @@
             = link_to project.name, facility_project_path(project.facility, project)
 
   = will_paginate(@projects)
+
+- else
+  .notice= t("projects.index.no_results")
