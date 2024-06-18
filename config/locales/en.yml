@@ -604,6 +604,8 @@ en:
     index:
       active_searcher:
         label: "Active/Inactive"
+      cross_core_searcher:
+        label: "Cross Core"
 
   reservations:
     logout:

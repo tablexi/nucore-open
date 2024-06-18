@@ -9,6 +9,8 @@ module CrossCoreProjectsSearch
     # to SearchForm) that `register` handles.
     cattr_accessor(:default_searchers) do
       [
+        # CrossCoreSearcher goes first as it is the one that defines the initial projects
+        CrossCoreProjectsSearch::CrossCoreSearcher,
         CrossCoreProjectsSearch::ActiveSearcher,
       ]
     end

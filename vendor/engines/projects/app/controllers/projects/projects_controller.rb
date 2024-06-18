@@ -89,7 +89,7 @@ module Projects
     private
 
     def initial_projects
-      current_facility.projects
+      nil
     end
 
     def default_order_statuses(order_details)
