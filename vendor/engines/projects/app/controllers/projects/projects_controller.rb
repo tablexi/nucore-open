@@ -11,7 +11,19 @@ module Projects
     load_and_authorize_resource through: :current_facility
 
     def index
-      @projects = @projects.display_order.paginate(page: params[:page])
+      @search_form = CrossCoreProjectsSearch::SearchForm.new(
+        params[:search],
+        defaults: {
+          current_facility_id: current_facility.id,
+        },
+      )
+
+      @search = CrossCoreProjectsSearch::Searcher.search(initial_projects, @search_form)
+      @projects = @search.projects.display_order
+
+      respond_to do |format|
+        format.html { @projects = @projects.paginate(page: params[:page]) }
+      end
     end
 
     def cross_core_orders
@@ -75,6 +87,10 @@ module Projects
     helper_method :showing_inactive?
 
     private
+
+    def initial_projects
+      Projects::Project.for_facility(current_facility)
+    end
 
     def default_order_statuses(order_details)
       TransactionSearch::OrderStatusSearcher.new(order_details).options - [OrderStatus.canceled, OrderStatus.reconciled].map(&:id)
