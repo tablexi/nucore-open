@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-module CrossCoreProjectsSearch
+module ProjectsSearch
 
   class BaseSearcher
 
     attr_reader :projects
 
     def self.key
-      to_s.delete_prefix("CrossCoreProjectsSearch::").delete_suffix("Searcher").pluralize.underscore
+      to_s.delete_prefix("ProjectsSearch::").delete_suffix("Searcher").pluralize.underscore
     end
 
     def initialize(projects, current_facility_id = nil)

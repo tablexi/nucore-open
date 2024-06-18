@@ -11,14 +11,14 @@ module Projects
     load_and_authorize_resource through: :current_facility
 
     def index
-      @search_form = CrossCoreProjectsSearch::SearchForm.new(
+      @search_form = ProjectsSearch::SearchForm.new(
         params[:search],
         defaults: {
           current_facility_id: current_facility.id,
         },
       )
 
-      @search = CrossCoreProjectsSearch::Searcher.search(initial_projects, @search_form)
+      @search = ProjectsSearch::Searcher.search(initial_projects, @search_form)
       @projects = @search.projects.display_order
 
       respond_to do |format|

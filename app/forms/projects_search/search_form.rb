@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module CrossCoreProjectsSearch
+module ProjectsSearch
 
   class SearchForm
 

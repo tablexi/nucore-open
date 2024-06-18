@@ -58,6 +58,8 @@ RSpec.describe "Projects search" do
 
       expect(page).not_to have_content(active_project.name)
       expect(page).not_to have_content(inactive_project.name)
+
+      expect(page).to have_content("No projects found")
     end
   end
 

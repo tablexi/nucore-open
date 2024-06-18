@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
-module CrossCoreProjectsSearch
+module ProjectsSearch
 
   class Searcher
 
-    # Do not modify this array directly. Use `CrossCoreProjectsSearch.register` instead.
+    # Do not modify this array directly. Use `ProjectsSearch.register` instead.
     # There is some additional setup that needs to happen (adding an attr_accessor
     # to SearchForm) that `register` handles.
     cattr_accessor(:default_searchers) do
       [
         # CrossCoreSearcher goes first as it is the one that defines the initial projects
-        CrossCoreProjectsSearch::CrossCoreSearcher,
-        CrossCoreProjectsSearch::ActiveSearcher,
+        ProjectsSearch::CrossCoreSearcher,
+        ProjectsSearch::ActiveSearcher,
       ]
     end
 
@@ -20,7 +20,7 @@ module CrossCoreProjectsSearch
       new.search(projects, params)
     end
 
-    # Expects an array of `CrossCoreProjectsSearch::BaseSearcher`s
+    # Expects an array of `ProjectsSearch::BaseSearcher`s
     def initialize(*searchers)
       searchers = self.class.default_searchers if searchers.blank?
       @searchers = Array(searchers)
