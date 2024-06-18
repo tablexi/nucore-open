@@ -89,7 +89,7 @@ module Projects
     private
 
     def initial_projects
-      Projects::Project.for_facility(current_facility)
+      current_facility.projects
     end
 
     def default_order_statuses(order_details)

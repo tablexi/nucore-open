@@ -8,8 +8,6 @@ module CrossCoreProjectsSearch
     end
 
     def search(params)
-      return projects if params.blank?
-
       if params == "inactive"
         projects.inactive
       else
