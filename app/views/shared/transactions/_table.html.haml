@@ -26,4 +26,8 @@
     .row
       .span12= yield :action_instructions
     .row
-      .span12= render "shared/transactions/table_inside", order_details: order_details, show_statements: local_assigns[:show_statements]
+      .span12
+        = render "shared/transactions/table_inside",
+          order_details: order_details,
+          show_statements: local_assigns[:show_statements],
+          projects_table: local_assigns[:projects_table]

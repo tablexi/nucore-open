@@ -9,7 +9,8 @@
 
   - @date_range_field = :ordered_at
   = render "shared/transactions/table",
-    order_details: @order_details
+    order_details: @order_details,
+    projects_table: true
 
 - if can? :edit, @project
   = link_to t(".edit"),
