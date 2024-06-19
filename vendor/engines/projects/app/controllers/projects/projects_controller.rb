@@ -73,7 +73,7 @@ module Projects
     end
 
     def show
-      @order_details = if @project.orders.any?
+      @order_details = if @project.orders.any? && SettingsHelper.feature_on?(:cross_core_order_view)
                          OrderDetail.joins(:order).where({ order: { cross_core_project_id: @project.id } })
                        else
                          @order_details = @project.order_details
