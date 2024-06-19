@@ -11,6 +11,7 @@
   = render "shared/transactions/table",
     order_details: @order_details
 
-= link_to t(".edit"),
-  edit_facility_project_path(@project.facility, @project),
-  class: "btn btn-primary"
+- if can? :edit, @project
+  = link_to t(".edit"),
+    edit_facility_project_path(@project.facility, @project),
+    class: "btn btn-primary"
