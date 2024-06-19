@@ -73,7 +73,13 @@ module Projects
     end
 
     def show
-      @order_details = @project.order_details.order(ordered_at: :desc).paginate(page: params[:page])
+      @order_details = if @project.orders.any?
+                         OrderDetail.joins(:order).where({ order: { cross_core_project_id: @project.id } })
+                       else
+                         @order_details = @project.order_details
+                       end
+
+      @order_details = @order_details.order(ordered_at: :desc).paginate(page: params[:page])
     end
 
     def update
