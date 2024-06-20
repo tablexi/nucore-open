@@ -76,7 +76,7 @@ module Projects
       @order_details = if @project.orders.any? && SettingsHelper.feature_on?(:cross_core_order_view)
                          OrderDetail.joins(:order).where({ order: { cross_core_project_id: @project.id } })
                        else
-                         @order_details = @project.order_details
+                         @project.order_details
                        end
 
       @order_details = @order_details.order(ordered_at: :desc).paginate(page: params[:page])
