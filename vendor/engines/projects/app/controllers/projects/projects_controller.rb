@@ -18,7 +18,7 @@ module Projects
         },
       )
 
-      @search = ProjectsSearch::Searcher.search(initial_projects, @search_form)
+      @search = ProjectsSearch::Searcher.search(nil, @search_form)
       @projects = @search.projects.display_order
 
       respond_to do |format|
@@ -87,10 +87,6 @@ module Projects
     helper_method :showing_inactive?
 
     private
-
-    def initial_projects
-      nil
-    end
 
     def default_order_statuses(order_details)
       TransactionSearch::OrderStatusSearcher.new(order_details).options - [OrderStatus.canceled, OrderStatus.reconciled].map(&:id)
