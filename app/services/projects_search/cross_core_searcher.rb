@@ -30,16 +30,11 @@ module ProjectsSearch
     private
 
     def cross_core_projects
-      Projects::Project
-        .joins(:orders)
-        .where(orders: { facility_id: @current_facility_id })
+      Projects::Project.cross_core.for_facility(@current_facility_id)
     end
 
     def single_facility_projects
-      Projects::Project
-        .left_outer_joins(orders: [:facility, :cross_core_project])
-        .where(orders: { cross_core_project_id: nil })
-        .where(facility_id: @current_facility_id)
+      Projects::Project.for_single_facility(@current_facility_id)
     end
 
   end

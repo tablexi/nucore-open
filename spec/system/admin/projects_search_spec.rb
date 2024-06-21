@@ -12,6 +12,12 @@ RSpec.describe "Projects search" do
   before do
     login_as facility_administrator
 
+    active_project_order = create(:purchased_order, product: item, account: accounts.first)
+    active_project_order.order_details.first.update(project: active_project)
+
+    inactive_project_order = create(:purchased_order, product: item, account: accounts.first)
+    inactive_project_order.order_details.first.update(project: inactive_project)
+
     visit facility_projects_path(facility)
   end
 
