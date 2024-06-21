@@ -32,7 +32,7 @@ module ProjectsSearch
 
         search_params = params[searcher_class.key.to_sym]
 
-        # Options should not be restricted, they should search over the full order details
+        # Options should not be restricted, they should search over the full list of projects
         option_searcher = searcher_class.new(projects)
 
         Results.new(
