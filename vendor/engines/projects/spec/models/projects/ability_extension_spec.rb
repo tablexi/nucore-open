@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe Projects::AbilityExtension do
   subject(:ability) { Ability.new(user, facility, stub_controller) }
-  let(:common_actions) { %i(create edit inactive index new show update) }
+  let(:common_actions) { %i(create edit index new show update) }
   let(:facility) { project.facility }
   let(:project) { FactoryBot.build(:project) }
   let(:stub_controller) { OpenStruct.new }

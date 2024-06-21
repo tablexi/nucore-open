@@ -13,17 +13,22 @@ module Projects
     def extend(user, resource)
       if resource.is_a?(Facility)
         if user.operator_of?(resource) && !user.facility_billing_administrator_of?(resource)
-          ability.can([:create, :index, :new], Projects::Project)
+          ability.can([:create, :index, :new, :edit, :update], Projects::Project)
         end
 
         if user.facility_staff_or_manager_of?(resource) || user.facility_director_of?(resource)
           ability.can :cross_core_orders, Projects::Project
         end
       elsif resource.is_a?(Project)
-        ability.can [:show, :edit, :update], Projects::Project do |project|
-          facility_ids = project.orders&.map(&:facility_id)&.uniq
+        ability.can [:show], Projects::Project do |project|
+          if project.orders.any?
+            facility_ids = project.orders.map(&:facility_id)&.uniq
 
-          facility_ids.present? && facility_ids.any? { |facility_id| user.facility_staff_or_manager_of?(Facility.find(facility_id)) }
+            facility_ids.present? && facility_ids.any? { |facility_id| user.facility_staff_or_manager_of?(Facility.find(facility_id)) }
+          else
+            facility = project.facility
+            user.operator_of?(facility) && !user.facility_billing_administrator_of?(facility)
+          end
         end
       end
     end
