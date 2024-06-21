@@ -8,7 +8,8 @@ module Projects
     admin_tab :all
     before_action { @active_tab = action_name || "admin_projects" }
 
-    load_and_authorize_resource through: :current_facility
+    load_and_authorize_resource through: :current_facility, except: [:show]
+    load_and_authorize_resource only: [:show]
 
     def index
       @search_form = ProjectsSearch::SearchForm.new(
@@ -126,6 +127,10 @@ module Projects
           text(".#{action_name}.success", project_name: @project.name)
         redirect_to facility_project_path(@project.facility, @project)
       end
+    end
+
+    def ability_resource
+      @project
     end
 
   end

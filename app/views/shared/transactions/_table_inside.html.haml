@@ -9,7 +9,7 @@
       - if @sorting_enabled
         = render "shared/transactions/sortable_table_headers"
       - else
-        = render "shared/transactions/table_headers", projects_table: local_assigns[:projects_table]
+        = render "shared/transactions/table_headers"
   %tbody
     / We need to keep track of how many columns there are to the left of the Cost column,
     / so we can position the Total correctly.
@@ -23,8 +23,8 @@
         - if @order_detail_link
           %td.nowrap= link_to @order_detail_link[:text], @order_detail_link[:proc].call(order_detail) if @order_detail_link[:display?].call(order_detail)
           - colspan_for_total += 1
-        -# TODO: Fix this logic, as it isn't working as expected
-        - if local_assigns[:projects_table] && cannot?(:show, order_detail.order)
+        - cross_core_order = controller_name == "projects" && order_detail.order.facility_id != current_facility.id
+        - if cross_core_order
           %td.nowrap= order_detail.order.id
           %td.nowrap= order_detail.id
         - elsif backend?
@@ -37,7 +37,8 @@
         - if @extra_date_column and order_detail.send(@extra_date_column)
           %td= order_detail.send(@extra_date_column).strftime("%m/%d/%Y")
           - colspan_for_total += 1
-        - if current_facility.blank? || cross_facility? || local_assigns[:projects_table]
+        - should_show_facility_column = current_facility.blank? || cross_facility? || controller_name == "projects"
+        - if should_show_facility_column
           %td= order_detail.order.facility
           - colspan_for_total += 1
         %td.user-order-detail.order-note
@@ -52,17 +53,17 @@
             .order-detail-extra.order-detail-note
               = render "shared/order_detail_note", order_detail: order_detail
         %td= order_detail.order.user.full_name
-        - if local_assigns[:projects_table]
+        - if controller_name == "projects"
           %td= order_detail.created_by_user.full_name
           - colspan_for_total += 1
-        - if !local_assigns[:projects_table] && @account.nil?
+        - if @account.nil?
           %td= order_detail.account
           %td= order_detail.account.owner_user
           - colspan_for_total += 2
         %td.currency
           - order_detail_presenter = OrderDetailPresenter.new(order_detail)
           = order_detail_presenter.wrapped_total
-          - if local_assigns[:projects_table]
+          - if controller_name == "projects"
             %br
             = order_detail_presenter.price_group_name
         %td.nowrap
