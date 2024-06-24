@@ -11,14 +11,19 @@ module Projects
     load_and_authorize_resource through: :current_facility
 
     def index
-      @all_projects = @projects.display_order
-      @projects = @all_projects.active.paginate(page: params[:page])
-    end
+      @search_form = ProjectsSearch::SearchForm.new(
+        params[:search],
+        defaults: {
+          current_facility_id: current_facility.id,
+        },
+      )
 
-    def inactive
-      @all_projects = @projects.display_order
-      @projects = @all_projects.inactive.paginate(page: params[:page])
-      render action: :index
+      @search = ProjectsSearch::Searcher.search(nil, @search_form)
+      @projects = @search.projects.display_order
+
+      respond_to do |format|
+        format.html { @projects = @projects.paginate(page: params[:page]) }
+      end
     end
 
     def cross_core_orders
