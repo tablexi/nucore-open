@@ -23,6 +23,17 @@ module Projects
       joins(:orders).where(orders: { facility: })
     }
 
+    scope :cross_core, lambda {
+      joins(:orders)
+        .where.not(orders: { cross_core_project_id: nil })
+    }
+
+    scope :for_single_facility, lambda { |facility|
+      left_outer_joins(:orders)
+        .where(orders: { cross_core_project_id: nil })
+        .where(facility: facility)
+    }
+
     def to_s
       name
     end
