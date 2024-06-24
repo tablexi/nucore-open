@@ -20,14 +20,16 @@ module Projects
           ability.can :cross_core_orders, Projects::Project
         end
       elsif resource.is_a?(Project)
-        ability.can [:show], Projects::Project do |project|
-          if project.orders.any?
-            facility_ids = project.orders.map(&:facility_id)&.uniq
+        if user.facility_staff_or_manager_of_any_facility?
+          ability.can [:show], Projects::Project do |project|
+            if project.cross_core?
+              facility_ids = project.orders.map(&:facility_id)&.uniq
 
-            facility_ids.present? && facility_ids.any? { |facility_id| user.facility_staff_or_manager_of?(Facility.find(facility_id)) }
-          else
-            facility = project.facility
-            user.operator_of?(facility) && !user.facility_billing_administrator_of?(facility)
+              facility_ids.present? && facility_ids.any? { |facility_id| user.facility_staff_or_manager_of?(Facility.find(facility_id)) }
+            else
+              facility = project.facility
+              user.operator_of?(facility) && !user.facility_billing_administrator_of?(facility)
+            end
           end
         end
       end
