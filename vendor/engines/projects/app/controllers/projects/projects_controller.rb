@@ -130,7 +130,11 @@ module Projects
     end
 
     def ability_resource
-      @project
+      if params[:action] == "show"
+        @project
+      else
+        current_facility
+      end
     end
 
   end
