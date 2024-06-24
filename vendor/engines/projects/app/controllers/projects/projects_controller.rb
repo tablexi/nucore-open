@@ -8,8 +8,8 @@ module Projects
     admin_tab :all
     before_action { @active_tab = action_name || "admin_projects" }
 
-    load_and_authorize_resource through: :current_facility, except: [:show]
-    load_and_authorize_resource only: [:show]
+    load_and_authorize_resource through: :current_facility, except: [:show, :edit, :update]
+    load_and_authorize_resource only: [:show, :edit, :update]
 
     def index
       @search_form = ProjectsSearch::SearchForm.new(
@@ -130,7 +130,7 @@ module Projects
     end
 
     def ability_resource
-      if params[:action] == "show"
+      if ["show", "edit", "update"].include?(params[:action])
         @project
       else
         current_facility
