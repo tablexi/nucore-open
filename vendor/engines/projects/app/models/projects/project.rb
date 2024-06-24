@@ -48,6 +48,12 @@ module Projects
       orders.any?
     end
 
+    def name
+      return "#{facility.abbreviation} Project - #{id}" if cross_core?
+
+      super
+    end
+
   end
 
 end
