@@ -4,7 +4,7 @@
 %h2= @project.name
 = sanitize @project.description
 
-- if @project.order_details.any?
+- if @order_details.any?
   %h3= "Total Cost: #{number_to_currency(@project.total_cost)}"
 
   - @date_range_field = :ordered_at
