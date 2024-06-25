@@ -34,6 +34,11 @@ module Projects
         .where(facility: facility)
     }
 
+    def self.for_user(user)
+      cross_core(user.cross_core_management_facilities)
+        .or(for_single_facility(user.operable_facilities(exclude_billing_admin: true)))
+    end
+
     def to_s
       name
     end

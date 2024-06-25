@@ -59,6 +59,10 @@ class UserRole < ApplicationRecord
     [FACILITY_STAFF, FACILITY_SENIOR_STAFF]
   end
 
+  def self.facility_staff_or_above
+    facility_staff + facility_management_roles
+  end
+
   def self.global_roles
     if SettingsHelper.feature_on?(:global_billing_administrator)
       account_manager + administrator + global_billing_administrator

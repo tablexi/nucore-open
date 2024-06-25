@@ -25,16 +25,26 @@ module Users
     end
 
     # Returns relation of facilities for which this user is staff, a director, or an admin
-    def operable_facilities
+    def operable_facilities(exclude_billing_admin: false)
       if administrator?
         Facility.alphabetized
+      elsif exclude_billing_admin
+        facilities.alphabetized.where(user_roles: { role: UserRole.facility_staff_or_above })
       else
         facilities.alphabetized.where(user_roles: { role: UserRole.facility_roles })
       end
     end
 
+    def cross_core_management_facilities
+      if administrator?
+        Facility.alphabetized
+      else
+        facilities.alphabetized.where(user_roles: { role: UserRole.facility_staff_or_above })
+      end
+    end
+
     def facility_staff_or_manager_of_any_facility?
-      user_roles.find { |r| [UserRole::FACILITY_DIRECTOR, UserRole::FACILITY_ADMINISTRATOR, UserRole::FACILITY_SENIOR_STAFF, UserRole::FACILITY_STAFF].include?(r.role) }.present?
+      user_roles.find { |r| UserRole.facility_staff_or_above.include?(r.role) }.present?
     end
 
     def facility_staff_or_manager_of?(facility)
