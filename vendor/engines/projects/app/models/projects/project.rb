@@ -44,6 +44,10 @@ module Projects
       order_details.inject(0) { |sum, od| sum += od.total }
     end
 
+    def cross_core?
+      orders.any?
+    end
+
   end
 
 end

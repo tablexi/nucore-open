@@ -8,7 +8,8 @@ module Projects
     admin_tab :all
     before_action { @active_tab = action_name || "admin_projects" }
 
-    load_and_authorize_resource through: :current_facility
+    load_and_authorize_resource through: :current_facility, except: [:show]
+    load_and_authorize_resource only: [:show]
 
     def index
       @search_form = ProjectsSearch::SearchForm.new(
@@ -73,7 +74,13 @@ module Projects
     end
 
     def show
-      @order_details = @project.order_details.order(ordered_at: :desc).paginate(page: params[:page])
+      @order_details = if @project.orders.any? && SettingsHelper.feature_on?(:cross_core_order_view)
+                         OrderDetail.joins(:order).where({ order: { cross_core_project_id: @project.id } })
+                       else
+                         @project.order_details
+                       end
+
+      @order_details = @order_details.order(ordered_at: :desc).paginate(page: params[:page])
     end
 
     def update
@@ -119,6 +126,14 @@ module Projects
         flash[:notice] =
           text(".#{action_name}.success", project_name: @project.name)
         redirect_to facility_project_path(@project.facility, @project)
+      end
+    end
+
+    def ability_resource
+      if params[:action] == "show"
+        @project
+      else
+        current_facility
       end
     end
 
