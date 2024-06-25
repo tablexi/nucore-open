@@ -433,7 +433,6 @@ GEM
     momentjs-rails (2.29.4.1)
       railties (>= 3.1)
     msgpack (1.7.2)
-    mutex_m (0.2.0)
     mysql2 (0.5.6)
     nested_form_fields (0.8.4)
       coffee-rails (>= 3.2.1)
@@ -653,9 +652,8 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    sshkit (1.22.2)
+    sshkit (1.23.0)
       base64
-      mutex_m
       net-scp (>= 1.1.2)
       net-sftp (>= 2.1.2)
       net-ssh (>= 2.8.0)
