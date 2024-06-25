@@ -17,7 +17,7 @@
       - @projects.each do |project|
         %tr
           %td
-            = link_to project.name, facility_project_path(project.facility, project)
+            = link_to project.name, facility_project_path(current_facility, project)
 
   = will_paginate(@projects)
 

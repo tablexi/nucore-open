@@ -30,6 +30,12 @@ RSpec.describe "Projects search" do
       expect(page).to have_content(active_project.name)
       expect(page).not_to have_content(inactive_project.name)
     end
+
+    it "user can navigate to project show" do
+      click_link active_project.name
+      expect(page).to have_current_path(facility_project_path(facility, active_project))
+      expect(page).to have_content(active_project.name)
+    end
   end
 
   context "when Active and Cross Core are selected" do
@@ -47,6 +53,18 @@ RSpec.describe "Projects search" do
 
       expect(page).not_to have_content(active_project.name)
       expect(page).not_to have_content(inactive_project.name)
+    end
+
+    it "user can navigate to cross core project show (originated in current facility)" do
+      click_link cross_core_project.name
+      expect(page).to have_current_path(facility_project_path(facility, cross_core_project))
+      expect(page).to have_content(cross_core_project.name)
+    end
+
+    it "user can navigate to cross core project show (originated in another facility)" do
+      click_link cross_core_project2.name
+      expect(page).to have_current_path(facility_project_path(facility, cross_core_project2))
+      expect(page).to have_content(cross_core_project2.name)
     end
   end
 
