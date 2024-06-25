@@ -125,7 +125,7 @@ module Projects
       if @project.save
         flash[:notice] =
           text(".#{action_name}.success", project_name: @project.name)
-        redirect_to facility_project_path(@project.facility, @project)
+        redirect_to facility_project_path(current_facility, @project)
       end
     end
 
