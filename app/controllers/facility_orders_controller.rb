@@ -146,9 +146,9 @@ class FacilityOrdersController < ApplicationController
         @cross_core_order_details_by_facility[order_facility] = order.order_details.ordered_by_parents
         @cross_core_orders_by_facility[order_facility] = order
       end
-    end
 
-    @project_name = project&.name
+      @cross_core_project_name = project.name
+    end
   end
 
   def missing_reservation_order_ids(project_order_ids)
