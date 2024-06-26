@@ -107,7 +107,9 @@ class Reports::AccountTransactionsReport
   private
 
   def notices_for(order_detail)
-    OrderDetailNoticePresenter.new(order_detail).badges_to_text
+    notices = OrderDetailNoticePresenter.new(order_detail).badges_to_text
+
+    "#{notices}#{cross_core_order(order_detail)}"
   end
 
   def order_detail_duration(order_detail)
@@ -115,6 +117,14 @@ class Reports::AccountTransactionsReport
       ""
     else
       order_detail.csv_quantity
+    end
+  end
+
+  def cross_core_order(order_detail)
+    cross_core_project = order_detail.order.cross_core_project
+
+    if cross_core_project.present? && cross_core_project.facility != order_detail.facility
+      "This order placed on your behalf by #{cross_core_project.facility.abbreviation}"
     end
   end
 
