@@ -166,6 +166,8 @@ en:
       users: "Users"
       edit: "Edit"
     transactions:
+      cross_core_icon:
+        tooltip: "This order placed on your behalf by %{facility}"
       table_inside:
         total: Total
     update: Update

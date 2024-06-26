@@ -1,0 +1,3 @@
+- if order_detail.order.cross_core_project.present? && order_detail.order.cross_core_project.facility_id != current_facility.id
+  %br
+  %i.fa.fa-users{ data: { toggle: "tooltip" }, title: t(".tooltip", facility: order_detail.order.cross_core_project.facility.abbreviation)}
