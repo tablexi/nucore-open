@@ -88,11 +88,6 @@ module Projects
       render action: :edit unless save_project
     end
 
-    def showing_inactive?
-      action_name == "inactive"
-    end
-    helper_method :showing_inactive?
-
     private
 
     def default_order_statuses(order_details)
