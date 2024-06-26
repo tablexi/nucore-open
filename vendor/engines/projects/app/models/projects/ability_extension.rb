@@ -21,7 +21,7 @@ module Projects
         end
       elsif resource.is_a?(Project)
         if user.facility_staff_or_manager_of_any_facility?
-          ability.can [:show], Projects::Project do |project|
+          ability.can [:show, :edit, :update], Projects::Project do |project|
             if project.cross_core?
               facility_ids = project.orders.map(&:facility_id)&.uniq
 

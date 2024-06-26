@@ -8,8 +8,8 @@ module Projects
     admin_tab :all
     before_action { @active_tab = action_name || "admin_projects" }
 
-    load_and_authorize_resource through: :current_facility, except: [:show]
-    load_and_authorize_resource only: [:show]
+    load_and_authorize_resource through: :current_facility, except: [:show, :edit, :update]
+    load_and_authorize_resource only: [:show, :edit, :update]
 
     def index
       @search_form = ProjectsSearch::SearchForm.new(
@@ -114,12 +114,12 @@ module Projects
       if @project.save
         flash[:notice] =
           text(".#{action_name}.success", project_name: @project.name)
-        redirect_to facility_project_path(@project.facility, @project)
+        redirect_to facility_project_path(current_facility, @project)
       end
     end
 
     def ability_resource
-      if params[:action] == "show"
+      if ["show", "edit", "update"].include?(params[:action])
         @project
       else
         current_facility
