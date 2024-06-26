@@ -147,7 +147,7 @@ class FacilityOrdersController < ApplicationController
         @cross_core_orders_by_facility[order_facility] = order
       end
 
-      @cross_core_project_name = project.name
+      @cross_core_project = project
     end
   end
 
