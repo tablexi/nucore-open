@@ -11,7 +11,7 @@
   = render "shared/transactions/table",
     order_details: @order_details
 
-- if can?(:edit, @project) && @project.facility_id == current_facility.id
+- if can?(:edit, @project)
   = link_to t(".edit"),
     edit_facility_project_path(current_facility, @project),
     class: "btn btn-primary"

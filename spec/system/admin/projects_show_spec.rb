@@ -32,6 +32,10 @@ RSpec.describe "Projects show", feature_setting: { cross_core_order_view: true }
         expect(page).to have_content(active_project_order.order_details.first.id)
       end
 
+      it "shows Edit button" do
+        expect(page).to have_link("Edit")
+      end
+
       it "navigates to order" do
         click_link active_project_order.id
 
@@ -78,6 +82,10 @@ RSpec.describe "Projects show", feature_setting: { cross_core_order_view: true }
           expect(page).to have_content(cross_core_orders[1].id)
         end
 
+        it "shows Edit button" do
+          expect(page).to have_link("Edit")
+        end
+
         it "navigates to original order" do
           click_link originating_order_facility1.id
 
@@ -100,6 +108,10 @@ RSpec.describe "Projects show", feature_setting: { cross_core_order_view: true }
           expect(page).to have_content(originating_order_facility2.order_details.first.id)
           expect(page).to have_content(cross_core_orders[2].order_details.first.id)
           expect(page).to have_content(cross_core_orders[3].order_details.first.id)
+        end
+
+        it "shows Edit button" do
+          expect(page).to have_link("Edit")
         end
 
         it "shows other facility's orders as text" do
