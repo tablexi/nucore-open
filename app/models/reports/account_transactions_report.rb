@@ -70,6 +70,7 @@ class Reports::AccountTransactionsReport
       Account.human_attribute_name(:expires_at),
       OrderDetail.human_attribute_name(:order_status),
       OrderDetail.human_attribute_name(:note),
+      text(".cross_core_project_facility"),
       text(".order_detail_notices"),
     ]
   end
@@ -100,6 +101,7 @@ class Reports::AccountTransactionsReport
       format_usa_date(order_detail.account.expires_at),
       order_detail.order_status,
       order_detail.note,
+      originating_cross_core_facility(order_detail),
       notices_for(order_detail),
     ]
   end
@@ -108,8 +110,6 @@ class Reports::AccountTransactionsReport
 
   def notices_for(order_detail)
     notices = OrderDetailNoticePresenter.new(order_detail).badges_to_text
-
-    "#{notices}#{cross_core_order(order_detail)}"
   end
 
   def order_detail_duration(order_detail)
@@ -120,11 +120,11 @@ class Reports::AccountTransactionsReport
     end
   end
 
-  def cross_core_order(order_detail)
+  def originating_cross_core_facility(order_detail)
     cross_core_project = order_detail.order.cross_core_project
 
     if cross_core_project.present? && cross_core_project.facility != order_detail.facility
-      "This order placed on your behalf by #{cross_core_project.facility.abbreviation}"
+      cross_core_project.facility.abbreviation
     end
   end
 
