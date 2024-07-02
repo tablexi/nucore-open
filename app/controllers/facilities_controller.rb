@@ -141,7 +141,7 @@ class FacilitiesController < ApplicationController
     @grand_total = order_details.sum(:actual_cost)
 
     respond_to do |format|
-      format.html { @order_details = @order_details.paginate(page: params[:page]) } # this here?
+      format.html { @order_details = @order_details.paginate(page: params[:page]) }
       format.csv { handle_csv_search }
     end
   end
