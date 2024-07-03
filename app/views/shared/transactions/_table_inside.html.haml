@@ -72,11 +72,12 @@
           = order_detail_status_badges(order_detail)
         - if local_assigns[:show_statements]
           %td= link_to "Download", account_statement_path(order_detail.account, order_detail.statement_id, format: :pdf) if order_detail.statement
-  - if order_details_are_paginated # All Transactions
+  - if order_details_are_paginated && order_details.total_pages > 1
+    - # All Transactions page
     %tfoot
       %tr
         %th.total{ colspan: colspan_for_total, scope: "row" }= "Page Subtotal"
-        %td.currency= number_to_currency(order_details.map(&:actual_or_estimated_total).compact.sum) #
+        %td.currency= number_to_currency(order_details.map(&:actual_or_estimated_total).compact.sum)
         %td{ colspan: local_assigns[:show_statements] ? 2 : 1 }
       %tr
         %th.total{ colspan: colspan_for_total, scope: "row" }= "Grand Total"
@@ -85,6 +86,6 @@
   - else
     %tfoot
       %th.total{ colspan: colspan_for_total, scope: "row" }= t(".total")
-      %td.currency= number_to_currency(order_details.map(&:actual_or_estimated_total).compact.sum) #
+      %td.currency= number_to_currency(order_details.map(&:actual_or_estimated_total).compact.sum)
       %td{ colspan: local_assigns[:show_statements] ? 2 : 1 }
 = will_paginate(order_details) if order_details_are_paginated

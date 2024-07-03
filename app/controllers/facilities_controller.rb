@@ -138,7 +138,7 @@ class FacilitiesController < ApplicationController
     @search = TransactionSearch::Searcher.billing_search(order_details, @search_form, include_facilities: current_facility.cross_facility?)
     @date_range_field = @search_form.date_params[:field]
     @order_details = @search.order_details.joins(order: :user).reorder(sort_clause)
-    @grand_total = order_details.sum(:actual_cost)
+    @grand_total = @order_details.sum(:actual_cost)
 
     respond_to do |format|
       format.html { @order_details = @order_details.paginate(page: params[:page]) }
