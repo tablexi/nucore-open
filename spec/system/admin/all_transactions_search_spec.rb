@@ -14,11 +14,6 @@ RSpec.describe "All Transactions Search", :js do
   let(:order_detail) { orders.first.order_details.first }
 
   before do
-    all_cross_core_orders = cross_core_orders
-    all_cross_core_orders << originating_order_facility1
-    all_cross_core_orders << originating_order_facility2
-    all_cross_core_orders << originating_order_facility3
-
     all_cross_core_orders.each do |order|
       order.order_details.each(&:complete!)
     end
