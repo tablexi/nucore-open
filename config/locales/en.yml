@@ -168,6 +168,10 @@ en:
     transactions:
       table_inside:
         total: Total
+        grand_total: Grand Total
+        page_subtotal: Page Subtotal
+        too_many_results: Unavailable
+        too_many_results_tooltip: "There are more than 1,000 transactions results.  You can use the 'Export as CSV' link to generate a CSV, then use the CSV to calculate the grand total."
     update: Update
 
   global_search:

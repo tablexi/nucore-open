@@ -138,10 +138,15 @@ class FacilitiesController < ApplicationController
     @search = TransactionSearch::Searcher.billing_search(order_details, @search_form, include_facilities: current_facility.cross_facility?)
     @date_range_field = @search_form.date_params[:field]
     @order_details = @search.order_details.joins(order: :user).reorder(sort_clause)
-    @grand_total = @order_details.sum(:actual_cost)
+
+    if @order_details.size < 1000
+      @grand_total = @order_details.map { |od| od.actual_total || od.estimated_total }.compact.sum
+    else
+      @too_many_results = true
+    end
 
     respond_to do |format|
-      format.html { @order_details = @order_details.paginate(page: params[:page]) }
+      format.html { @order_details = @order_details.paginate(page: params[:page]).order(:id) }
       format.csv { handle_csv_search }
     end
   end

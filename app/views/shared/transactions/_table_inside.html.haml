@@ -76,12 +76,17 @@
     - # All Transactions page
     %tfoot
       %tr
-        %th.total{ colspan: colspan_for_total, scope: "row" }= "Page Subtotal"
+        %th.total{ colspan: colspan_for_total, scope: "row" }= t(".page_subtotal")
         %td.currency= number_to_currency(order_details.map(&:actual_or_estimated_total).compact.sum)
         %td{ colspan: local_assigns[:show_statements] ? 2 : 1 }
       %tr
-        %th.total{ colspan: colspan_for_total, scope: "row" }= "Grand Total"
-        %td.currency= number_to_currency(@grand_total) if @grand_total
+        %th.total{ colspan: colspan_for_total, scope: "row" }= t(".grand_total")
+        - if @grand_total
+          %td.currency= number_to_currency(@grand_total)
+        - elsif @too_many_results
+          %td.currency
+            = t(".too_many_results")
+            = tooltip_icon "fa fa-info-circle icon-large", t(".too_many_results_tooltip")
         %td{ colspan: local_assigns[:show_statements] ? 2 : 1 }
   - else
     %tfoot
