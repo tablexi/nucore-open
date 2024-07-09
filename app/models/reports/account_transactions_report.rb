@@ -121,10 +121,8 @@ class Reports::AccountTransactionsReport
   end
 
   def originating_cross_core_facility(order_detail)
-    cross_core_project = order_detail.order.cross_core_project
-
-    if cross_core_project.present? && cross_core_project.facility != order_detail.facility
-      cross_core_project.facility.abbreviation
+    if order_detail.cross_core_activity_for_facility?(order_detail.facility)
+      order_detail.order.cross_core_project.facility.abbreviation
     end
   end
 
