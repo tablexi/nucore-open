@@ -109,7 +109,7 @@ class Reports::AccountTransactionsReport
   private
 
   def notices_for(order_detail)
-    notices = OrderDetailNoticePresenter.new(order_detail).badges_to_text
+    OrderDetailNoticePresenter.new(order_detail).badges_to_text
   end
 
   def order_detail_duration(order_detail)
