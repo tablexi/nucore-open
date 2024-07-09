@@ -26,4 +26,12 @@ RSpec.describe "All Transactions Search" do
     expect(page).to have_link(order_detail.id.to_s, href: manage_facility_order_order_detail_path(facility, orders.first, orders.first.order_details.first))
     expect(page).not_to have_link(orders.second.order_details.first.id.to_s)
   end
+
+  it "is accessible", :js do
+    login_as director
+    visit facility_transactions_path(facility)
+    
+    # Skip these two violations because the chosen JS library is hard to make accessible
+    expect(page).to be_axe_clean.skipping("label", "select-name")
+  end
 end
