@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe Projects::OrderDetails::ParamUpdaterExtension do
+RSpec.describe OrderDetails::ParamUpdater do
   describe ".permitted_attributes" do
     it "injects the :project_id attribute when the engine is active" do
       expect(OrderDetailBatchUpdater.permitted_attributes)
