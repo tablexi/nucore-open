@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe Projects::GlobalSearch::ProjectSearcher do
+RSpec.describe GlobalSearch::ProjectSearcher do
   let(:facility) { nil }
   let!(:facility_a) { FactoryBot.create(:facility) }
   let!(:facility_b) { FactoryBot.create(:facility) }
