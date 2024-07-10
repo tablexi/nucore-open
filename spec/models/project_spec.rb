@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe Projects::Project, type: :model do
+RSpec.describe Project, type: :model do
   subject(:project) { build(:project) }
 
   context "validations" do

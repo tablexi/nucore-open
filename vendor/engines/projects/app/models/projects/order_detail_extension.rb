@@ -8,7 +8,7 @@ module Projects
 
     included do
       belongs_to :project,
-                 class_name: "Projects::Project",
+                 class_name: "Project",
                  foreign_key: :project_id,
                  inverse_of: :order_details
 

@@ -21,7 +21,7 @@ module Projects
     end
 
     def label
-      Projects::Project.model_name.human(count: 2)
+      Project.model_name.human(count: 2)
     end
 
   end

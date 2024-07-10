@@ -8,7 +8,7 @@ module Projects
 
     included do
       has_many :projects,
-               class_name: "Projects::Project",
+               class_name: "Project",
                foreign_key: :facility_id,
                inverse_of: :facility,
                dependent: :destroy # Though Facilities cannot be destroyed

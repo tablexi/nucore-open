@@ -78,7 +78,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
 
         it "shows the new view" do
           expect(response.code).to eq("200")
-          expect(assigns(:project)).to be_kind_of(Projects::Project).and be_new_record
+          expect(assigns(:project)).to be_kind_of(Project).and be_new_record
         end
       end
 
@@ -114,7 +114,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
 
         it "shows the show view" do
           expect(response.code).to eq("200")
-          expect(assigns(:project)).to be_kind_of(Projects::Project).and be_persisted
+          expect(assigns(:project)).to be_kind_of(Project).and be_persisted
         end
       end
 
@@ -145,7 +145,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
 
     describe "when logged in" do
       shared_examples_for "it allows project creation" do |role|
-        let(:created_project) { Projects::Project.last }
+        let(:created_project) { Project.last }
         let(:user) { FactoryBot.create(:user, role, facility: facility) }
 
         before(:each) do

@@ -14,7 +14,7 @@ RSpec.describe Projects::AbilityExtension do
     shared_examples_for "it has full access for facility level actions" do
       it "has full access" do
         common_actions_on_facility_level.each do |action|
-          is_expected.to be_allowed_to(action, Projects::Project)
+          is_expected.to be_allowed_to(action, Project)
         end
       end
     end
@@ -22,7 +22,7 @@ RSpec.describe Projects::AbilityExtension do
     shared_examples_for "it has no access for facility level actions" do
       it "has no access" do
         common_actions_on_facility_level.each do |action|
-          is_expected.not_to be_allowed_to(action, Projects::Project)
+          is_expected.not_to be_allowed_to(action, Project)
         end
       end
     end
@@ -81,7 +81,7 @@ RSpec.describe Projects::AbilityExtension do
       # They *could* have access to *a* project, but not necessarily *all* projects.
       it "has full access" do
         common_actions_on_project_level.each do |action|
-          is_expected.to be_allowed_to(action, Projects::Project)
+          is_expected.to be_allowed_to(action, Project)
         end
       end
     end
@@ -89,7 +89,7 @@ RSpec.describe Projects::AbilityExtension do
     shared_examples_for "it has no access for project level actions" do
       it "has no access" do
         common_actions_on_project_level.each do |action|
-          is_expected.not_to be_allowed_to(action, Projects::Project)
+          is_expected.not_to be_allowed_to(action, Project)
         end
       end
     end

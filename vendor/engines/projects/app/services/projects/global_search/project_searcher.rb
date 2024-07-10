@@ -16,7 +16,7 @@ module Projects
         if facility.try(:single_facility?)
           facility.projects
         else
-          Projects::Project
+          Project
         end
       end
 
@@ -27,7 +27,7 @@ module Projects
       end
 
       def search
-        query_object.where("lower(name) LIKE ?", "%#{query.downcase}%").or(Projects::Project.where(id: query))
+        query_object.where("lower(name) LIKE ?", "%#{query.downcase}%").or(Project.where(id: query))
       end
 
     end

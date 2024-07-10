@@ -22,7 +22,7 @@
             %th.nowrap= OrderDetail.human_attribute_name(:quantity)
             %th.nowrap.order-note= OrderDetail.human_attribute_name(:product)
             %th.nowrap= sortable "facility", Facility.model_name.human
-            %th.nowrap= Projects::Project.model_name.human
+            %th.nowrap= Project.model_name.human
             %th.nowrap= sortable "status"
             %th.nowrap.currency= OrderDetail.human_attribute_name(:actual_cost)
             %th.nowrap= PriceGroup.model_name.human
