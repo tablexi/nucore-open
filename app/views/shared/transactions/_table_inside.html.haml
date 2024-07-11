@@ -1,4 +1,5 @@
-= will_paginate(order_details) if order_details.respond_to? :total_pages
+- order_details_are_paginated = order_details.respond_to?(:total_pages)
+= will_paginate(order_details) if order_details_are_paginated
 %table.table.table-striped.table-hover.dense.old-table.js--transactions-table
   %thead
     %tr
@@ -76,9 +77,25 @@
           = order_detail_status_badges(order_detail)
         - if local_assigns[:show_statements]
           %td= link_to "Download", account_statement_path(order_detail.account, order_detail.statement_id, format: :pdf) if order_detail.statement
-  - unless order_details.respond_to? :total_pages
+  - # The 'All Transactions' page is paginated, but other billing pages are not.
+  - if order_details_are_paginated && order_details.total_pages > 1
+    %tfoot
+      %tr
+        %th.total{ colspan: colspan_for_total, scope: "row" }= t(".page_subtotal")
+        %td.currency= number_to_currency(order_details.map(&:actual_or_estimated_total).compact.sum)
+        %td{ colspan: local_assigns[:show_statements] ? 2 : 1 }
+      %tr
+        %th.total{ colspan: colspan_for_total, scope: "row" }= t(".grand_total")
+        - if @grand_total
+          %td.currency= number_to_currency(@grand_total)
+        - elsif @too_many_results
+          %td.currency
+            = t(".too_many_results")
+            = tooltip_icon "fa fa-info-circle icon-large", t(".too_many_results_tooltip")
+        %td{ colspan: local_assigns[:show_statements] ? 2 : 1 }
+  - else
     %tfoot
       %th.total{ colspan: colspan_for_total, scope: "row" }= t(".total")
       %td.currency= number_to_currency(order_details.map(&:actual_or_estimated_total).compact.sum)
       %td{ colspan: local_assigns[:show_statements] ? 2 : 1 }
-= will_paginate(order_details) if order_details.respond_to? :total_pages
+= will_paginate(order_details) if order_details_are_paginated
