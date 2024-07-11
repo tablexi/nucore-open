@@ -166,6 +166,8 @@ en:
       users: "Users"
       edit: "Edit"
     transactions:
+      cross_core_icon:
+        tooltip: "This order placed on your behalf by %{facility}"
       table_inside:
         total: Total
         grand_total: Grand Total
@@ -1066,6 +1068,7 @@ en:
       fail_continue_on_error: "The import failed. %{successes} line item(s) created successfully, %{failures} failed. Please download the error report below, view each error message, correct the error, and try to import again."
       success: "The import completed successfully. %{successes} line items were created."
     account_transactions:
+      cross_core_project_facility: Cross Core Project Facility
       export: Export as CSV
       subject: "!app_name! Transaction Export"
       body: Your export is ready. Please see the attached file.
