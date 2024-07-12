@@ -2,12 +2,12 @@
 
 require "rails_helper"
 
-RSpec.describe Projects::OrderDetailExtension do
+RSpec.describe OrderDetail do
   subject(:order_detail) { order.order_details.first }
   let(:facility) { order.facility }
-  let(:item) { FactoryBot.create(:setup_item) }
-  let(:order) { FactoryBot.create(:setup_order, product: item) }
-  let(:project) { FactoryBot.create(:project, facility: facility) }
+  let(:item) { create(:setup_item) }
+  let(:order) { create(:setup_order, product: item) }
+  let(:project) { create(:project, facility:) }
 
   context "validations" do
     it "can belong_to a Project" do
@@ -27,7 +27,7 @@ RSpec.describe Projects::OrderDetailExtension do
       end
 
       context "when the Project belongs to a different facility than the Order" do
-        let(:facility) { FactoryBot.create(:facility) }
+        let(:facility) { create(:facility) }
 
         it { is_expected.to be_valid }
       end
@@ -47,7 +47,7 @@ RSpec.describe Projects::OrderDetailExtension do
 
       context "and the order_detail was not already associated with it" do
         let(:inactive_project) do
-          FactoryBot.create(:project, :inactive, facility: facility)
+          create(:project, :inactive, facility:)
         end
 
         it "is invalid" do
@@ -65,15 +65,15 @@ RSpec.describe Projects::OrderDetailExtension do
 
     context "when there are no active projects for the associated facility" do
       before(:each) do
-        FactoryBot.create(:project, :inactive, facility: order_detail.facility)
+        create(:project, :inactive, facility: order_detail.facility)
       end
 
       it { expect(order_detail.selectable_projects).to be_empty }
     end
 
     context "when there are active projects for the associated facility" do
-      let(:active_projects) { FactoryBot.create_list(:project, 3, facility: facility) }
-      let(:inactive_project) { FactoryBot.create(:project, :inactive, facility: facility) }
+      let(:active_projects) { create_list(:project, 3, facility:) }
+      let(:inactive_project) { create(:project, :inactive, facility:) }
       let!(:all_projects) { active_projects + [inactive_project] }
 
       before { order_detail.update_attribute(:project_id, project_id) }
