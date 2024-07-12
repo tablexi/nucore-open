@@ -18,6 +18,7 @@ class OrderRowImporter
       notes
       order_number
       reference_id
+      project_name
       errors
     ]
   end
@@ -295,7 +296,17 @@ class OrderRowImporter
     end
   end
 
-  # Projects adds a custom attribute and overrides this method to validate it
   def validate_custom_attributes
+    if field(:project_name).present? && project.nil?
+      add_error(:project_not_found)
+    end
+  end
+
+  def project
+    facility.projects.active.find_by name: field(:project_name)
+  end
+
+  def custom_attributes
+    { project_id: project&.id }
   end
 end
