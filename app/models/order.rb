@@ -22,6 +22,8 @@ class Order < ApplicationRecord
   # Used to allow validating order imports against the fulfillment date instead of the current time
   attr_reader :import_fulfillment_date
 
+  attr_reader :project_id
+
   def cross_core_project
     return nil unless SettingsHelper.feature_on?(:cross_core_projects)
 
@@ -214,6 +216,11 @@ class Order < ApplicationRecord
   # If user_id doesn't match created_by, that means it was ordered on behalf of
   def ordered_on_behalf_of?
     user_id != created_by
+  end
+
+  def project_id=(project_id)
+    @project_id = project_id
+    order_details.each { |order_detail| order_detail.project_id = project_id }
   end
 
   private

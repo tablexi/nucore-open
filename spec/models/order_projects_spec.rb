@@ -2,10 +2,10 @@
 
 require "rails_helper"
 
-RSpec.describe Projects::OrderExtension do
-  subject(:order) { FactoryBot.create(:setup_order, product: item) }
-  let(:item) { FactoryBot.create(:setup_item) }
-  let(:project_id) { FactoryBot.create(:project, facility: order.facility).id }
+RSpec.describe Order do
+  subject(:order) { create(:setup_order, product: item) }
+  let(:item) { create(:setup_item) }
+  let(:project_id) { create(:project, facility: order.facility).id }
 
   describe "#project_id=" do
     before(:each) do
@@ -33,7 +33,7 @@ RSpec.describe Projects::OrderExtension do
       end
 
       context "that is invalid for the facility" do
-        let(:project_id) { FactoryBot.create(:project).id }
+        let(:project_id) { create(:project).id }
 
         it "fails to set project_id on the order_details" do
           order.reload.order_details.each do |order_detail|
