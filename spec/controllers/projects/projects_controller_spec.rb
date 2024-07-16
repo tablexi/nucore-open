@@ -17,7 +17,7 @@ def facility_operator_roles
   end
 end
 
-RSpec.describe Projects::ProjectsController, type: :controller do
+RSpec.describe ProjectsController, type: :controller do
   let(:facility) { FactoryBot.create(:facility) }
 
   describe "GET #edit" do
