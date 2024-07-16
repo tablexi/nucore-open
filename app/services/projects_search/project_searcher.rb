@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Projects
+module ProjectsSearch
 
   class ProjectSearcher < TransactionSearch::BaseSearcher
 

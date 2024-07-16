@@ -6,7 +6,7 @@ module ProjectsSearch
 
     include ActiveModel::Model
 
-    attr_accessor :actives, :cross_cores, :current_facility_id
+    attr_accessor :actives, :cross_cores, :current_facility_id, :projects, :cross_core_facilties
 
     def self.model_name
       ActiveModel::Name.new(self, nil, "Search")

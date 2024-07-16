@@ -52,7 +52,7 @@ module Projects
         TransactionSearch::OrderedForSearcher,
         TransactionSearch::OrderStatusSearcher,
         TransactionSearch::DateRangeSearcher,
-        CrossCoreFacilitySearcher,
+        ProjectsSearch::CrossCoreFacilitySearcher,
       ]
 
       @search = TransactionSearch::Searcher.new(*searchers).search(order_details, @search_form)
