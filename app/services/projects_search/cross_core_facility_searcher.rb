@@ -32,7 +32,7 @@ module ProjectsSearch
     end
 
     def label
-      text("projects.projects.cross_core_orders.filter_label")
+      text("projects.cross_core_orders.filter_label")
     end
 
     def input_type
