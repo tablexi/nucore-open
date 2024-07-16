@@ -8,7 +8,7 @@ en:
               project_is_inactive: The project is inactive
 
     models:
-      projects/project:
+      project:
         one: Project
         other: Projects
 

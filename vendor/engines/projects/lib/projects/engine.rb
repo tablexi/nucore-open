@@ -6,7 +6,6 @@ module Projects
 
     config.to_prepare do
       ::AbilityExtensionManager.extensions << "Projects::AbilityExtension"
-      NavTab::LinkCollection.send :include, Projects::LinkCollectionExtension
 
       ViewHook.add_hook "reservations.account_field",
                         "after_account",
