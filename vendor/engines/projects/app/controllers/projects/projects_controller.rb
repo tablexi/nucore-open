@@ -112,7 +112,7 @@ module Projects
     end
 
     def project_params
-      params.require(:projects_project).permit("active", "description", "name")
+      params.require(:project).permit("active", "description", "name")
     end
 
     def save_project

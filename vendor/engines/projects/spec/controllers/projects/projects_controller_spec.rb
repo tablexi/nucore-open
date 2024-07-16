@@ -130,7 +130,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
     def do_request
       post :create, params: {
         facility_id: facility.url_name,
-        projects_project: { name: name, description: description },
+        project: { name: name, description: description },
       }
     end
 
@@ -179,7 +179,7 @@ RSpec.describe Projects::ProjectsController, type: :controller do
       put :update, params: {
         facility_id: facility.url_name,
         id: project.id,
-        projects_project: {
+        project: {
           active: active?,
           description: new_description,
           name: new_name,
