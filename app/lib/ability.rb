@@ -34,6 +34,7 @@ class Ability
     end
 
     ability_extender.extend(user, resource)
+    Projects::AbilityExtension.new(self).extend(user, resource)
   end
 
 
