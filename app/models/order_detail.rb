@@ -67,13 +67,13 @@ class OrderDetail < ApplicationRecord
   has_many   :notifications, as: :subject, dependent: :destroy
   has_many   :stored_files, dependent: :destroy
   has_many   :sample_results_files, -> { sample_result }, class_name: "StoredFile"
-  has_many   :vestal_versions, as: :versioned
 
   # This is a _temporary_ associaton to make up for the fact that the
   # vestal versions gem is no longer in the project. It's here to
   # allow access to the vestal data.
   # once that data is no longer needed, this line and the
   # associated class can be removed
+  has_many   :vestal_versions, as: :versioned
 
   delegate :edit_url, to: :external_service_receiver, allow_nil: true
   delegate :in_cart?, :facility, :user, to: :order # user is the ordered_for user, not ordered_by user
