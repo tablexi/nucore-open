@@ -130,6 +130,7 @@ class Order < ApplicationRecord
     order_details.destroy_all
     self.facility = nil
     self.account = nil
+    self.cross_core_project_id = nil
     save
   end
 
