@@ -428,14 +428,13 @@ RSpec.describe OrderRowImporter do
     end
 
     context "when the user has an account for the product's facility" do
-      include_context "valid row values"
-
       let(:chart_string) { account.account_number }
       let(:order_date) { I18n.l(Time.current.to_date, format: :usa) }
       let(:fulfillment_date) { I18n.l(Time.current.to_date, format: :usa) }
       let(:product) { service }
       let(:product_name) { product.name }
       let(:username) { user.username }
+      let(:project_name) { nil }
 
       before(:each) do
         allow_any_instance_of(User).to receive(:accounts)
@@ -498,10 +497,6 @@ RSpec.describe OrderRowImporter do
             end
 
             context "and the order is invalid" do
-              before(:each) do
-                allow_any_instance_of(Order).to receive(:validate_order!).and_return(false)
-              end
-
               # Creating an Order in this case is existing behavior.
               # In practice we run the import in a transaction and roll back.
               it_behaves_like "an order was created"
