@@ -4,7 +4,7 @@
       %dl.span8
         %dt= @order_detail.class.human_attribute_name(:account)
         %dd= @order_detail.account
-    = render "projects/shared/project", f: f, order_detail: @order_detail
+    = render "projects/shared/project", order_detail: @order_detail
     - # TODO: Check if un-used and remove.  This was used by the old projects engine before it was brought into the application.
     = render_view_hook "after_account_print", order_detail: @order_detail
     .row

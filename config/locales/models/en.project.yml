@@ -50,7 +50,7 @@ en:
     show:
       edit: Edit Project
 
-  shared:
-    select_project:
-      placeholder: Choose a project...
-      unassign: Unassign
+    shared:
+      select_project:
+        placeholder: Choose a project...
+        unassign: Unassign
