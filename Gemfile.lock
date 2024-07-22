@@ -33,11 +33,6 @@ PATH
       rails (>= 4.2)
 
 PATH
-  remote: vendor/engines/projects
-  specs:
-    projects (0.0.1)
-
-PATH
   remote: vendor/engines/saml_authentication
   specs:
     saml_authentication (0.0.1)
@@ -791,7 +786,6 @@ DEPENDENCIES
   parallel_tests
   paranoia
   prawn-rails
-  projects!
   pry-byebug
   pry-rails
   puma
@@ -839,4 +833,4 @@ RUBY VERSION
    ruby 3.3.0p0
 
 BUNDLED WITH
-   2.4.20
+   2.5.8
