@@ -253,6 +253,7 @@ en:
       checkbox_label: select order %{order_number} to be reconciled
       bulk_note_checkbox: Use Bulk Note
       bulk_note: Bulk Reconciliation Note
+      bulk_crt_number: Bulk CRT Number
 
   facility_users:
     title: "!Facility! Staff"

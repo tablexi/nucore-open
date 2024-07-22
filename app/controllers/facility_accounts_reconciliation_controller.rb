@@ -37,6 +37,7 @@ class FacilityAccountsReconciliationController < ApplicationController
       params[:order_detail],
       reconciled_at,
       params[:bulk_reconcile_note],
+      params[:bulk_crt_number],
       params[:bulk_note_checkbox],
     )
 
