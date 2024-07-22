@@ -17,6 +17,10 @@
       %label.control-label{ for: :bulk_reconcile_note }= t("facility_accounts_reconciliation.index.bulk_note")
       .controls
         = text_field_tag :bulk_reconcile_note
-      %label.control-label{ for: :bulk_crt_number }= t("facility_accounts_reconciliation.index.bulk_crt_number")
-      .controls
+      -# TODO: Use CSS class
+      %div{ style: "margin-left: 20px" }
+        %label{ for: :bulk_crt_number, style: "display: inline", data: { toggle: "tooltip" }, title: t("facility_accounts_reconciliation.index.bulk_crt_number_hint") }
+          = t("facility_accounts_reconciliation.index.bulk_crt_number")
+        %span{ style: "margin-left: 30px" }
+          = "CRT"
         = text_field_tag :bulk_crt_number

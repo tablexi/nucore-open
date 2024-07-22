@@ -254,6 +254,7 @@ en:
       bulk_note_checkbox: Use Bulk Note
       bulk_note: Bulk Reconciliation Note
       bulk_crt_number: Bulk CRT Number
+      bulk_crt_number_hint: Please enter the CRT Number from your GL008
 
   facility_users:
     title: "!Facility! Staff"
