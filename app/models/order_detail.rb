@@ -29,8 +29,12 @@ class OrderDetail < ApplicationRecord
   # Used to mark a dispute as resolved
   attr_accessor :resolve_dispute
   before_validation :mark_dispute_resolved, if: :resolve_dispute
+
   after_validation :reset_dispute
 
+  validate :crt_number_format
+
+  before_save :add_crt_prefix_to_crt_number
   before_save :clear_statement, if: :account_id_changed?
   before_save :reassign_price, if: :auto_reassign_pricing?
   before_save :update_journal_row_amounts, if: :actual_cost_changed?
@@ -994,6 +998,19 @@ class OrderDetail < ApplicationRecord
   end
 
   private
+
+  def add_crt_prefix_to_crt_number
+    if crt_number&.match?(/^\d{7}$/)
+      self.crt_number = "CRT#{crt_number}"
+    end
+  end
+
+  def crt_number_format
+    return unless crt_number.present?
+    return if crt_number.match?(/^(CRT)?\d{7}$/i)
+
+    errors.add(:crt_number, :invalid_format)
+  end
 
   # Is there enough information to move an associated order to complete/problem?
   def time_data_completeable?
