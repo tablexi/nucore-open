@@ -8,8 +8,9 @@
       %th{scope: "col"}= Order.model_name.human
       %th{scope: "col"}= Statement.human_attribute_name(:total_cost)
       %th#reconcile-note.row-note-input{scope: "col"}= Statement.human_attribute_name(:reconcile_note)
-      %th#reconcile-crt-number.row-note-input{ scope: "col", data: { toggle: "tooltip" }, title: t("facility_accounts_reconciliation.index.bulk_crt_number_hint") }
-        = Statement.human_attribute_name(:crt_number)
+      - if show_reconciliation_deposit_number
+        %th#reconcile-crt-number.row-note-input{ scope: "col", data: { toggle: "tooltip" }, title: t("facility_accounts_reconciliation.index.bulk_crt_number_hint") }
+          = Statement.human_attribute_name(:crt_number)
   %tbody
     - @unreconciled_details.each do |order_detail|
       %tr
@@ -30,4 +31,5 @@
 
         %td= show_actual_total(order_detail)
         %td.row-note-input= text_field_tag "order_detail[#{order_detail.id}][reconciled_note]", nil, aria: {labelledby: "reconcile-note"}
-        %td.row-note-input= text_field_tag "order_detail[#{order_detail.id}][crt_number]", nil, aria: {labelledby: "reconcile-crt-number"}
+        - if show_reconciliation_deposit_number
+          %td.row-note-input= text_field_tag "order_detail[#{order_detail.id}][crt_number]", nil, aria: {labelledby: "reconcile-crt-number"}
