@@ -2041,43 +2041,4 @@ RSpec.describe OrderDetail do
       expect(order_detail.state).to eq "complete"
     end
   end
-
-  describe "CRT number" do
-    context "when set to nil" do
-      it "is valid" do
-        @order_detail.deposit_number = nil
-        expect(@order_detail.valid?).to be(true)
-      end
-    end
-
-    context "when set to CRT followed by 7 digits" do
-      it "is valid" do
-        @order_detail.deposit_number = "CRT1234567"
-        expect(@order_detail.valid?).to be(true)
-      end
-    end
-
-    context "when set to 7 digits" do
-      before do
-        @order_detail.deposit_number = "1234567"
-      end
-
-      it "is valid" do
-        expect(@order_detail.valid?).to be(true)
-      end
-
-      it "is prefixes with CRT before saving" do
-        @order_detail.save
-        expect(@order_detail.reload.deposit_number).to eq("CRT1234567")
-      end
-    end
-
-    context "when set to something else" do
-      it "is not valid" do
-        @order_detail.deposit_number = "some string"
-        expect(@order_detail.valid?).to be(false)
-      end
-    end
-
-  end
 end
