@@ -30,7 +30,7 @@ RSpec.describe OrderDetails::Reconciler do
           reconciler.reconcile_all
           order_details.each do |od|
             expect(od.reload.reconciled_note).to eq("this is a bulk note")
-            expect(od.reload.crt_number).to eq("CRT1234567")
+            expect(od.reload.deposit_number).to eq("CRT1234567")
           end
         end
       end
@@ -42,7 +42,7 @@ RSpec.describe OrderDetails::Reconciler do
           reconciler.reconcile_all
           order_details.each do |od|
             expect(od.reload.reconciled_note).to eq(nil)
-            expect(od.reload.crt_number).to eq(nil)
+            expect(od.reload.deposit_number).to eq(nil)
           end
         end
       end
@@ -68,7 +68,7 @@ RSpec.describe OrderDetails::Reconciler do
           reconciler.reconcile_all
           order_details.each do |od|
             expect(od.reload.reconciled_note).to eq(nil)
-            expect(od.reload.crt_number).to eq(nil)
+            expect(od.reload.deposit_number).to eq(nil)
           end
         end
       end
@@ -77,7 +77,7 @@ RSpec.describe OrderDetails::Reconciler do
         let(:reconciler) { described_class.new(OrderDetail.all, params, Time.current, "", "" ) }
         before(:each) do
           order_details.each do |od|
-            od.update!(reconciled_note: "rec note #{od.id}", crt_number: "CRT0000123")
+            od.update!(reconciled_note: "rec note #{od.id}", deposit_number: "CRT0000123")
           end
         end
 
@@ -85,7 +85,7 @@ RSpec.describe OrderDetails::Reconciler do
           reconciler.reconcile_all
           order_details.each do |od|
             expect(od.reload.reconciled_note).to eq("rec note #{od.id}")
-            expect(od.reload.crt_number).to eq("CRT0000123")
+            expect(od.reload.deposit_number).to eq("CRT0000123")
           end
         end
       end

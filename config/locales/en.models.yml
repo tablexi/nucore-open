@@ -95,7 +95,7 @@ en:
           attributes:
             price_change_reason:
               blank: is required
-            crt_number:
+            deposit_number:
               invalid_format: Must be 7 digits
         product_display_group_product:
           attributes:
@@ -337,7 +337,7 @@ en:
         actual_total: Total
         assigned_user: Assigned Staff
         created_by_user: Ordered By
-        crt_number: CRT Number
+        deposit_number: CRT Number
         description: Description
         dispute_at: Disputed At
         dispute_by: Dispute By

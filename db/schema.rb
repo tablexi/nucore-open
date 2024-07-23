@@ -386,7 +386,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_16_172924) do
     t.integer "problem_resolved_by_id"
     t.string "reference_id"
     t.boolean "skip_missing_form"
-    t.string "crt_number", limit: 256
+    t.string "deposit_number", limit: 256
     t.index ["account_id"], name: "fk_od_accounts"
     t.index ["assigned_user_id"], name: "index_order_details_on_assigned_user_id"
     t.index ["bundle_product_id"], name: "fk_bundle_prod_id"

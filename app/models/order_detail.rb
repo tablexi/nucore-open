@@ -1000,16 +1000,16 @@ class OrderDetail < ApplicationRecord
   private
 
   def add_crt_prefix_to_crt_number
-    if crt_number&.match?(/^\d{7}$/)
-      self.crt_number = "CRT#{crt_number}"
+    if deposit_number&.match?(/^\d{7}$/)
+      self.deposit_number = "CRT#{deposit_number}"
     end
   end
 
   def crt_number_format
-    return unless crt_number.present?
-    return if crt_number.match?(/^(CRT)?\d{7}$/i)
+    return unless deposit_number.present?
+    return if deposit_number.match?(/^(CRT)?\d{7}$/i)
 
-    errors.add(:crt_number, :invalid_format)
+    errors.add(:deposit_number, :invalid_format)
   end
 
   # Is there enough information to move an associated order to complete/problem?

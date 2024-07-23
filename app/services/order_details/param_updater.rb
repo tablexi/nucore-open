@@ -15,7 +15,7 @@ class OrderDetails::ParamUpdater
         :editing_time_data,
         :project_id,
         :reconciled_note,
-        :crt_number,
+        :deposit_number,
         :reference_id,
         reservation: [
           :reserve_start_date,

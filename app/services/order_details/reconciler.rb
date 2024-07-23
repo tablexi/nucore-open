@@ -48,7 +48,7 @@ module OrderDetails
       order_detail.reconciled_at = @reconciled_at
       order_detail.assign_attributes(allowed(params))
       order_detail.reconciled_note = @bulk_reconcile_note if @bulk_reconcile_note.present?
-      order_detail.crt_number = @bulk_crt_number if @bulk_crt_number.present?
+      order_detail.deposit_number = @bulk_crt_number if @bulk_crt_number.present?
       order_detail.change_status!(OrderStatus.reconciled)
       @count += 1
     rescue => e
@@ -60,7 +60,7 @@ module OrderDetails
     end
 
     def allowed(params)
-      params.except(:reconciled).permit(:reconciled_note, :crt_number)
+      params.except(:reconciled).permit(:reconciled_note, :deposit_number)
     end
 
     def reconciliation_must_be_in_past
