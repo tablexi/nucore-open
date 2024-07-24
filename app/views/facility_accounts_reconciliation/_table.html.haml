@@ -32,4 +32,4 @@
         %td= show_actual_total(order_detail)
         %td.row-note-input= text_field_tag "order_detail[#{order_detail.id}][reconciled_note]", nil, aria: {labelledby: "reconcile-note"}
         - if show_reconciliation_deposit_number
-          %td.row-note-input= text_field_tag "order_detail[#{order_detail.id}][deposit_number]", nil, aria: {labelledby: "reconcile-crt-number"}
+          %td.row-note-input= text_field_tag "order_detail[#{order_detail.id}][deposit_number]", nil, aria: {labelledby: "reconcile-deposit-number"}
