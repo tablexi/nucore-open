@@ -68,9 +68,13 @@ class FacilitiesController < ApplicationController
     @active_tab = "manage_facilites"
     if session_user.administrator?
       @facilities = Facility.alphabetized
+      @active_facilities = @facilities.active
+      @inactive_facilities = @facilities.inactive
       flash.now[:notice] = "No facilities have been added" if @facilities.empty?
     else
       @facilities = operable_facilities
+      @active_facilities = @facilities.active
+      @inactive_facilities = @facilities.inactive
       raise ActiveRecord::RecordNotFound if @facilities.empty?
       if @facilities.size == 1
         redirect_to dashboard_facility_path(@facilities.first)
