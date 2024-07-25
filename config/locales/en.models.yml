@@ -95,8 +95,6 @@ en:
           attributes:
             price_change_reason:
               blank: is required
-            deposit_number:
-              invalid_format: Must be 7 digits
         product_display_group_product:
           attributes:
             product_id:
