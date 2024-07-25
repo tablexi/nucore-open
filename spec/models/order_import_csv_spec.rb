@@ -35,8 +35,8 @@ RSpec.describe OrderImport, feature_setting: { user_based_price_groups: true } d
           sst123@example.com,#{account2.account_number},Example Item,1,#{yesterday},#{yesterday},New 2-2,,1234
           sst123@example.com,#{account2.account_number},Example Item,1,#{two_weeks_ago},#{yesterday},New 3 - Different Order Date,,
           sst123@example.com,#{account2.account_number},Example Item,1,#{yesterday},#{today},New 2-3 - Different fulfilled,,
-          sst123@example.com,nonbillable,Nonbillable Item,1,#{yesterday},#{yesterday},New 3,,
-          sst123@example.com,nonbillable,Nonbillable Item,1,#{yesterday},#{yesterday},New 3-2,,
+          sst123@example.com,NONBILLABLE,Nonbillable Item,1,#{yesterday},#{yesterday},New 3,,
+          sst123@example.com,Nonbillable,Nonbillable Item,1,#{yesterday},#{yesterday},New 3-2,,
         CSV
       end
 

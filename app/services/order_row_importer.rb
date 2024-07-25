@@ -71,7 +71,7 @@ class OrderRowImporter
   def account
     return @account if defined?(@account)
 
-    @account = if field(:chart_string) == "nonbillable"
+    @account = if field(:chart_string).match?(/^nonbillable$/i)
                  NonbillableAccount.singleton_instance
                else
                  user
