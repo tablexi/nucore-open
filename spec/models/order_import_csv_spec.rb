@@ -40,7 +40,7 @@ RSpec.describe OrderImport, feature_setting: { user_based_price_groups: true } d
         CSV
       end
 
-      it "adds the two items to the order" do
+      it "adds the three items to the order" do
         expect { order_import.process_upload! }.to change(order.reload.order_details, :count).by(3)
       end
 
