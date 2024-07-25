@@ -69,11 +69,16 @@ class OrderRowImporter
   end
 
   def account
-    @account ||=
-      user
-      .accounts
-      .for_facility(facility)
-      .active_at(fulfillment_date).find_by(account_number: field(:chart_string))
+    return @account if defined?(@account)
+
+    @account = if field(:chart_string) == "nonbillable"
+                 NonbillableAccount.singleton_instance
+               else
+                 user
+                   .accounts
+                   .for_facility(facility)
+                   .active_at(fulfillment_date).find_by(account_number: field(:chart_string))
+               end
   end
 
   def errors?
