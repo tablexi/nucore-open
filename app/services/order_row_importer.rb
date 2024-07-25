@@ -281,8 +281,13 @@ class OrderRowImporter
 
   def validate_account
     return if user.blank? || product.blank?
+
     if account.present?
-      add_error(account.validate_against_product(product, user, fulfillment_date))
+      if product.nonbillable_mode? && !account.is_a?(NonbillableAccount)
+        add_error(:invalid_nonbillable_account)
+      else
+        add_error(account.validate_against_product(product, user, fulfillment_date))
+      end
     else
       add_error(:account_not_found)
     end
