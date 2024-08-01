@@ -7,7 +7,7 @@ ruby File.open(File.expand_path(".ruby-version", File.dirname(__FILE__))) { |f| 
 ## base
 gem "rails", "~> 7.0.8"
 gem "sprockets", "< 4" # Temporarily lock as we upgrade
-gem "sprockets-rails", "3.2.2" # downgrade to avoid a bug
+gem "sprockets-rails", "3.5.2" # downgrade to avoid a bug
 gem "config"
 gem "bootsnap", require: false
 gem "puma"
