@@ -148,13 +148,11 @@ class OrderDetailBatchUpdater
         end
       # cancel other orders or change status of any order
       else
-        order_detail.change_status!(order_status) do |od|
-          # Ideally this would be part of the change_status! method
-          if order_status.root_canceled?
-            od.canceled_by_user = @user
-            od.canceled_at = Time.current
-          end
+        if order_status.root_canceled?
+          order_detail.canceled_by_user = @user
+          order_detail.canceled_at = Time.current
         end
+        order_detail.change_status!(order_status)
       end
       order_detail.notify_purchaser_of_order_status
     end
