@@ -8,7 +8,7 @@ RSpec.describe "Reserving an instrument using quick reservations", feature_setti
   let(:user) { create(:user) }
   let!(:user_2) { create(:user) }
   let!(:admin_user) { create(:user, :administrator) }
-  let!(:instrument) { create(:setup_instrument, :timer, min_reserve_mins: 5) }
+  let!(:instrument) { create(:setup_instrument, :timer, min_reserve_mins: 5, user_notes_field_mode: "optional") }
   let!(:product_user) {}
   let(:intervals) { instrument.quick_reservation_intervals }
   let(:facility) { instrument.facility }
@@ -146,6 +146,7 @@ RSpec.describe "Reserving an instrument using quick reservations", feature_setti
         expect(page).to have_content("30 mins")
         expect(page).to have_content("60 mins")
         choose "60 mins"
+        fill_in "reservation[note]", with: "This is a note"
         click_button "Create Reservation"
         expect(page).to have_content("9:31 AM - 10:31 AM")
         expect(page).to have_content("End Reservation")
