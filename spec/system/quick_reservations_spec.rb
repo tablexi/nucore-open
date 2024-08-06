@@ -178,6 +178,21 @@ RSpec.describe "Reserving an instrument using quick reservations", feature_setti
         expect(page).to have_content("60 mins")
       end
     end
+
+    context "when the product requires a note" do
+      let(:start_at) { Time.current + intervals.first.minutes - 5.minutes }
+      let(:instrument) { create(:setup_instrument, :timer, min_reserve_mins: 5, user_notes_field_mode: "required") }
+
+      it "can create a reservation when note is provided" do
+        choose "60 mins"
+        click_button "Create Reservation"
+        expect(page).to have_content("Note may not be blank")
+        choose "60 mins"
+        fill_in "reservation[note]", with: "This is a note"
+        click_button "Create Reservation"
+        expect(page).to have_content("10:10 AM - 11:10 AM")
+      end
+    end
   end
 
   context "when another reservation is ongoing but abandoned" do
