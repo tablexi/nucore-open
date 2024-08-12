@@ -34,14 +34,7 @@ class Orders::ItemAdder
   # Returns true if adding the product creates multiple line items if you add a
   # quantity greater than 1.
   def self.multiline?(product)
-    case product
-    when Service
-      product.active_template? || product.active_survey?
-    when Bundle, TimedService, Instrument
-      true
-    else
-      false
-    end
+    [Bundle, TimedService, Instrument].any? { |klass| product.is_a?(klass) }
   end
 
   private
