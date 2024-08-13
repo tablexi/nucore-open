@@ -37,7 +37,7 @@ class FacilityOrdersController < ApplicationController
       if updated_facility_id == current_facility.id.to_s
         render partial: "order_table", locals: { order_details: @order_details, cross_core: false, facility: current_facility }
       else
-        render partial: "order_table", locals: { order_details: @cross_core_order_details_by_facility[updated_facility_id], cross_core: true, facility: updated_facility_id }
+        render partial: "order_table", locals: { order_details: @cross_core_data_by_facility_id[updated_facility_id][:order_details], cross_core: true, facility: updated_facility_id }
       end
     end
   end
@@ -139,17 +139,19 @@ class FacilityOrdersController < ApplicationController
 
     @cross_core_project = @order.cross_core_project
 
-    @cross_core_order_details_by_facility = {}
-    @cross_core_orders_by_facility = {}
+    @cross_core_data_by_facility_id = {}
 
     if @cross_core_project.present?
       project_orders = @cross_core_project.orders.where.not(facility_id: @order.facility_id)
 
       project_orders.each do |order|
-        order_facility = order.facility_id.to_s
+        order_facility = order.facility
 
-        @cross_core_order_details_by_facility[order_facility] = order.order_details.ordered_by_parents
-        @cross_core_orders_by_facility[order_facility] = order
+        @cross_core_data_by_facility_id[order_facility.id.to_s] = {
+          order_details: order.order_details.ordered_by_parents,
+          order:,
+          facility_name: order_facility.to_s,
+        }
       end
     end
   end
