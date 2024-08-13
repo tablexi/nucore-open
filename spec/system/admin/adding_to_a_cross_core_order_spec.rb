@@ -86,14 +86,12 @@ RSpec.describe "Adding to an existing order for cross core", :js, feature_settin
     end
 
     it "uploads file" do
-      wait_for_ajax
-      find('h3', text: facility2.to_s).click
-      find_all('a', text: "0 Uploaded").last.click
-      wait_for_ajax
+      find("h3", text: facility2.to_s).click
+      find_all("a", text: "0 Uploaded").last.click
+      expect(page).to have_content("Upload Results")
       attach_file "qqfile", Rails.root.join("spec", "files", "template1.txt"), make_visible: true
-      wait_for_ajax
+      expect(page).to have_content("Download all as zip...")
       click_button "Done"
-      wait_for_ajax
       expect(page).to have_content("1 Uploaded")
     end
   end

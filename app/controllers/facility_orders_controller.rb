@@ -32,8 +32,13 @@ class FacilityOrdersController < ApplicationController
   def show
     @order_details = @order.order_details.ordered_by_parents
     @order_details = @order_details.includes(:reservation, :order_status, :product, :order)
+    updated_facility_id = params[:updated_facility_id]
     if params[:refresh]
-      render partial: "order_table", locals: { order_details: @order_details, cross_core: false }
+      if updated_facility_id == current_facility.id.to_s
+        render partial: "order_table", locals: { order_details: @order_details, cross_core: false, facility: current_facility }
+      else
+        render partial: "order_table", locals: { order_details: @cross_core_order_details_by_facility[updated_facility_id], cross_core: true, facility: updated_facility_id }
+      end
     end
   end
 
@@ -141,7 +146,7 @@ class FacilityOrdersController < ApplicationController
       project_orders = @cross_core_project.orders.where.not(facility_id: @order.facility_id)
 
       project_orders.each do |order|
-        order_facility = order.facility.to_s
+        order_facility = order.facility_id.to_s
 
         @cross_core_order_details_by_facility[order_facility] = order.order_details.ordered_by_parents
         @cross_core_orders_by_facility[order_facility] = order
