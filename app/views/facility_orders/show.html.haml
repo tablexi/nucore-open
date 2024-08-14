@@ -16,8 +16,7 @@
             = link_to @cross_core_project.name, facility_project_path(current_facility, @cross_core_project.id)
         %dl.span2
           %dt= t("views.facility_orders.show.cross_core_project_total")
-          - gross_order_value = @order.total + @cross_core_data_by_facility_id.values.map { |hash| hash[:order] }.sum(&:total)
-          %dd= number_to_currency gross_order_value
+          %dd= number_to_currency @gross_order_value
     - if @merge_orders.blank? && current_ability.can?(:send_receipt, @order)
       .pull-right= render "send_receipt"
 

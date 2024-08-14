@@ -40,6 +40,8 @@ class FacilityOrdersController < ApplicationController
         cross_core_order_details_for_facility = @cross_core_data_by_facility_id[updated_facility_id][:order_details]
         render partial: "order_table", locals: { order_details: cross_core_order_details_for_facility, cross_core: true, facility_id: updated_facility_id }
       end
+    else
+      @gross_order_value = @order.total + @cross_core_data_by_facility_id.values.map { |hash| hash[:order] }.sum(&:total)
     end
   end
 
