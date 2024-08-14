@@ -6,15 +6,17 @@
 document.addEventListener("DOMContentLoaded", function() {
 
   function fetchAndRefresh() {
-    const facility = this.getElementsByClassName('js--orderTableRefreshData')[0].dataset.updatedFacility
+    const updatedFacilityId = this.getElementsByClassName(
+      "js--orderTableRefreshData"
+    )[0].dataset.updatedFacility;
 
     const table = document.querySelector(
-      `.js--orderTableRefresh#facility_id_${facility}`
+      `.js--orderTableRefresh#facility_id_${updatedFacilityId}`
     );
     const url = new URL(document.location);
 
     url.searchParams.set("refresh", "true");
-    url.searchParams.set("updated_facility_id", facility);
+    url.searchParams.set("updated_facility_id", updatedFacilityId);
     const headers = { Accept: "text/html" };
 
     fetch(url, { headers: headers }).then(function (response) {
