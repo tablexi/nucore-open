@@ -35,10 +35,10 @@ class FacilityOrdersController < ApplicationController
     updated_facility_id = params[:updated_facility_id]
     if params[:refresh]
       if updated_facility_id == current_facility.id.to_s
-        render partial: "order_table", locals: { order_details: @order_details, cross_core: false, facility: current_facility }
+        render partial: "order_table", locals: { order_details: @order_details, cross_core: false, facility_id: current_facility.id }
       else
         cross_core_order_details_for_facility = @cross_core_data_by_facility_id[updated_facility_id][:order_details]
-        render partial: "order_table", locals: { order_details: cross_core_order_details_for_facility, cross_core: true, facility: updated_facility_id }
+        render partial: "order_table", locals: { order_details: cross_core_order_details_for_facility, cross_core: true, facility_id: updated_facility_id }
       end
     end
   end
