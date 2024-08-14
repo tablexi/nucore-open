@@ -10,6 +10,7 @@ class OrderManagement::OrderDetailsController < ApplicationController
 
   load_resource :order, through: :facility, except: [:files]
   load_resource :order_detail, through: :order, except: [:files]
+  # We can't load through the facility because of cross-core orders
   before_action :init_order_detail, only: [:files]
 
   helper_method :edit_disabled?
