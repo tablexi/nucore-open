@@ -156,6 +156,7 @@ RSpec.describe "Placing an item order" do
       click_link "Upload Order Form"
       attach_file "stored_file[file]", Rails.root.join("spec", "files", "template1.txt")
       click_button "Upload"
+      expect(page).to have_current_path(order_path(Order.last))
       click_button "Purchase"
       expect(page).to have_content "Order Receipt"
     end
