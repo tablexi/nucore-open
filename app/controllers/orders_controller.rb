@@ -10,6 +10,8 @@ class OrdersController < ApplicationController
   before_action :protect_purchased_orders, except: [:cart, :cart_order_details_count, :receipt, :confirmed, :index]
   before_action :load_statuses, only: [:show, :update, :purchase, :update_or_purchase]
 
+  skip_after_action :verify_same_origin_request, only: [:cart_order_details_count]
+
   def self.permitted_params
     @permitted_params ||= []
   end
