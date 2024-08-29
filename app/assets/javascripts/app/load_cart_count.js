@@ -1,4 +1,4 @@
-window.Cart = class Cart {
+window.CartCount = class CartCount {
   constructor($cart) {
     this.$cart = $cart;
   }
@@ -27,9 +27,9 @@ window.Cart = class Cart {
       }
     });
   }
-}
+};
 
 $(function () {
-  const cart = new Cart(".js--cart_count");
+  const cart = new CartCount(".js--cart_count");
   return cart.loadCartCount();
 });
