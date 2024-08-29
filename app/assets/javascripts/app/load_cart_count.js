@@ -9,6 +9,9 @@ window.Cart = class Cart {
     if (!element) { return; }
 
     let url = element.data("url");
+
+    if (!url) { return; }
+
     url = new URL(url);
 
     fetch(url, { mode: "no-cors" }).then(function (response) {
