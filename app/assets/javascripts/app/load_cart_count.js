@@ -1,35 +1,30 @@
-window.CartCount = class CartCount {
-  constructor($cart) {
-    this.$cart = $cart;
-  }
+function loadCartCount(cart) {
+  const element = $(cart);
 
-  loadCartCount() {
-    const element = $(this.$cart);
+  if (!element) { return; }
 
-    if (!element) { return; }
+  let url = element.data("url");
 
-    let url = element.data("url");
+  if (!url) { return; }
 
-    if (!url) { return; }
+  url = new URL(url);
 
-    url = new URL(url);
+  fetch(url,).then(function (response) {
+    if (response.ok) {
+      response.text().then(function (data) {
+        data = JSON.parse(data);
+        const count = data.data.count;
+        const text = `Cart (${count})`;
 
-    fetch(url, { mode: "no-cors" }).then(function (response) {
-      if (response.ok) {
-        response.text().then(function (data) {
-          data = JSON.parse(data);
-          const count = data.data.count;
-          const text = `Cart (${count})`;
-
-          const anchorElement = element.find("a");
-          anchorElement.text(text);
-        });
-      }
-    });
-  }
-};
+        const anchorElement = element.find("a");
+        anchorElement.text(text);
+      });
+    } else {
+      console.error("There was an error fetching the cart order details count");
+    }
+  });
+}
 
 $(function () {
-  const cart = new CartCount(".js--cart_count");
-  return cart.loadCartCount();
+  return loadCartCount(".js--cart_count");
 });
