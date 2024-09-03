@@ -16,8 +16,7 @@ function loadCartCount(cart) {
         const count = data.data.count;
         const text = `Cart (${count})`;
 
-        const anchorElement = cartElement.querySelector("a");
-        anchorElement.innerHTML = text;
+        cartElement.innerHTML = text;
       });
     } else {
       console.error("There was an error fetching the cart order details count");
