@@ -24,6 +24,6 @@ function loadCartCount(cart) {
   });
 }
 
-$(function () {
+document.addEventListener("DOMContentLoaded", function () {
   return loadCartCount(".js--cart_count");
 });
