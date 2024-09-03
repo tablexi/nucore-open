@@ -1,9 +1,9 @@
 function loadCartCount(cart) {
-  const element = $(cart);
+  const cartElement = document.querySelector(cart);
 
-  if (!element) { return; }
+  if (!cartElement) { return; }
 
-  let url = element.data("url");
+  let url = cartElement.dataset["url"];
 
   if (!url) { return; }
 
@@ -16,8 +16,8 @@ function loadCartCount(cart) {
         const count = data.data.count;
         const text = `Cart (${count})`;
 
-        const anchorElement = element.find("a");
-        anchorElement.text(text);
+        const anchorElement = cartElement.querySelector("a");
+        anchorElement.innerHTML = text;
       });
     } else {
       console.error("There was an error fetching the cart order details count");
