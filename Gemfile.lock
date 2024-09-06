@@ -653,11 +653,12 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    sshkit (1.23.0)
+    sshkit (1.23.1)
       base64
       net-scp (>= 1.1.2)
       net-sftp (>= 2.1.2)
       net-ssh (>= 2.8.0)
+      ostruct
     state_machines (0.6.0)
     strscan (3.1.0)
     synaccess_connect (0.3.1)
