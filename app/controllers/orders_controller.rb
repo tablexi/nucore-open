@@ -185,16 +185,6 @@ class OrdersController < ApplicationController
   # GET  /orders/:id/choose_account
   # POST /orders/:id/choose_account
   def choose_account
-    if request.post?
-      account = Account.find(params[:account_id])
-      add_account_result = add_account_to_order(account)
-      if add_account_result[:success]
-        redirect_to add_account_result[:redirect_path] && return
-      else
-        flash.now[:error] = add_account_result[:error_message]
-      end
-    end
-
     @product = if session[:add_to_cart].blank?
                  @order.order_details[0].try(:product)
                else
@@ -203,6 +193,14 @@ class OrdersController < ApplicationController
 
     if @product.blank?
       redirect_to(cart_path)
+    elsif request.post?
+      account = Account.find(params[:account_id])
+      add_account_result = add_account_to_order(account)
+      if add_account_result[:success]
+        redirect_to add_account_result[:redirect_path]
+      else
+        flash.now[:error] = add_account_result[:error_message]
+      end
     elsif @product.nonbillable_mode?
       add_account_result = add_account_to_order(NonbillableAccount.singleton_instance)
       if add_account_result[:success]
