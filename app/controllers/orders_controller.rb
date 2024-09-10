@@ -185,12 +185,15 @@ class OrdersController < ApplicationController
   # GET  /orders/:id/choose_account
   # POST /orders/:id/choose_account
   def choose_account
+    # For nonbillable products, we don't ask the user to choose an account
     # POST requests are sent from the form on the choose_account page,
     # so we need to assign the account selected by the user to the order
-    if request.post?
-      account = Account.find(params[:account_id])
-      add_account_result = add_account_to_order(account)
-    end
+    account = if @product.nonbillable_mode?
+                NonbillableAccount.singleton_instance
+              elsif request.post?
+                Account.find(params[:account_id])
+              end
+    add_account_result = add_account_to_order(account) if acount.present?
 
     @product = if session[:add_to_cart].blank?
                  @order.order_details[0].try(:product)
@@ -200,18 +203,10 @@ class OrdersController < ApplicationController
 
     if @product.blank?
       redirect_to(cart_path)
-    elsif @product.nonbillable_mode?
-      # For nonbillable products, we don't ask the user to choose an account
-      add_account_result = add_account_to_order(NonbillableAccount.singleton_instance)
-      if add_account_result[:success]
-        redirect_to add_account_result[:redirect_path]
-      else
-        flash.now[:error] = add_account_result[:error_message]
-      end
-    elsif request.post? && add_account_result[:success]
+    elsif add_account_result && add_account_result[:success]
       redirect_to add_account_result[:redirect_path]
     else
-      flash.now[:error] = add_account_result[:error_message] if request.post?
+      flash.now[:error] = add_account_result[:error_message] if add_account_result[:error_message]
       @accounts = AvailableAccountsFinder.new(acting_user, @product.facility).accounts
       @errors   = {}
       details   = @order.order_details
