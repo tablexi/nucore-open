@@ -187,7 +187,12 @@ class OrdersController < ApplicationController
   def choose_account
     if request.post?
       account = Account.find(params[:account_id])
-      add_account_to_order(account)
+      add_account_result = add_account_to_order(account)
+      if add_account_result[:success]
+        redirect_to add_account_result[:redirect_path] && return
+      else
+        flash.now[:error] = add_account_result[:error_message]
+      end
     end
 
     @product = if session[:add_to_cart].blank?
@@ -196,10 +201,15 @@ class OrdersController < ApplicationController
                  Product.find(session[:add_to_cart].first[:product_id])
                end
 
-    redirect_to(cart_path) && return unless @product
-
-    if @product.nonbillable_mode?
-      add_account_to_order(NonbillableAccount.singleton_instance)
+    if @product.blank?
+      redirect_to(cart_path)
+    elsif @product.nonbillable_mode?
+      add_account_result = add_account_to_order(NonbillableAccount.singleton_instance)
+      if add_account_result[:success]
+        redirect_to add_account_result[:redirect_path]
+      else
+        flash.now[:error] = add_account_result[:error_message]
+      end
     else
       @accounts = AvailableAccountsFinder.new(acting_user, @product.facility).accounts
       @errors   = {}
@@ -335,16 +345,21 @@ class OrdersController < ApplicationController
       end
     end
 
+    result = { success: success, redirect_path: nil, error_message: nil }
     if success
-      if session[:add_to_cart].nil?
-        redirect_to cart_path
+      result[:redirect_path] = if session[:add_to_cart].nil?
+        cart_path
       else
-        redirect_to add_order_path(@order)
+        add_order_path(@order)
       end
-      return
     else
-      flash.now[:error] = account.nil? ? "Please select a payment method." : "An error was encountered while selecting a payment method."
+      result[:error_message] = if account.nil?
+        "Please select a payment method."
+      else
+        "An error was encountered while selecting a payment method."
+      end
     end
+    result
   end
 
   def build_order_date
