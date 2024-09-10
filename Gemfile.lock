@@ -556,8 +556,7 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    rexml (3.3.2)
-      strscan
+    rexml (3.3.7)
     rollbar (3.6.0)
     rspec-activejob (0.6.1)
       activejob (>= 4.2)
@@ -608,7 +607,7 @@ GEM
       rubocop (~> 1.61)
     ruby-ole (1.2.13.1)
     ruby-progressbar (1.13.0)
-    ruby-saml (1.16.0)
+    ruby-saml (1.17.0)
       nokogiri (>= 1.13.10)
       rexml
     ruby-vips (2.2.2)
@@ -659,7 +658,6 @@ GEM
       net-sftp (>= 2.1.2)
       net-ssh (>= 2.8.0)
     state_machines (0.6.0)
-    strscan (3.1.0)
     synaccess_connect (0.3.1)
       nokogiri (>= 1.6)
     sysexits (1.2.0)
