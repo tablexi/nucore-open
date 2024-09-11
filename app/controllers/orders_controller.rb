@@ -185,6 +185,11 @@ class OrdersController < ApplicationController
   # GET  /orders/:id/choose_account
   # POST /orders/:id/choose_account
   def choose_account
+    @product = if session[:add_to_cart].blank?
+              @order.order_details[0].try(:product)
+            else
+              Product.find(session[:add_to_cart].first[:product_id])
+            end
     # For nonbillable products, we don't ask the user to choose an account
     # POST requests are sent from the form on the choose_account page,
     # so we need to assign the account selected by the user to the order
@@ -194,12 +199,6 @@ class OrdersController < ApplicationController
                 Account.find(params[:account_id])
               end
     add_account_result = add_account_to_order(account) if acount.present?
-
-    @product = if session[:add_to_cart].blank?
-                 @order.order_details[0].try(:product)
-               else
-                 Product.find(session[:add_to_cart].first[:product_id])
-               end
 
     if @product.blank?
       redirect_to(cart_path)
