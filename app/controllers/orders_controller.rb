@@ -198,7 +198,7 @@ class OrdersController < ApplicationController
               elsif request.post?
                 Account.find(params[:account_id])
               end
-    add_account_result = add_account_to_order(account) if acount.present?
+    add_account_result = add_account_to_order(account) if account.present?
 
     if @product.blank?
       redirect_to(cart_path)
