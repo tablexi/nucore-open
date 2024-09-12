@@ -208,7 +208,7 @@ class OrdersController < ApplicationController
       redirect_to add_account_result[:redirect_path]
     else
       flash.now[:error] = add_account_result[:error_message] if add_account_result && add_account_result[:error_message]
-      flash.now[:error] = I18n.t("orders.choose_account.missing_account") if account.blank?
+      flash.now[:error] = I18n.t("controllers.orders.choose_account.missing_account") if account.blank? && request.post?
       @accounts = AvailableAccountsFinder.new(acting_user, @product.facility).accounts
       @errors   = {}
       details   = @order.order_details
