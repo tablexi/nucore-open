@@ -135,6 +135,8 @@ en:
         failure: The reservation cannot be updated.
       switch_instrument:
         prior_is_still_running: Cannot "Begin Reservation" when a previously scheduled reservation is ongoing.
+      choose_account:
+        missing_account: "Payment source not found.  Please select a payment source and try again."
 
     general_reports:
       headers:
