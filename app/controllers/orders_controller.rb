@@ -193,7 +193,9 @@ class OrdersController < ApplicationController
     # For nonbillable products, we don't ask the user to choose an account
     # POST requests are sent from the form on the choose_account page,
     # so we need to assign the account selected by the user to the order
-    account = if @product.nonbillable_mode?
+    account = if @product.blank?
+                nil
+              elsif @product.nonbillable_mode?
                 NonbillableAccount.singleton_instance
               elsif request.post?
                 Account.find(params[:account_id])
