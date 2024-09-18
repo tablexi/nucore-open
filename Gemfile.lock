@@ -460,7 +460,7 @@ GEM
     nokogiri (1.16.7-x86_64-linux)
       racc (~> 1.4)
     numerizer (0.1.1)
-    oj (3.16.5)
+    oj (3.16.6)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
     orm_adapter (0.5.0)
