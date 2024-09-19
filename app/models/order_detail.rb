@@ -762,7 +762,7 @@ class OrderDetail < ApplicationRecord
         change_status! order_status
       end
     else
-      return false if state.to_sym == :unreconciled
+      return false if state.to_sym == :unrecoverable
       return false unless reservation&.can_cancel?
 
       # must set canceled_at after calling #can_cancel?
