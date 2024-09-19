@@ -32,9 +32,9 @@ RSpec.describe "Facility Statement Admin" do
   end
 
   describe "searching statements" do
-    let!(:statement1) { create(:statement, created_at: 3.days.ago, order_details: [order_details.first], account: order_details.first.account, facility: facility) }
-    let!(:statement2) { create(:statement, created_at: 6.days.ago, order_details: [order_details.second], account: order_details.second.account, facility: facility) }
-    let!(:statement3) { create(:statement, created_at: 10.days.ago, order_details: [order_details.last], account: order_details.last.account, facility:) }
+    let!(:statement1) { create(:statement, created_at: 9.days.ago, order_details: [order_details.first], account: order_details.first.account, facility:) }
+    let!(:statement2) { create(:statement, created_at: 6.days.ago, order_details: [order_details.second], account: order_details.second.account, facility:) }
+    let!(:statement3) { create(:statement, created_at: 3.days.ago, order_details: [order_details.last], account: order_details.last.account, facility:) }
 
     before do
       order_details.last.change_status!(OrderStatus.unrecoverable)
