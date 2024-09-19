@@ -12,7 +12,7 @@ RSpec.describe OrderDetails::Reconciler do
     end
   end
   let(:params) { order_details.each_with_object({}) { |od, h| h[od.id.to_s] = ActionController::Parameters.new(reconciled: "1") } }
-  let(:reconciler) { described_class.new(OrderDetail.all, params, Time.current) }
+  let(:reconciler) { described_class.new(OrderDetail.all, params, Time.current, "reconciled") }
   let(:journal) { create(:journal, facility: product.facility) }
 
   describe "reconciling" do
@@ -24,7 +24,7 @@ RSpec.describe OrderDetails::Reconciler do
 
     context "with a bulk note" do
       context "bulk note checkbox checked" do
-        let(:reconciler) { described_class.new(OrderDetail.all, params, Time.current, "this is a bulk note", "CRT1234567", "1") }
+        let(:reconciler) { described_class.new(OrderDetail.all, params, Time.current, "reconciled", "this is a bulk note", "CRT1234567", "1") }
 
         it "adds the note to all order details" do
           reconciler.reconcile_all
@@ -36,7 +36,7 @@ RSpec.describe OrderDetails::Reconciler do
       end
 
       context "bulk note checkbox UNchecked" do
-        let(:reconciler) { described_class.new(OrderDetail.all, params, Time.current, "this is a bulk note", "CRT1234567") }
+        let(:reconciler) { described_class.new(OrderDetail.all, params, Time.current, "reconciled", "this is a bulk note", "CRT1234567") }
 
         it "does NOT add the note to the order details" do
           reconciler.reconcile_all
@@ -50,7 +50,7 @@ RSpec.describe OrderDetails::Reconciler do
 
     context "with NO bulk note" do
       context "with reconciled note set" do
-        let(:reconciler) { described_class.new(OrderDetail.all, params, Time.current, "" ) }
+        let(:reconciler) { described_class.new(OrderDetail.all, params, Time.current, "reconciled", "" ) }
         let(:params) { order_details.each_with_object({}) { |od, h| h[od.id.to_s] = ActionController::Parameters.new(reconciled: "1", reconciled_note: "note #{od.id}") } }
 
         it "adds the note to the appropriate order details" do
@@ -62,7 +62,7 @@ RSpec.describe OrderDetails::Reconciler do
       end
 
       context "with NO reconciled note set" do
-        let(:reconciler) { described_class.new(OrderDetail.all, params, Time.current, "", "" ) }
+        let(:reconciler) { described_class.new(OrderDetail.all, params, Time.current, "reconciled", "", "" ) }
 
         it "does not set a value" do
           reconciler.reconcile_all
@@ -74,7 +74,7 @@ RSpec.describe OrderDetails::Reconciler do
       end
 
       context "with previous reconciled note value, no new value set" do
-        let(:reconciler) { described_class.new(OrderDetail.all, params, Time.current, "", "" ) }
+        let(:reconciler) { described_class.new(OrderDetail.all, params, Time.current, "reconciled", "", "" ) }
         before(:each) do
           order_details.each do |od|
             od.update!(reconciled_note: "rec note #{od.id}", deposit_number: "CRT0000123")

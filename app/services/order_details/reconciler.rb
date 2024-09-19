@@ -16,10 +16,10 @@ module OrderDetails
         order_detail_scope,
         params,
         reconciled_at,
+        order_status,
         bulk_reconcile_note = nil,
         bulk_deposit_number = nil,
-        bulk_reconcile_checkbox = nil,
-        order_status
+        bulk_reconcile_checkbox = nil
       )
       @params = params || ActionController::Parameters.new
       @order_status = order_status || "reconciled"

@@ -36,10 +36,10 @@ class FacilityAccountsReconciliationController < ApplicationController
       unreconciled_details,
       params[:order_detail],
       reconciled_at,
+      params[:order_status],
       params[:bulk_reconcile_note],
       params[:bulk_deposit_number],
       params[:bulk_note_checkbox],
-      params[:order_status]
     )
 
     if reconciler.reconcile_all > 0
