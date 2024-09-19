@@ -95,15 +95,17 @@ RSpec.describe "Facility Statement Admin" do
       fill_in "Start Date", with: I18n.l(4.days.ago.to_date, format: :usa)
       click_button "Filter"
 
-      expect(page).to have_content(statement1.invoice_number)
+      expect(page).not_to have_content(statement1.invoice_number)
       expect(page).not_to have_content(statement2.invoice_number)
+      expect(page).to have_content(statement3.invoice_number)
 
       fill_in "Start Date", with: ""
       fill_in "End Date", with: I18n.l(4.days.ago.to_date, format: :usa)
 
       click_button "Filter"
-      expect(page).not_to have_content(statement1.invoice_number)
+      expect(page).to have_content(statement1.invoice_number)
       expect(page).to have_content(statement2.invoice_number)
+      expect(page).not_to have_content(statement3.invoice_number)
     end
 
     it "sends a csv in an email" do
