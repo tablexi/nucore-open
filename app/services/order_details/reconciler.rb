@@ -13,16 +13,16 @@ module OrderDetails
     validate :all_journals_and_statements_must_be_before_reconciliation_date
 
     def initialize(
-      order_detail_scope,
-      params,
-      reconciled_at,
-      bulk_reconcile_note = nil,
-      bulk_deposit_number = nil,
-      bulk_reconcile_checkbox = nil,
-      order_status = "reconciled"
-    )
+        order_detail_scope,
+        params,
+        reconciled_at,
+        bulk_reconcile_note = nil,
+        bulk_deposit_number = nil,
+        bulk_reconcile_checkbox = nil,
+        order_status
+      )
       @params = params || ActionController::Parameters.new
-      @order_status = order_status
+      @order_status = order_status || "reconciled"
       @order_details = order_detail_scope.readonly(false).find_ids(to_be_reconciled.keys)
       @reconciled_at = reconciled_at
       @bulk_reconcile_note = bulk_reconcile_note if bulk_reconcile_checkbox == "1"
