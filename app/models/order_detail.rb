@@ -497,8 +497,8 @@ class OrderDetail < ApplicationRecord
   end
 
   def can_be_marked_as_unrecoverable?
-    # Can only be marked as unrecoverable if it has already been invoiced
-    state.to_sym == :complete && statement.present?
+    # Can only be marked as unrecoverable if it has already been completed
+    state.to_sym == :complete
   end
 
   def pending?
