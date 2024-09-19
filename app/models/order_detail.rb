@@ -762,6 +762,7 @@ class OrderDetail < ApplicationRecord
         change_status! order_status
       end
     else
+      # If the order status is Unrecoverable, then it shouldn't be cancelable by the customer
       return false if state.to_sym == :unrecoverable
       return false unless reservation&.can_cancel?
 

@@ -8,12 +8,13 @@ RSpec.describe OrderDetails::Reconciler do
   let!(:order) { create(:order, user: user, created_by_user: user) }
   let(:order_details) do
     Array.new(number_of_order_details).map do
-      OrderDetail.create!(product: product, quantity: 1, actual_cost: 1, actual_subsidy: 0, state: "complete", journal: journal, order_id: order.id, created_by_user: user)
+      OrderDetail.create!(product: product, quantity: 1, actual_cost: 1, actual_subsidy: 0, state: "complete", statement:, order_id: order.id, created_by_user: user)
     end
   end
   let(:params) { order_details.each_with_object({}) { |od, h| h[od.id.to_s] = ActionController::Parameters.new(reconciled: "1") } }
   let(:reconciler) { described_class.new(OrderDetail.all, params, Time.current, "reconciled") }
-  let(:journal) { create(:journal, facility: product.facility) }
+  let(:account) { create(:account, :with_account_owner, type: Account.config.statement_account_types.first) }
+  let(:statement) { create(:statement, facility: product.facility, account:, created_by_user: user) }
 
   describe "reconciling" do
     let(:number_of_order_details) { 5 }
