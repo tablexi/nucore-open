@@ -92,6 +92,22 @@ RSpec.describe OrderDetails::Reconciler do
     end
   end
 
+  describe "marking as 'Unrecoverable'" do
+    let(:reconciler) { described_class.new(OrderDetail.all, params, Time.current, "unrecoverable") }
+    let(:number_of_order_details) { 5 }
+
+    it "marks all the orders as 'Unrecoverable'" do
+      previous_reconciled_count = OrderDetail.reconciled.count
+      previous_unrecoverable_count = OrderDetail.unrecoverable.count
+      reconciler.reconcile_all
+      updated_reconciled_count = OrderDetail.reconciled.count
+      updated_unrecoverable_count = OrderDetail.unrecoverable.count
+
+      expect(updated_reconciled_count).to eq(previous_reconciled_count)
+      expect(updated_unrecoverable_count).to eq(previous_unrecoverable_count + 5)
+    end
+  end
+
   # describe "reconciling more than 1000 order details (because of oracle)" do
   #   let(:number_of_order_details) { 1001 }
 
