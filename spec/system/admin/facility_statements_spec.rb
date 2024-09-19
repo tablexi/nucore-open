@@ -17,8 +17,6 @@ RSpec.describe "Facility Statement Admin" do
     order_details.each do |detail|
       detail.update(reviewed_at: 1.day.ago)
     end
-
-    order_details.last.change_status!(OrderStatus.unrecoverable)
   end
 
   describe "filtering on Create Statement" do
@@ -39,6 +37,7 @@ RSpec.describe "Facility Statement Admin" do
     let!(:statement3) { create(:statement, created_at: 10.days.ago, order_details: [order_details.last], account: order_details.last.account, facility:) }
 
     before do
+      order_details.last.change_status!(OrderStatus.unrecoverable)
       login_as director
       visit facility_statements_path(facility)
     end
