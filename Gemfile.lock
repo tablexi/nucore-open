@@ -557,8 +557,7 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    rexml (3.3.2)
-      strscan
+    rexml (3.3.7)
     rollbar (3.6.0)
     rspec-activejob (0.6.1)
       activejob (>= 4.2)
@@ -631,7 +630,7 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
-    selenium-webdriver (4.22.0)
+    selenium-webdriver (4.25.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -661,7 +660,6 @@ GEM
       net-ssh (>= 2.8.0)
       ostruct
     state_machines (0.6.0)
-    strscan (3.1.0)
     synaccess_connect (0.3.1)
       nokogiri (>= 1.6)
     sysexits (1.2.0)
