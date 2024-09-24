@@ -335,7 +335,7 @@ GEM
     exception_notification (4.5.0)
       actionmailer (>= 5.2, < 8)
       activesupport (>= 5.2, < 8)
-    execjs (2.8.1)
+    execjs (2.9.1)
     eye (0.10.0)
       celluloid (~> 0.17.3)
       celluloid-io (~> 0.17.0)
@@ -687,7 +687,7 @@ GEM
       concurrent-ruby (~> 1.0)
     tzinfo-data (1.2024.1)
       tzinfo (>= 1.0.0)
-    uglifier (4.1.18)
+    uglifier (4.2.1)
       execjs (>= 0.3.0, < 3)
     unicode-display_width (2.6.0)
     unicorn (6.1.0)
@@ -826,7 +826,7 @@ DEPENDENCIES
   teaspoon-jasmine
   text_helpers
   tzinfo-data
-  uglifier (= 4.1.18)
+  uglifier (= 4.2.1)
   unicorn
   vuejs-rails (~> 1.0.26)
   web-console
