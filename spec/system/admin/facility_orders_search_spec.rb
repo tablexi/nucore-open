@@ -99,12 +99,12 @@ RSpec.describe "Facility Orders Search" do
           expect(page).to have_css(".fa-users", count: 1) # cross_core_orders.last
           expect(page).to have_css(".fa-building", count: 1) # cross_core_order_originating_facility
 
-          expect(page).to have_content(cross_core_order_originating_facility.id)
-          expect(page).to have_content(cross_core_orders.last.id)
+          expect(page).to have_link(cross_core_order_originating_facility.id, href: facility_order_path(cross_core_order_originating_facility.facility, cross_core_order_originating_facility))
+          expect(page).to have_link(cross_core_orders.last.id, href: facility_order_path(cross_core_orders.last.facility, cross_core_orders.last))
 
-          expect(page).not_to have_content(order_for_facility.id)
-          expect(page).not_to have_content(cross_core_order_originating_facility2.id)
-          expect(page).not_to have_content(cross_core_orders.first.id)
+          expect(page).not_to have_link(order_for_facility.id, href: facility_order_path(order_for_facility.facility, order_for_facility))
+          expect(page).not_to have_link(cross_core_order_originating_facility2.id, href: facility_order_path(cross_core_order_originating_facility2.facility, cross_core_order_originating_facility2))
+          expect(page).not_to have_link(cross_core_orders.first.id, href: facility_order_path(cross_core_orders.first.facility, cross_core_orders.first))
         end
       end
 
@@ -113,12 +113,12 @@ RSpec.describe "Facility Orders Search" do
           expect(page).to have_css(".fa-users", count: 1) # cross_core_orders.last
           expect(page).to have_css(".fa-building", count: 1) # cross_core_order_originating_facility
 
-          expect(page).to have_content(order_for_facility.id)
-          expect(page).to have_content(cross_core_order_originating_facility.id)
-          expect(page).to have_content(cross_core_orders.last.id)
+          expect(page).to have_link(order_for_facility.id, href: facility_order_path(order_for_facility.facility, order_for_facility))
+          expect(page).to have_link(cross_core_order_originating_facility.id, href: facility_order_path(cross_core_order_originating_facility.facility, cross_core_order_originating_facility))
+          expect(page).to have_link(cross_core_orders.last.id, href: facility_order_path(cross_core_orders.last.facility, cross_core_orders.last))
 
-          expect(page).not_to have_content(cross_core_order_originating_facility2.id)
-          expect(page).not_to have_content(cross_core_orders.first.id)
+          expect(page).not_to have_link(cross_core_order_originating_facility2.id, href: facility_order_path(cross_core_order_originating_facility2.facility, cross_core_order_originating_facility2))
+          expect(page).not_to have_link(cross_core_orders.first.id, href: facility_order_path(cross_core_orders.first.facility, cross_core_orders.first))
         end
       end
     end
@@ -153,13 +153,14 @@ RSpec.describe "Facility Orders Search" do
           expect(page).to have_css(".fa-users", count: 1) # cross_core_orders.last
           expect(page).to have_css(".fa-building", count: 0)
 
-          expect(page).to have_content(cross_core_orders.last.id)
+          expect(page).to have_link(cross_core_orders.last.id, href: facility_order_path(cross_core_orders.last.facility, cross_core_orders.last))
 
-          expect(page).not_to have_content(cross_core_order_originating_facility.id)
-          expect(page).not_to have_content(order_for_facility.id)
+          expect(page).not_to have_link(cross_core_order_originating_facility.id, href: facility_order_path(cross_core_order_originating_facility.facility, cross_core_order_originating_facility))
 
-          expect(page).not_to have_content(cross_core_order_originating_facility2.id)
-          expect(page).not_to have_content(cross_core_orders.first.id)
+          expect(page).not_to have_link(order_for_facility.id, href: facility_order_path(order_for_facility.facility, order_for_facility))
+
+          expect(page).not_to have_link(cross_core_order_originating_facility2.id, href: facility_order_path(cross_core_order_originating_facility2.facility, cross_core_order_originating_facility2))
+          expect(page).not_to have_link(cross_core_orders.first.id, href: facility_order_path(cross_core_orders.first.facility, cross_core_orders.first))
         end
       end
 
@@ -168,12 +169,12 @@ RSpec.describe "Facility Orders Search" do
           expect(page).to have_css(".fa-users", count: 1) # cross_core_orders.last
           expect(page).to have_css(".fa-building", count: 0) # order_for_facility is not a cross-core order so it doesn't have an icon
 
-          expect(page).to have_content(order_for_facility.id)
-          expect(page).to have_content(cross_core_orders.last.id)
+          expect(page).to have_link(order_for_facility.id, href: facility_order_path(order_for_facility.facility, order_for_facility))
+          expect(page).to have_link(cross_core_orders.last.id, href: facility_order_path(cross_core_orders.last.facility, cross_core_orders.last))
 
-          expect(page).not_to have_content(cross_core_order_originating_facility.id)
-          expect(page).not_to have_content(cross_core_order_originating_facility2.id)
-          expect(page).not_to have_content(cross_core_orders.first.id)
+          expect(page).not_to have_link(cross_core_order_originating_facility.id, href: facility_order_path(cross_core_order_originating_facility.facility, cross_core_order_originating_facility))
+          expect(page).not_to have_link(cross_core_order_originating_facility2.id, href: facility_order_path(cross_core_order_originating_facility2.facility, cross_core_order_originating_facility2))
+          expect(page).not_to have_link(cross_core_orders.first.id, href: facility_order_path(cross_core_orders.first.facility, cross_core_orders.first))
         end
       end
     end
