@@ -219,6 +219,8 @@ RSpec.describe "Adding to an existing order for cross core", :js, feature_settin
         expect(page).not_to have_content("Cross Core Project ID")
         expect(page.has_selector?("option", text: cross_core_product_facility.name, visible: false)).to be(true)
         expect(page.has_selector?("option", text: product.name, visible: false)).to be(true)
+
+        # I think we can comment this spec, as it isn't clear why it fails from time to time.
         expect(page.has_selector?("option", text: facility2_credit_card_account.to_s, visible: false)).to be(false)
 
         select_from_chosen facility2.name, from: "add_to_order_form[facility_id]", scroll_to: :center

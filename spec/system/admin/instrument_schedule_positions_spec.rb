@@ -25,6 +25,8 @@ RSpec.describe "Instrument Schedule Display Order" do
   describe "as a director" do
     let(:user) { create(:user, :facility_director, facility: facility) }
 
+    # Some of these specs have been failing even though the arrays look the same in the error message.
+    # I wasn't able to reproduce the failure locally.
     it "can reorder the schedules", :js do
       # check starting display order
       visit dashboard_facility_instruments_path(facility)
