@@ -41,6 +41,7 @@ RSpec.describe "Adding to an existing order for cross core", :js, feature_settin
       expect(OrderDetail.order(:id).last.ordered_at).to be_blank
     end
 
+    # This expectation is in its own it because it kept failing, so we'd like to get more information about the failure.
     it "requires a file to be uploaded before adding to the order" do
       expect(page).to have_content("Your order includes one or more incomplete items.")
     end
