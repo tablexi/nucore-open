@@ -9,7 +9,9 @@ document.addEventListener("DOMContentLoaded", function() {
   table.addEventListener("click", setEarliestFulfilledAtDate);
   selectAllLink.addEventListener("click", setEarliestFulfilledAtDate);
   submitDiv.addEventListener("click", handleModals);
-  journalCreationSubmitButton.addEventListener("click", handleSubmit);
+  if (journalCreationSubmitButton) {
+    journalCreationSubmitButton.addEventListener("click", handleSubmit);
+  }
 
   function setEarliestFulfilledAtDate(event) {
     const fulfilledAtDates = [];
