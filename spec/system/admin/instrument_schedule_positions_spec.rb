@@ -49,7 +49,7 @@ RSpec.describe "Instrument Schedule Display Order" do
 
       # Sometimes the first click doesn't work, so try again
       expected_flash_message = "The Instruments have been reordered"
-      click_button "Move" unless page.has_content?(expected_flash_message)
+      click_button "Update Ordering" unless page.has_content?(expected_flash_message)
 
       # This expectation has been failing from time to time even though the arrays look the same in the error message.
       # If this doesn't work, we should take a look at the matcher.
