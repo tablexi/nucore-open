@@ -17,10 +17,10 @@ module BulkEmail
     end
 
     def self.user_types
-      if SettingsHelper.feature_on?(:training_requests)
-        %i(customers authorized_users training_requested account_owners problem_reservation)
-      else
-        %i(customers authorized_users account_owners problem_reservation)
+      %i(customers authorized_users account_owners problem_reservation).tap do |user_types|
+        if SettingsHelper.feature_on?(:training_requests)
+          user_types.insert(2, :training_requested)
+        end
       end
     end
 
@@ -95,10 +95,7 @@ module BulkEmail
     def products_from_params(use_require_approval_filter: true)
       query = Product.for_facility(facility).not_archived
 
-      if use_require_approval_filter
-        query = query.requiring_approval
-      end
-
+      query = query.requiring_approval if use_require_approval_filter
       query = query.where(facility: search_fields[:facilities]) if search_fields[:facilities].present?
       query = query.where(id: search_fields[:products]) if search_fields[:products].present?
       query

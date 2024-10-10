@@ -415,7 +415,7 @@ RSpec.describe BulkEmail::RecipientSearcher do
     # User 3 has a reservation without a problem
     let!(:problem_reservation) { create(:purchased_reservation, product:, reserve_start_at: 2.hours.ago, reserve_end_at: 1.hour.ago, actual_start_at: 1.hour.ago, actual_end_at: nil, user:) }
     let!(:problem_reservation2) { create(:purchased_reservation, product: product2, reserve_start_at: 2.hours.ago, reserve_end_at: 1.hour.ago, actual_start_at: 1.hour.ago, actual_end_at: nil, user: user2) }
-    let!(:problem_reservation3) { create(:purchased_reservation, product:, user: user3) }
+    let!(:reservation3) { create(:purchased_reservation, product:, user: user3) }
 
     before :each do
       MoveToProblemQueue.move!(problem_reservation.order_detail, force: true, cause: :reservation_started)
@@ -430,6 +430,7 @@ RSpec.describe BulkEmail::RecipientSearcher do
       before { params[:products] = [] }
 
       it "returns all authorized users for any active instrument" do
+        # user3 (reservation3.user) is not in the list because they don't have a problem reservation
         expect(users).to match_array(problem_reservation_users)
       end
     end
