@@ -5,6 +5,7 @@ en:
         ordered_by: "Ordered By"
       show:
         add_to_order_header: "Add to Order"
+        add_to_cross_core_order_header: "Add to Cross-Core Order"
         cross_core_project_id: "Cross-Core Project ID"
         cross_core_project_total: "Cross-Core Project Total"
         table_caption: "Order detail information"
