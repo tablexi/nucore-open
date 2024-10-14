@@ -11,6 +11,7 @@ class FacilityAccountsReconciliationController < ApplicationController
   before_action :check_acting_as
   before_action :init_current_facility
   before_action :check_billing_access
+  before_action :check_billing_access_to_mark_as_unrecoverable
   before_action :set_billing_navigation
 
   def index
@@ -36,6 +37,7 @@ class FacilityAccountsReconciliationController < ApplicationController
       unreconciled_details,
       params[:order_detail],
       reconciled_at,
+      params[:order_status],
       params[:bulk_reconcile_note],
       params[:bulk_deposit_number],
       params[:bulk_note_checkbox],
@@ -50,7 +52,7 @@ class FacilityAccountsReconciliationController < ApplicationController
         LogEvent.log(statement, :closed, current_user)
       end
 
-      flash[:notice] = "#{count} payment#{count == 1 ? '' : 's'} successfully reconciled" if count > 0
+      flash[:notice] = "#{count} payment#{count == 1 ? '' : 's'} successfully updated" if count > 0
     else
       flash[:error] = reconciler.full_errors.join("<br />").html_safe
     end
@@ -80,4 +82,10 @@ class FacilityAccountsReconciliationController < ApplicationController
     OrderDetail.complete.statemented(current_facility)
   end
 
+  def check_billing_access_to_mark_as_unrecoverable
+    if params[:order_status] == "unrecoverable" && !(current_user.administrator? || current_user.global_billing_administrator?)
+      flash[:error] = t("controllers.facility_accounts_reconciliation.cannot_mark_as_unrecoverable")
+      redirect_to([account_route.to_sym, :facility_accounts])
+    end
+  end
 end
