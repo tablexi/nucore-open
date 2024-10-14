@@ -36,6 +36,9 @@ en:
         success: "Payment source activated successfully"
         failure: "Cannot activate. %{errors}"
 
+    facility_accounts_reconciliation:
+      cannot_mark_as_unrecoverable: "You do not have permission to mark payments as unrecoverable. Please contact your Global Administrator for help."
+
     facility_notifications:
       no_selection: No orders selected
       errors_html: We experienced the following errors. Please try again.<br/>%{errors}
@@ -196,6 +199,8 @@ en:
         quantities_changed: Quantities have changed. Please review updated prices then click "Purchase"
         reservation:
           success: Reservation created successfully
+      choose_account:
+        missing_account: "Payment source not found.  Please select a payment source and try again."
 
     order_imports:
       create:
