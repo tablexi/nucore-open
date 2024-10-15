@@ -9,6 +9,11 @@ updates:
   open-pull-requests-limit: 99
   allow:
   - dependency-type: all
+  ignore:
+    - dependency-name: rails
+      update-types:
+        - version-update:semver-major
+        - version-update:semver-minor
 
 # Check for updates to GitHub Actions every week
 - package-ecosystem: "github-actions"
