@@ -13,6 +13,8 @@
 
 = f.input :problems_resolvable_by_user, as: :boolean, label: false, inline_label: true
 
+- if SettingsHelper.feature_on?(:show_daily_rate_option) && current_user.administrator?
+  = f.input :daily_booking, as: :boolean, label: false, inline_label: true
 
 .well
   %h3= text("instruments.instrument_fields.reservation.label.restrict")

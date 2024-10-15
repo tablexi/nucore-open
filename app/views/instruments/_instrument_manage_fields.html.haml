@@ -4,6 +4,9 @@
 
 = f.input :problems_resolvable_by_user, as: :boolean, hint: false
 
+- if SettingsHelper.feature_on?(:show_daily_rate_option)
+  = f.input :daily_booking, as: :boolean, hint: false
+
 = f.input :pricing_mode
 
 = f.input :reserve_interval, value_method: :to_i, label: "Reservation Interval"
