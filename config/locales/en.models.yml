@@ -309,6 +309,7 @@ en:
         rate: Hourly rate
       price_group:
         is_internal: Is Internal?
+        is_hidden: Is Hidden?
       price_policy:
         type: Type
         can_purchase: Can Purchase?

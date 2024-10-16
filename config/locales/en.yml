@@ -954,6 +954,7 @@ en:
   price_groups:
     price_group_fields:
       internal_instruction: "Check this box if this price group is internal:"
+      hidden_instruction: "Check this box if you want to hide this price group:"
     accounts:
       intro: "Pricing policies apply to orders paid for with the following payment sources."
       notice: "No payment sources have been added to this price group."
@@ -978,6 +979,7 @@ en:
         global: "Global"
         users: "Number of Users"
         accounts: "Number of Payment Sources"
+        is_hidden: "Is Hidden?"
     show:
       users:
         add_user: "Add User"

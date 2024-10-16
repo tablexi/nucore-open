@@ -21,6 +21,7 @@ class PriceGroup < ApplicationRecord
   before_destroy { throw :abort if global? }
   before_destroy { price_policies.destroy_all } # Cannot be a dependent: :destroy because of ordering of callbacks
   before_create  ->(o) { o.display_order = 999 unless o.facility_id.nil? }
+  before_update  :update_hidden_price_group_policies, if: :is_hidden_changed?
 
   scope :for_facility, ->(facility) { where(facility_id: [nil, facility.id]) }
   scope :globals, -> { where(facility_id: nil) }
@@ -116,6 +117,15 @@ class PriceGroup < ApplicationRecord
   end
 
   private
+
+  def is_hidden_changed?
+    self.will_save_change_to_attribute?(:is_hidden)
+  end
+
+  def update_hidden_price_group_policies
+    policies = self.price_policies.current
+    PricePolicyUpdater.update_can_purchase(policies)
+  end
 
   # Find a global price group by name, or create it if it does not exist
   def self.find_or_create_global(name:, display_order:, is_internal: false, admin_editable: true)
