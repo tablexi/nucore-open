@@ -11,7 +11,10 @@ updates:
   - dependency-type: all
   groups:
     rails-gems:
-      update-types: [patch]
+      update-types:
+        - patch
+        - minor
+
       patterns:
         - rails
         - railties
