@@ -658,7 +658,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_15_214235) do
     t.string "billing_mode", default: "Default", null: false
     t.string "pricing_mode", default: "Schedule Rule", null: false
     t.boolean "cross_core_ordering_available", default: false, null: false
-    t.boolean "daily_booking", default: false, null: false
     t.integer "min_reserve_days"
     t.integer "max_reserve_days"
     t.index ["dashboard_token"], name: "index_products_on_dashboard_token"

@@ -34,17 +34,26 @@ $(function() {
 
 
 $(function() {
-  const dailyBookingField = document.querySelector(".js--daily-booking");
+  const pricingModeElement = document.querySelector(".js--pricing-mode");
 
-  if (!dailyBookingField) {
+  if (!pricingModeElement) {
     return;
   }
 
-  dailyBookingField.addEventListener("change", function() {
-    const dailyBooking = dailyBookingField.checked;
+  pricingModeElement.addEventListener("change", function () {
+    const dailyBookingRadioButton = document.querySelector(
+      "#instrument_pricing_mode_schedule_rule_daily_booking_only"
+    );
 
-    const pricingModeElement = document.querySelector(".js--pricing-mode");
-    const reserveIntervalElement = document.querySelector(".js--reserve-interval");
+    if (!dailyBookingRadioButton) {
+      return;
+    }
+
+    const dailyBooking = dailyBookingRadioButton.checked;
+
+    const reserveIntervalElement = document.querySelector(
+      ".js--reserve-interval"
+    );
     const minReserveMinsElement = document.querySelector(
       ".js--min-reserve-mins"
     );
@@ -65,7 +74,6 @@ $(function() {
     });
 
     [
-      pricingModeElement,
       reserveIntervalElement,
       minReserveMinsElement,
       maxReserveMinsElement,

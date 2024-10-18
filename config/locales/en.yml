@@ -1222,7 +1222,6 @@ en:
             If you enter a value in this field, you must toggle the relay to activate.
       reservation:
         instruct:
-          daily_booking: "Only allow daily bookings. Only Schedule Rule pricing mode is supported. Reservation Interval is 1 day and not customizable. Minimum and Maximum Reserve is expressed in days."
           reserve_interval: "The minutes of an hour on which a reservation is allowed to begin (e.g. if 5 reservations can be scheduled every 5 minutes)"
           min_reserve: "Minimum amount of time for a reservation (optional; must be a multiple of the reservation interval)"
           max_reserve: "Maximum amount of time for a reservation (optional)"

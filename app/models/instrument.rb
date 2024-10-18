@@ -8,7 +8,11 @@ class Instrument < Product
   include EmailListAttribute
 
   RESERVE_INTERVALS = [1, 5, 10, 15, 30, 60].freeze
-  PRICING_MODES = ["Schedule Rule", "Duration"].freeze
+  PRICING_MODES = ["Schedule Rule", "Duration"].tap do |pricing_modes|
+    if SettingsHelper.feature_on?(:show_daily_rate_option)
+      pricing_modes.insert(1, "Schedule Rule (Daily Booking only)")
+    end
+  end.freeze
 
   with_options foreign_key: "product_id" do |instrument|
     instrument.has_many :admin_reservations
@@ -36,13 +40,15 @@ class Instrument < Product
            :maximum_reservation_is_multiple_of_interval,
            :max_reservation_not_less_than_min
 
-  validates :pricing_mode, presence: true, inclusion: { in: PRICING_MODES }, if: -> { !daily_booking? }
+  validates :pricing_mode, presence: true, inclusion: { in: PRICING_MODES }
 
   # Callbacks
   # --------
 
   # Triggered by Product
   # after_create :create_default_price_group_products
+
+  before_create :clean_up_reservation_rules
 
   # Scopes
   # --------
@@ -103,6 +109,10 @@ class Instrument < Product
     pricing_mode == "Duration"
   end
 
+  def daily_booking?
+    pricing_mode == "Schedule Rule (Daily Booking only)"
+  end
+
   private
 
   def minimum_reservation_is_multiple_of_interval
@@ -126,6 +136,17 @@ class Instrument < Product
   def max_reservation_not_less_than_min
     if max_reserve_mins && min_reserve_mins && max_reserve_mins < min_reserve_mins
       errors.add :max_reserve_mins, :max_less_than_min
+    end
+  end
+
+  def clean_up_reservation_rules
+    if daily_booking?
+      min_reserve_mins = nil
+      max_reserve_mins = nil
+      reserve_interval = nil
+    else
+      min_reserve_days = nil
+      max_reserve_days = nil
     end
   end
 
