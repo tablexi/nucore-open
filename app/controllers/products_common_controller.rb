@@ -120,7 +120,7 @@ class ProductsCommonController < ApplicationController
       :auto_cancel_mins, :lock_window, :cutoff_hours,
       :problems_resolvable_by_user, :restrict_holiday_access, :billing_mode,
       :pricing_mode, :cross_core_ordering_available,
-      :daily_booking
+      :daily_booking, :min_reserve_days, :max_reserve_days
     ]
   end
 

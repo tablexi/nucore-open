@@ -25,7 +25,7 @@ class Instrument < Product
   # --------
 
   validates :initial_order_status_id, presence: true
-  validates :reserve_interval, presence: true, inclusion: { in: RESERVE_INTERVALS, allow_blank: true }
+  validates :reserve_interval, presence: true, inclusion: { in: RESERVE_INTERVALS, allow_blank: true }, if: -> { !daily_booking? }
   validates :min_reserve_mins,
             :max_reserve_mins,
             :auto_cancel_mins,
@@ -36,7 +36,7 @@ class Instrument < Product
            :maximum_reservation_is_multiple_of_interval,
            :max_reservation_not_less_than_min
 
-  validates :pricing_mode, presence: true, inclusion: { in: PRICING_MODES }
+  validates :pricing_mode, presence: true, inclusion: { in: PRICING_MODES }, if: -> { !daily_booking? }
 
   # Callbacks
   # --------

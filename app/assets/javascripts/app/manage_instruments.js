@@ -31,3 +31,48 @@ $(function() {
 
   return $('#instrument_auto_cancel_mins').change();
 });
+
+
+$(function() {
+  const dailyBookingField = document.querySelector(".js--daily-booking");
+
+  if (!dailyBookingField) {
+    return;
+  }
+
+  dailyBookingField.addEventListener("change", function() {
+    const dailyBooking = dailyBookingField.checked;
+
+    const pricingModeElement = document.querySelector(".js--pricing-mode");
+    const reserveIntervalElement = document.querySelector(".js--reserve-interval");
+    const minReserveMinsElement = document.querySelector(
+      ".js--min-reserve-mins"
+    );
+    const maxReserveMinsElement = document.querySelector(
+      ".js--max-reserve-mins"
+    );
+    const minReserveDaysElement = document.querySelector(
+      ".js--min-reserve-days"
+    );
+    const maxReserveDaysElement = document.querySelector(
+      ".js--max-reserve-days"
+    );
+
+    [minReserveDaysElement, maxReserveDaysElement].forEach((element) => {
+      if (element) {
+        element.toggleAttribute("hidden", !dailyBooking);
+      }
+    });
+
+    [
+      pricingModeElement,
+      reserveIntervalElement,
+      minReserveMinsElement,
+      maxReserveMinsElement,
+    ].forEach((element) => {
+      if (element) {
+        element.toggleAttribute("hidden", dailyBooking);
+      }
+    });
+  });
+});
