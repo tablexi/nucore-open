@@ -731,7 +731,7 @@ DEPENDENCIES
   ed25519 (>= 1.2, < 2.0)
   exception_notification
   eye-patch
-  factory_bot_rails (< 7)
+  factory_bot_rails
   fine_uploader!
   font-awesome-rails
   fullcalendar!
