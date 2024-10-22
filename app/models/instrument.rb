@@ -8,9 +8,10 @@ class Instrument < Product
   include EmailListAttribute
 
   RESERVE_INTERVALS = [1, 5, 10, 15, 30, 60].freeze
+  SCHEDULE_RULE_DAILY_BOOKING = "Schedule Rule (Daily Booking only)"
   PRICING_MODES = ["Schedule Rule", "Duration"].tap do |pricing_modes|
     if SettingsHelper.feature_on?(:show_daily_rate_option)
-      pricing_modes.insert(1, "Schedule Rule (Daily Booking only)")
+      pricing_modes.insert(1, SCHEDULE_RULE_DAILY_BOOKING)
     end
   end.freeze
 
@@ -110,7 +111,7 @@ class Instrument < Product
   end
 
   def daily_booking?
-    pricing_mode == "Schedule Rule (Daily Booking only)"
+    pricing_mode == SCHEDULE_RULE_DAILY_BOOKING
   end
 
   private
