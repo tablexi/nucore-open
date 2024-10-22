@@ -6,12 +6,11 @@
 
 - daily_booking = @product.daily_booking?
 
-- if SettingsHelper.feature_on?(:show_daily_rate_option) || !daily_booking
-  = f.input :pricing_mode
+= f.input :pricing_mode
 
 - if daily_booking
-  = f.input :min_reserve_days, value_method: :to_i
-  = f.input :max_reserve_days, value_method: :to_i
+  = f.input :min_reserve_days, value_method: :to_i, default_value: "None"
+  = f.input :max_reserve_days, value_method: :to_i, default_value: "None"
 - else
   = f.input :reserve_interval, value_method: :to_i, label: "Reservation Interval"
   = f.input :min_reserve_mins, value_method: :to_i
