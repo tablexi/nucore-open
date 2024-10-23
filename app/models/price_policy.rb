@@ -185,6 +185,12 @@ class PricePolicy < ApplicationRecord
     Settings.price_policy_note_options.include?(note) ? note : "Other"
   end
 
+  def daily_booking?
+    return false unless association(:product).loaded?
+
+    product&.daily_booking?
+  end
+
   private
 
   # TODO: Refactor

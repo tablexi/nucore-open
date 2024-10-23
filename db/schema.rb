@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_10_15_214235) do
+ActiveRecord::Schema[7.0].define(version: 2024_10_22_135335) do
   create_table "account_facility_joins", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "facility_id", null: false
     t.integer "account_id", null: false
@@ -534,6 +534,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_15_214235) do
     t.boolean "full_price_cancellation", default: false, null: false
     t.string "note", limit: 256
     t.integer "created_by_id"
+    t.decimal "usage_rate_daily", precision: 10, scale: 2
+    t.decimal "usage_subsidy_daily", precision: 10, scale: 2
     t.index ["created_by_id"], name: "index_price_policies_on_created_by_id"
     t.index ["price_group_id"], name: "fk_rails_74aa223960"
     t.index ["product_id"], name: "index_price_policies_on_product_id"
