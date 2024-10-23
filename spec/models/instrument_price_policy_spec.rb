@@ -177,7 +177,7 @@ RSpec.describe InstrumentPricePolicy do
 
   describe "daily rates" do
     let(:instrument) do
-      build :instrument, pricing_mode: Instrument::SCHEDULE_RULE_DAILY_BOOKING
+      build :instrument, pricing_mode: Instrument::Pricing::SCHEDULE_DAILY
     end
 
     let(:policy) { build :instrument_price_policy, product: instrument }
@@ -248,7 +248,7 @@ RSpec.describe InstrumentPricePolicy do
     end
 
     it "does not requires usage_rate_daily if instrumnet is not scheduled daily" do
-      instrument.pricing_mode = Instrument::PRICING_MODES.first
+      instrument.pricing_mode = Instrument::Pricing::DURATION
 
       expect(policy).to be_valid
     end

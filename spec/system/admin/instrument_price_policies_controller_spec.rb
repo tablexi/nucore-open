@@ -5,7 +5,7 @@ require "rails_helper"
 RSpec.describe InstrumentPricePoliciesController do
   let(:facility) { create(:setup_facility) }
   let(:billing_mode) { "Default" }
-  let(:pricing_mode) { "Schedule Rule" }
+  let(:pricing_mode) { Instrument::Pricing::SCHEDULE_RULE }
   let!(:instrument) { create(:instrument, facility:, billing_mode:, pricing_mode:) }
   let(:director) { create(:user, :facility_director, facility:) }
 
@@ -157,7 +157,7 @@ RSpec.describe InstrumentPricePoliciesController do
   end
 
   context "Duration pricing mode" do
-    let(:pricing_mode) { "Duration" }
+    let(:pricing_mode) { Instrument::Pricing::DURATION }
     let!(:cannot_purchase_group) { create(:price_group, facility:) }
 
     it "can set up the price policies", :js, feature_setting: { facility_directors_can_manage_price_groups: true } do
@@ -399,5 +399,9 @@ RSpec.describe InstrumentPricePoliciesController do
       # External
       expect(page).not_to have_content("$90.00") # Step 3 rate (removed)
     end
+  end
+
+  context "Schedule Rule Daily pricing mode" do
+    let(:pricing_mode) { Instrument::Pricing::SCHEDULE_DAILY }
   end
 end
