@@ -8,7 +8,7 @@
 
 
 - if local_assigns[:cancellation]
-  %td
+  %td.daily_rate
     = pp.label :cancellation_cost, t("price_policies.amount"), class: "normal-weight"
     %span.js--cancellationCost
     = pp.hidden_field :cancellation_cost, value: number_to_currency(price_policy.cancellation_cost, unit: "", delimiter: ""),
@@ -18,8 +18,17 @@
 
     = pp.hidden_field :full_price_cancellation, class: "js--fullCancellationCost", readonly: true
 
-%td
-  = pp.hidden_field :usage_rate, value: display_usage_rate(price_group, price_policy),
-    class: "js--usageRate"
-  = pp.label :usage_subsidy, t("price_policies.adjustment"), class: "normal-weight"
-  = "- #{pp.text_field :usage_subsidy, value: display_usage_subsidy(price_group, price_policy), size: 8, class: "usage_adjustment"}"
+- if @product.daily_booking?
+  %td
+    = pp.hidden_field :usage_rate_daily, value: price_policy.usage_rate_daily, class: "js--usageRate"
+
+    = pp.label :usage_subsidy_daily, t("price_policies.adjustment"), class: "normal-weight"
+    %span.adjustment-input
+      = pp.text_field :usage_subsidy_daily, value: display_rate(price_policy.usage_subsidy_daily)
+- else
+  %td
+    = pp.hidden_field :usage_rate, value: display_usage_rate(price_group, price_policy), class: "js--usageRate"
+
+    = pp.label :usage_subsidy, t("price_policies.adjustment"), class: "normal-weight"
+    %span.adjustment-input
+      = pp.text_field :usage_subsidy, value: display_usage_subsidy(price_group, price_policy), size: 8, class: "usage_adjustment"
