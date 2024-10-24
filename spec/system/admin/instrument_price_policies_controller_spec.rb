@@ -403,5 +403,112 @@ RSpec.describe InstrumentPricePoliciesController do
 
   context "Schedule Rule Daily pricing mode" do
     let(:pricing_mode) { Instrument::Pricing::SCHEDULE_DAILY }
+
+    it "editting rates automatically fills adjustments", :js do
+      visit new_facility_instrument_price_policy_path(facility, instrument)
+
+      check("price_policy_#{base_price_group.id}[can_purchase]")
+      check("price_policy_#{cancer_center.id}[can_purchase]")
+
+      base_rate = "100"
+      fill_in("price_policy_#{base_price_group.id}[usage_rate_daily]", with: base_rate)
+
+      find_field(
+        "price_policy_#{cancer_center.id}[usage_rate_daily]",
+        type: "hidden"
+      ).tap do |hidden_input|
+        expect(hidden_input.value).to eq(base_rate)
+      end
+    end
+
+    it "can add price policies" do
+      visit new_facility_instrument_price_policy_path(facility, instrument)
+
+      expect(page).to have_text("Rate Per Day")
+      expect(page).to_not have_text("Rate Per Hour")
+
+      expect(page).to_not have_text("Reservation Cost")
+      expect(page).to_not have_text("Minimum Cost")
+
+      PriceGroup.find_each do |price_group|
+        expect(page).to_not have_field("price_policy_#{price_group.id}[minimum_cost]")
+        expect(page).to_not have_field("price_policy_#{price_group.id}[cancellation]")
+        expect(page).to_not have_field("price_policy_#{price_group.id}[usage_rate]")
+      end
+
+      fill_in("note", with: "Some note about pricing")
+
+      check("price_policy_#{base_price_group.id}[can_purchase]")
+      check("price_policy_#{cancer_center.id}[can_purchase]")
+      uncheck("price_policy_#{external_price_group.id}[can_purchase]")
+
+      fill_in("price_policy_#{base_price_group.id}[usage_rate_daily]", with: "100")
+      fill_in("price_policy_#{cancer_center.id}[usage_subsidy_daily]", with: "30")
+
+      # this is autofilled by js when enabled
+      find_field(
+        "price_policy_#{cancer_center.id}[usage_rate_daily]",
+        type: "hidden"
+      ).set("100")
+
+      expect { click_button("Add Pricing Rules") }.to(
+        change { instrument.price_policies.reload.count }.by(3)
+      )
+
+      expect(page).to(
+        have_current_path(facility_instrument_price_policies_path(facility, instrument))
+      )
+    end
+
+    describe "already created price policies" do
+      let(:start_date) { Date.today }
+      let(:expire_date) { PricePolicy.generate_expire_date(@start_date) }
+      let(:base_price_policy) { instrument.price_policies.find_by(price_group: base_price_group) }
+      let!(:price_policies) do
+        PricePolicyBuilder.get_new_policies_based_on_most_recent(
+          instrument, start_date
+        ).each do |price_policy|
+          price_policy.assign_attributes(
+            note: "Some note about pricing",
+            usage_rate_daily: 100,
+            charge_for: InstrumentPricePolicy::CHARGE_FOR[:reservation]
+          )
+
+          price_group = price_policy.price_group
+          price_policy.usage_subsidy_daily = 10 if price_group.external? || price_group.master_internal?
+
+          price_policy.save!
+        end
+      end
+
+      it "can view daily rates" do
+        visit facility_instrument_price_policies_path(facility, instrument)
+
+        expect(page).to have_text("Rate Per Day")
+        expect(page).to_not have_text("Rate Per Hour")
+
+        expect(page).to_not have_text("Reservation Cost")
+        expect(page).to_not have_text("Minimum Cost")
+      end
+
+      it "can edit price policies" do
+        visit edit_facility_instrument_price_policy_path(facility, instrument, start_date.to_s)
+
+        expect(page).to have_content("Edit Pricing Rules")
+
+        new_rate = BigDecimal("1001.10")
+        fill_in("price_policy_#{base_price_group.id}[usage_rate_daily]", with: new_rate)
+
+        expect { click_button("Save Rules") }.to(
+          change do
+            base_price_policy.reload.usage_rate_daily
+          end.from(
+            base_price_policy.usage_rate_daily
+          ).to(
+            new_rate
+          )
+        )
+      end
+    end
   end
 end
