@@ -90,19 +90,23 @@ class PricePolicyUpdater
     [
       :can_purchase,
       :usage_rate,
+      :usage_rate_daily,
       :usage_subsidy,
+      :usage_subsidy_daily,
       :minimum_cost,
       :cancellation_cost,
       :unit_cost,
       :unit_subsidy,
-      duration_rates_attributes: [
-        :id,
-        :subsidy,
-        :rate,
-        :price_policy_id,
-        :min_duration_hours,
-        :_destroy
-      ]
+      {
+        duration_rates_attributes: [
+          :id,
+          :subsidy,
+          :rate,
+          :price_policy_id,
+          :min_duration_hours,
+          :_destroy,
+        ],
+      },
     ].tap do |attributes|
       attributes << :full_price_cancellation if SettingsHelper.feature_on?(:charge_full_price_on_cancellation)
     end
