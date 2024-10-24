@@ -40,7 +40,7 @@ services:
     tty: true
 ```
 
-If you are using a computer with a apple silicon procesor (M1, M2, etc) you may need to select an arm64 compatible varsion such as 19.19.0.0
+If you are using a computer with an apple silicon processor (M1, M2, etc) you may need to select an arm64 compatible version such as 19.19.0.0.
 You can check available versions at the end of the page on step 3 of [Set up Docker and Oracle Container Registry](#Set-up-Docker-and-Oracle-Container-Registry-(for-19c))
 
 To start the `db` service, run:
@@ -256,14 +256,7 @@ if [ "$(uname -m)" = "arm64" ]; then
   [ -f /opt/homebrew/bin/brew ] && eval "$(/opt/homebrew/bin/brew shellenv)"
 else
   echo "$(uname -m)"
-  # Postgres Caveats
-  export PATH="/usr/local/opt/libpq/bin:$PATH"
-  export LDFLAGS="-L/usr/local/opt/libpq/lib"
-  export CPPFLAGS="-I/usr/local/opt/libpq/include"
-  export PKG_CONFIG_PATH="/usr/local/opt/libpq/lib/pkgconfig"
-  # Homebrew
   export PATH="/usr/local/bin:${PATH}"
-
   [ -f /usr/local/bin/brew ] && eval "$(/usr/local/bin/brew shellenv)"
 fi
 ```
@@ -283,11 +276,11 @@ After saving this, every time you open a new terminal it should print the curren
   - The output should print "x86_64"
   - You can check your actual architecture by running `arch`, if the output is "i386" you're good to go
 
-* Now you can install Homebrew normaly
+* Now you can install Homebrew normally
   - Run `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
   - Make sure the root of the install is **/usr/local/**
 
-4. Install ruby the ruby version of your current architecture
+4. Install Ruby version for your current architecture.
 
 * If you had the arm64 ruby version already installed it won't allow you to install Ruby x86 with the plain rvm install command as it will detect that version is already installed.
 
@@ -297,17 +290,17 @@ After saving this, every time you open a new terminal it should print the curren
 * Once installed make sure to use this ruby instance
   - Run `rvm use ruby-3.3.0-x86_64`
 
-5. If ruby-oci8 is not founding Oracle instant client installed you can install it manually and specifying the route where Oracle instant client is located.
-As the Oracle instant client was installing before setting it will be located at the arm64 Homebrew path.
+5. If ruby-oci8 doesn't find Oracle instant client installed you can install it manually and specifying the route where Oracle instant client is located.
+As the Oracle instant client was installed before setting the x86 Homebrew path, it will be located at the arm64 Homebrew path.
 
   - Run `export DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/instantclient-basic/19.8.0.0.0dbru/lib`
   - Run `gem install ruby-oci8 -- --with-instant-client-dir=/opt/homebrew/Cellar/instantclient-basic/19.8.0.0.0dbru`
 
-This are example path, please make sure to type your specific path.
+This is an example path, please make sure to type your specific path.
 
 ### Oracle instant client folder structure
 
-It can happen that you have Oracle instant client correctly installed but ruby-oci8 can't find specific files on the instantclient-basic folder. This is happens as Oracle instant client consists of different packages and they may be stored in different folders.
+It can happen that you have Oracle instant client correctly installed but ruby-oci8 can't find specific files on the instantclient-basic folder. This happens as Oracle instant client consists of different packages and they may be stored in different folders.
 
 Here is the fix:
 
