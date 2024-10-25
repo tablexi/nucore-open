@@ -290,18 +290,18 @@ td.daily_rate {
 .half-width {
   width: 50%;
 }
-.adjustment-input::before {
+
+.full-width {
+  width: 100%;
+}
+
+.negative-number::before {
   content: '–';
   width: 0;
   display: inline-block;
   overflow: visible;
   position: relative;
   left: -10px;
-  top: -4px;
-}
-
-.full-width {
-  width: 100%;
 }
 
 /* Price policies */
