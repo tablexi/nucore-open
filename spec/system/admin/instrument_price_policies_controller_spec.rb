@@ -453,20 +453,15 @@ RSpec.describe InstrumentPricePoliciesController do
       let(:start_date) { Date.today }
       let(:expire_date) { PricePolicy.generate_expire_date(@start_date) }
       let(:base_price_policy) { instrument.price_policies.find_by(price_group: base_price_group) }
-      let!(:price_policies) do
-        PricePolicyBuilder.get_new_policies_based_on_most_recent(
-          instrument, start_date
-        ).each do |price_policy|
-          price_policy.assign_attributes(
-            note: "Some note about pricing",
-            usage_rate_daily: 100,
-            charge_for: InstrumentPricePolicy::CHARGE_FOR[:reservation]
+      let(:price_policies) { instrument.price_policies }
+
+      before do
+        PriceGroup.find_each do |price_group|
+          create(
+            :instrument_daily_booking_price_policy,
+            product: instrument,
+            price_group:
           )
-
-          price_group = price_policy.price_group
-          price_policy.usage_subsidy_daily = 10 if price_group.external? || price_group.master_internal?
-
-          price_policy.save!
         end
       end
 
