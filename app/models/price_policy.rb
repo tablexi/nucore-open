@@ -186,8 +186,6 @@ class PricePolicy < ApplicationRecord
   end
 
   def daily_booking?
-    return false unless association(:product).loaded?
-
     product&.daily_booking?
   end
 
