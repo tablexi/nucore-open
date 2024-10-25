@@ -39,8 +39,8 @@ RSpec.describe InstrumentPricePoliciesController do
 
       click_button "Add Pricing Rules"
 
-      expect(page).to have_content("$60.00\n- $30.00\n= $30.00") # Cancer Center Usage Rate
-      expect(page).to have_content("$120.00\n- $60.00\n= $60.00") # Cancer Center Minimum Cost
+      expect(page).to have_content("$60.00\n$30.00\n= $30.00") # Cancer Center Usage Rate
+      expect(page).to have_content("$120.00\n$60.00\n= $60.00") # Cancer Center Minimum Cost
       expect(page).to have_content("$15.00", count: 2) # Internal and Cancer Center Reservation Costs
 
       # External price group
@@ -113,8 +113,8 @@ RSpec.describe InstrumentPricePoliciesController do
 
         click_button "Add Pricing Rules"
 
-        expect(page).to have_content("$60.00\n- $30.00\n= $30.00") # Cancer Center Usage Rate
-        expect(page).to have_content("$120.00\n- $60.00\n= $60.00") # Cancer Center Minimum Cost
+        expect(page).to have_content("$60.00\n$30.00\n= $30.00") # Cancer Center Usage Rate
+        expect(page).to have_content("$120.00\n$60.00\n= $60.00") # Cancer Center Minimum Cost
         expect(page).not_to have_content("$15.00")
         expect(page).to have_content(PricePolicy.human_attribute_name(:full_price_cancellation), count: 3)
       end
@@ -200,11 +200,11 @@ RSpec.describe InstrumentPricePoliciesController do
       expect(page).to have_content("$15.00", count: 2) # Internal and Cancer Center Reservation Costs
 
       # Cancer center
-      expect(page).to have_content("$60.00\n- $25.00\n= $35.00")    # Usage Rate
-      expect(page).to have_content("$120.00\n- $50.00\n= $70.00")   # Minimum Cost
-      expect(page).to have_content("$50.00\n- $20.00\n= $30.00")    # Step 2 rate
-      expect(page).to have_content("$40.00\n- $10.00\n= $30.00")    # Step 3 rate
-      expect(page).to have_content("$30.00\n- $5.00\n= $25.00")     # Step 4 rate
+      expect(page).to have_content("$60.00\n$25.00\n= $35.00")    # Usage Rate
+      expect(page).to have_content("$120.00\n$50.00\n= $70.00")   # Minimum Cost
+      expect(page).to have_content("$50.00\n$20.00\n= $30.00")    # Step 2 rate
+      expect(page).to have_content("$40.00\n$10.00\n= $30.00")    # Step 3 rate
+      expect(page).to have_content("$30.00\n$5.00\n= $25.00")     # Step 4 rate
 
       # External price group
       expect(page).to have_content("$120.11")
