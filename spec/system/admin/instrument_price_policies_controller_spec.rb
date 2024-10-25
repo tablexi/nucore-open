@@ -339,6 +339,8 @@ RSpec.describe InstrumentPricePoliciesController do
       fill_in "price_policy_#{external_price_group.id}[duration_rates_attributes][1][rate]", with: "100"
       fill_in "price_policy_#{external_price_group.id}[duration_rates_attributes][2][rate]", with: "90"
 
+      expect(page).to have_content("/ minute")
+
       uncheck "price_policy_#{cannot_purchase_group.id}[can_purchase]"
 
       fill_in "note", with: "This is my note"
@@ -404,31 +406,14 @@ RSpec.describe InstrumentPricePoliciesController do
   context "Schedule Rule Daily pricing mode" do
     let(:pricing_mode) { Instrument::Pricing::SCHEDULE_DAILY }
 
-    it "editting rates automatically fills adjustments", :js do
+    it "can add price policies", :js do
       visit new_facility_instrument_price_policy_path(facility, instrument)
 
-      check("price_policy_#{base_price_group.id}[can_purchase]")
-      check("price_policy_#{cancer_center.id}[can_purchase]")
+      expect(page).to have_content("Rate Per Day")
+      expect(page).to_not have_content("Rate Per Hour")
 
-      base_rate = "100"
-      fill_in("price_policy_#{base_price_group.id}[usage_rate_daily]", with: base_rate)
-
-      find_field(
-        "price_policy_#{cancer_center.id}[usage_rate_daily]",
-        type: "hidden"
-      ).tap do |hidden_input|
-        expect(hidden_input.value).to eq(base_rate)
-      end
-    end
-
-    it "can add price policies" do
-      visit new_facility_instrument_price_policy_path(facility, instrument)
-
-      expect(page).to have_text("Rate Per Day")
-      expect(page).to_not have_text("Rate Per Hour")
-
-      expect(page).to_not have_text("Reservation Cost")
-      expect(page).to_not have_text("Minimum Cost")
+      expect(page).to_not have_content("Reservation Cost")
+      expect(page).to_not have_content("Minimum Cost")
 
       PriceGroup.find_each do |price_group|
         expect(page).to_not have_field("price_policy_#{price_group.id}[minimum_cost]")
@@ -445,11 +430,14 @@ RSpec.describe InstrumentPricePoliciesController do
       fill_in("price_policy_#{base_price_group.id}[usage_rate_daily]", with: "100")
       fill_in("price_policy_#{cancer_center.id}[usage_subsidy_daily]", with: "30")
 
-      # this is autofilled by js when enabled
       find_field(
         "price_policy_#{cancer_center.id}[usage_rate_daily]",
         type: "hidden"
-      ).set("100")
+      ).tap do |hidden_input|
+        expect(hidden_input.value).to eq("100")
+      end
+
+      expect(page).to_not have_content("/ minute")
 
       expect { click_button("Add Pricing Rules") }.to(
         change { instrument.price_policies.reload.count }.by(3)
@@ -458,6 +446,7 @@ RSpec.describe InstrumentPricePoliciesController do
       expect(page).to(
         have_current_path(facility_instrument_price_policies_path(facility, instrument))
       )
+      expect(page).to have_content("Price Rules were successfully created.")
     end
 
     describe "already created price policies" do
@@ -484,19 +473,19 @@ RSpec.describe InstrumentPricePoliciesController do
       it "can view daily rates" do
         visit facility_instrument_price_policies_path(facility, instrument)
 
-        expect(page).to have_text("Rate Per Day")
-        expect(page).to_not have_text("Rate Per Hour")
+        expect(page).to have_content("Rate Per Day")
+        expect(page).to_not have_content("Rate Per Hour")
 
-        expect(page).to_not have_text("Reservation Cost")
-        expect(page).to_not have_text("Minimum Cost")
+        expect(page).to_not have_content("Reservation Cost")
+        expect(page).to_not have_content("Minimum Cost")
       end
 
       it "can edit price policies" do
-        visit edit_facility_instrument_price_policy_path(facility, instrument, start_date.to_s)
+        visit edit_facility_instrument_price_policy_path(facility, instrument, start_date)
 
         expect(page).to have_content("Edit Pricing Rules")
 
-        new_rate = BigDecimal("1001.10")
+        new_rate = BigDecimal("1081.99")
         fill_in("price_policy_#{base_price_group.id}[usage_rate_daily]", with: new_rate)
 
         expect { click_button("Save Rules") }.to(
@@ -508,6 +497,9 @@ RSpec.describe InstrumentPricePoliciesController do
             new_rate
           )
         )
+
+        expect(page).to have_content("Price Rules were successfully updated.")
+        expect(page).to have_content(ActiveSupport::NumberHelper.number_to_currency(new_rate))
       end
     end
   end
