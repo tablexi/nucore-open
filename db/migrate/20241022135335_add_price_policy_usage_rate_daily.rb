@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddPricePolicyUsageRateDaily < ActiveRecord::Migration[7.0]
   def change
     with_options(precision: 10, scale: 2) do
