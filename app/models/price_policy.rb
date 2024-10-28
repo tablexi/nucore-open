@@ -185,6 +185,10 @@ class PricePolicy < ApplicationRecord
     Settings.price_policy_note_options.include?(note) ? note : "Other"
   end
 
+  def daily_booking?
+    product&.daily_booking?
+  end
+
   private
 
   # TODO: Refactor

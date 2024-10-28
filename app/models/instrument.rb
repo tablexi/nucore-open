@@ -2,16 +2,21 @@
 
 class Instrument < Product
 
+  module Pricing
+    SCHEDULE_RULE = "Schedule Rule"
+    SCHEDULE_DAILY = "Schedule Rule (Daily Booking only)"
+    DURATION = "Duration"
+  end
+
   include Products::RelaySupport
   include Products::ScheduleRuleSupport
   include Products::SchedulingSupport
   include EmailListAttribute
 
   RESERVE_INTERVALS = [1, 5, 10, 15, 30, 60].freeze
-  SCHEDULE_RULE_DAILY_BOOKING = "Schedule Rule (Daily Booking only)"
-  PRICING_MODES = ["Schedule Rule", "Duration"].tap do |pricing_modes|
+  PRICING_MODES = [Pricing::SCHEDULE_RULE, Pricing::DURATION].tap do |pricing_modes|
     if SettingsHelper.feature_on?(:show_daily_rate_option)
-      pricing_modes.insert(1, SCHEDULE_RULE_DAILY_BOOKING)
+      pricing_modes.insert(1, Pricing::SCHEDULE_DAILY)
     end
   end.freeze
 
@@ -107,11 +112,11 @@ class Instrument < Product
   end
 
   def duration_pricing_mode?
-    pricing_mode == "Duration"
+    pricing_mode == Pricing::DURATION
   end
 
   def daily_booking?
-    pricing_mode == SCHEDULE_RULE_DAILY_BOOKING
+    pricing_mode == Pricing::SCHEDULE_DAILY
   end
 
   private
