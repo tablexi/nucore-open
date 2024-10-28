@@ -154,6 +154,56 @@ RSpec.describe InstrumentPricePoliciesController do
         expect(page).to have_no_link "Remove"
       end
     end
+
+    describe "with hidden price groups", :js do
+      let!(:price_group_to_hide) { create(:price_group, facility: facility) }
+
+      it "hides price policies related to that price group" do
+        visit facility_instruments_path(facility, instrument)
+        click_link instrument.name
+        click_link "Pricing"
+        click_link "Add Pricing Rules"
+
+        expect(page).to have_content(price_group_to_hide.name)
+
+        fill_in "price_policy_#{base_price_group.id}[usage_rate]", with: "60"
+        fill_in "price_policy_#{base_price_group.id}[minimum_cost]", with: "120"
+        fill_in "price_policy_#{base_price_group.id}[cancellation_cost]", with: "15"
+
+        fill_in "price_policy_#{external_price_group.id}[usage_rate]", with: "120.11"
+        fill_in "price_policy_#{external_price_group.id}[minimum_cost]", with: "122"
+        fill_in "price_policy_#{external_price_group.id}[cancellation_cost]", with: "31"
+
+        check "price_policy_#{price_group_to_hide.id}[can_purchase]"
+        fill_in "price_policy_#{price_group_to_hide.id}[usage_subsidy]", with: "40"
+
+        fill_in "note", with: "This is my note"
+
+        click_button "Add Pricing Rules"
+        
+        expect(page).to have_content(base_price_group.name)
+        expect(page).to have_content(price_group_to_hide.name)
+
+        visit edit_facility_price_group_path(facility, price_group_to_hide)
+
+        check "Is Hidden?"
+
+        click_button "Update"
+
+        visit facility_instruments_path(facility, instrument)
+
+        click_link instrument.name
+        click_link "Pricing"
+
+        expect(page).to have_content(base_price_group.name)
+        expect(page).not_to have_content(price_group_to_hide.name)
+
+        click_link "Add Pricing Rules"
+
+        expect(page).to have_content(base_price_group.name)
+        expect(page).not_to have_content(price_group_to_hide.name)
+      end
+    end
   end
 
   context "Duration pricing mode" do

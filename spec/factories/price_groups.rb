@@ -22,6 +22,7 @@ FactoryBot.define do
 
     trait :hidden do
       is_hidden { true }
+      sequence(:name, "AAAAAA") { |n| "Hidden Group #{n}" }
     end
   end
 
