@@ -182,18 +182,17 @@ RSpec.describe InstrumentPricePolicy do
 
     let(:policy) { build :instrument_price_policy, product: instrument }
 
-    it "validates negative usage_rate_daily values" do
-      policy.usage_rate_daily = -1
-
-      expect(policy).to_not be_valid
-      expect(policy.errors).to include(:usage_rate_daily)
-    end
-
     shared_examples "validates policy field" do |field_name|
       before { policy.valid? }
 
       it { expect(policy).to_not be_valid }
       it { expect(policy.errors).to include(field_name) }
+    end
+
+    describe "with negative usage_rate_daily value" do
+      before { policy.usage_rate_daily = -1 }
+
+      it_behaves_like "validates policy field", :usage_rate_daily
     end
 
     describe "with negative usage_subsidy_daily value" do

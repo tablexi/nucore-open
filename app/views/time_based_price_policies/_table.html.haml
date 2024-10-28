@@ -31,7 +31,7 @@
         %th.currency{ scope: "col" }= t("time_based_price_policies.table.step_2")
         %th.currency{ scope: "col" }= t("time_based_price_policies.table.step_3")
       - elsif @product.daily_booking?
-        %th.daily_rate{ scope: "col" }= t("activerecord.attributes.price_policy.daily_usage_rate")
+        %th.daily_rate{ scope: "col" }= PricePolicy.human_attribute_name(:usage_rate_daily)
       - else
         %th.hourly_rate{ scope: "col" }= t("activerecord.attributes.price_policy.hourly_usage_rate")
 

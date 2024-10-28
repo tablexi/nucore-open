@@ -450,6 +450,8 @@ RSpec.describe InstrumentPricePoliciesController do
     end
 
     describe "already created price policies" do
+      include ActiveSupport::NumberHelper
+
       let(:start_date) { Date.today }
       let(:expire_date) { PricePolicy.generate_expire_date(@start_date) }
       let(:base_price_policy) { instrument.price_policies.find_by(price_group: base_price_group) }
@@ -494,7 +496,29 @@ RSpec.describe InstrumentPricePoliciesController do
         )
 
         expect(page).to have_content("Price Rules were successfully updated.")
-        expect(page).to have_content(ActiveSupport::NumberHelper.number_to_currency(new_rate))
+        expect(page).to have_content(number_to_currency(new_rate))
+      end
+
+      it "can submit with errors, fix and re-submit" do
+        visit edit_facility_instrument_price_policy_path(facility, instrument, start_date)
+
+        new_rate = "99.90"
+        new_subsidy = "79.78"
+
+        fill_in("price_policy_#{base_price_group.id}[usage_rate_daily]", with: "value with error")
+        fill_in("price_policy_#{cancer_center.id}[usage_subsidy_daily]", with: new_subsidy)
+
+        click_button("Save Rules")
+
+        expect(page).to have_content("There were problems with the following fields")
+
+        fill_in("price_policy_#{base_price_group.id}[usage_rate_daily]", with: new_rate)
+
+        click_button("Save Rules")
+
+        expect(page).to have_content("Price Rules were successfully updated.")
+        expect(page).to have_content(number_to_currency(new_rate))
+        expect(page).to have_content(number_to_currency(new_subsidy))
       end
     end
   end
