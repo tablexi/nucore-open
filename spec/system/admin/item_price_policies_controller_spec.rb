@@ -68,6 +68,10 @@ RSpec.describe ItemPricePoliciesController, :js do
     end
   end
 
+  describe "with hidden price policies", :js do
+    include_examples "with hidden price groups", "item"
+  end
+
   def table_row(*columns)
     columns.join(" ")
   end

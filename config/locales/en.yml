@@ -954,7 +954,7 @@ en:
   price_groups:
     price_group_fields:
       internal_instruction: "Check this box if this price group is internal:"
-      hidden_instruction: "Check this box if you want to hide this price group:"
+      hidden_instruction: "Check this box if this price group is no longer used:"
     accounts:
       intro: "Pricing policies apply to orders paid for with the following payment sources."
       notice: "No payment sources have been added to this price group."

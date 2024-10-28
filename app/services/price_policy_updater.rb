@@ -12,7 +12,7 @@ class PricePolicyUpdater
     new(product, price_policies, start_date).destroy_all!
   end
 
-  def self.update_can_purchase(policies)
+  def self.restrict_purchase(policies)
     policies.each do |policy|
       policy.update(can_purchase: false)
     end
