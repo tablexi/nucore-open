@@ -213,7 +213,7 @@ RSpec.describe InstrumentPricePolicy do
       it_behaves_like "validates policy field", :usage_rate_daily
     end
 
-    describe "validates subsidy equals to rate" do
+    describe "when subsidy is greater than rate" do
       before do
         policy.usage_rate_daily = 9.9
         policy.usage_subsidy_daily = 10
