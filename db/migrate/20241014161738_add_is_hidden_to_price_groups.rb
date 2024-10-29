@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddIsHiddenToPriceGroups < ActiveRecord::Migration[7.0]
   def up
     add_column :price_groups, :is_hidden, :boolean, default: false

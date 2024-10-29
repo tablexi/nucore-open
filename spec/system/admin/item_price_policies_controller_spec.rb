@@ -68,7 +68,7 @@ RSpec.describe ItemPricePoliciesController, :js do
     end
   end
 
-  describe "with hidden price policies", :js do
+  describe "with hidden price policies" do
     include_examples "with hidden price groups", "item"
   end
 

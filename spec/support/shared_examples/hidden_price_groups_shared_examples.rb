@@ -2,14 +2,12 @@ RSpec.shared_examples "with hidden price groups" do |item_type|
   let!(:price_group_to_hide) { create(:price_group, facility: facility) }
 
   it "hides price policies related to that price group" do
-    visit send("facility_#{item_type}s_path", facility, item)
-    click_link item.name
-    click_link "Pricing"
+    visit send("facility_#{item_type}_price_policies_path", facility, item)
     click_link "Add Pricing Rules"
 
     expect(page).to have_content(price_group_to_hide.name)
 
-    if item_type == "instrument"
+    if item.is_a?(Instrument)
       fill_in "price_policy_#{base_price_group.id}[usage_rate]", with: "60"
       fill_in "price_policy_#{base_price_group.id}[minimum_cost]", with: "120"
       fill_in "price_policy_#{base_price_group.id}[cancellation_cost]", with: "15"
@@ -40,11 +38,8 @@ RSpec.shared_examples "with hidden price groups" do |item_type|
 
     click_button "Update"
 
-    visit send("facility_#{item_type}s_path", facility, item)
-
-    click_link item.name
-    click_link "Pricing"
-
+    visit send("facility_#{item_type}_price_policies_path", facility, item)
+    
     expect(page).to have_content(base_price_group.name)
     expect(page).not_to have_content(price_group_to_hide.name)
 
