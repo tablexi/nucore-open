@@ -9,11 +9,11 @@ class NextAvailableReservationFinder
 
   def next_available_for(current_user, acting_user)
     if @product.daily_booking?
-      # TODO: Find next available reservations for daily booking
+      # TODO: #162473 Find next available reservations for daily booking
       return Reservation.new(
         product: @product,
         reserve_start_at: 1.day.from_now.beginning_of_day,
-        reserve_end_at: 2.days.from_now.end_of_day
+        reserve_end_at: 2.days.from_now.beginning_of_day
       )
     end
 

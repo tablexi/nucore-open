@@ -38,13 +38,13 @@ RSpec.describe "SingleReservations" do
 
       date_start = 1.day.from_now.to_date
       date_end = 2.days.from_now.to_date
-      duration_days = 2
+      duration_days = 1
 
       fill_in("reservation[reserve_start_date]", with: I18n.l(date_start, format: :usa))
       fill_in("reservation[duration_days]", with: duration_days)
 
       # it autofills the end date
-      find_field("reservation[reserve_end_date]", type: "hidden").tap do |field|
+      find_field("reservation[reserve_end_date]", disabled: true).tap do |field|
         expect(field.value).to eq(I18n.l(date_end, format: :usa))
       end
 

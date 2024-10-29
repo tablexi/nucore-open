@@ -25,16 +25,13 @@ class TimeRange
     [minutes, 1].max
   end
 
-  # = Duration in days
-  #
-  # it returns the number of day slots involved in the range
-  # which might be different from the ceil amount of hours.
+  # Amount of 24 hours blocks
   def duration_days
     return unless start_at && end_at
 
-    day_diff = end_at.to_date - start_at.to_date
+    seconds = end_at - start_at
 
-    (day_diff + 1).to_i
+    (seconds / 1.day).ceil
   end
 
   private

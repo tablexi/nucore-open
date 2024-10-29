@@ -15,14 +15,17 @@
         .row
           - if local_assigns[:daily_booking]
             .span3
-              = text_field_tag :reserve_end_date_shown, f.object.reserve_end_date,
-                disabled: true, class: "string optional span3"
-              = f.text_field :reserve_end_date, type: :hidden
+              = f.text_field :reserve_end_date,
+                class: "datepicker string optional span3",
+                disabled: true
             .span4
-              = time_select f, :reserve_end, { minute_step: f.object.product.reserve_interval }, disabled: true
+              = time_select f, :reserve_end,
+                { minute_step: f.object.product.reserve_interval },
+                disabled: true
           - else
             .span3
-              = text_field_tag "reservation[reserve_end_date]", f.object.reserve_end_date, class: "datepicker string optional span3"
+              = text_field_tag "reservation[reserve_end_date]", f.object.reserve_end_date,
+                class: "datepicker string optional span3"
             .span4
               = time_select f, :reserve_end, { minute_step: f.object.product.reserve_interval }
 

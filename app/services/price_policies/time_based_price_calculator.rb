@@ -44,8 +44,7 @@ module PricePolicies
       end
     end
 
-    # TODO: Implement correctly and validate
-    # To be done in #162415
+    # TODO: #162415 Implement correctly and validate
     def calculate_per_day(start_at, end_at)
       duration_days = TimeRange.new(start_at, end_at).duration_days
 

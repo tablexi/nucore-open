@@ -6,7 +6,12 @@ $(document).ready(function() {
     durationDaysEl: $('[name="reservation[duration_days]"]'),
     startDateEl: $('[name="reservation[reserve_start_date]"]'),
     endDateEl: $('[name="reservation[reserve_end_date]"]'),
-    endDateShownEl: $('[name="reserve_end_date_shown"]')
+    startHourEl: $('[name="reservation[reserve_start_hour]"]'),
+    startMinEl: $('[name="reservation[reserve_start_min]"]'),
+    startMeridianEl: $('[name="reservation[reserve_start_meridian]"]'),
+    endHourEl: $('[name="reservation[reserve_end_hour]"]'),
+    endMinEl: $('[name="reservation[reserve_end_min]"]'),
+    endMeridianEl: $('[name="reservation[reserve_end_meridian]"]'),
   };
 
   // initialize datepicker
@@ -56,13 +61,18 @@ $(document).ready(function() {
     var startDate = new Date(startDateEpoch);
     var endDate = new Date(startDate);
 
-    endDate.setDate(startDate.getDate() + duration - 1);
+    endDate.setDate(startDate.getDate() + duration);
 
     var dateFormat = form.startDateEl.datepicker('option', 'dateFormat');
     var dateStr = $.datepicker.formatDate(dateFormat, endDate)
 
     form.endDateEl.val(dateStr);
-    form.endDateShownEl.val(dateStr);
+  }
+
+  function copyFieldValueCallback(targetEl) {
+    return function(event) {
+      $(targetEl).val($(event.target).val())
+    }
   }
 
   $('.copy_actual_from_reservation a').click(copyReservationTimeIntoActual);
@@ -70,6 +80,10 @@ $(document).ready(function() {
   if (form.isDailyBooking) {
     form.durationDaysEl.on('keyup', updateReserveEndDate);
     form.startDateEl.on('change', updateReserveEndDate);
+    // Copy start time to end time when changes
+    form.startHourEl.on('change', copyFieldValueCallback(form.endHourEl));
+    form.startMinEl.on('change', copyFieldValueCallback(form.endMinEl));
+    form.startMeridianEl.on('change', copyFieldValueCallback(form.endMeridianEl));
   } else {
     new ReservationCalendar().init($("#calendar"), $(".js--reservationForm"));
   }

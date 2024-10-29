@@ -66,7 +66,7 @@ RSpec.describe TimeRange do
       let(:start_at) { Time.zone.local(2024, 10, 24, 16, 0, 0) }
       let(:end_at) { Time.zone.local(2024, 10, 25, 11, 0, 0) }
 
-      it { is_expected.to eq(2) }
+      it { is_expected.to eq(1) }
     end
 
     describe "when it starts and end the following day more than 24 hours appart" do
