@@ -5,13 +5,15 @@ FactoryBot.define do
     price_group
     charge_for { InstrumentPricePolicy::CHARGE_FOR[:reservation] }
     association :product, factory: :setup_instrument
-    usage_rate { 10 / 60.0 }
-    usage_subsidy { 0 }
     minimum_cost { 1 }
     can_purchase { true }
     start_date { Time.zone.now.beginning_of_day }
     expire_date { PricePolicy.generate_expire_date(start_date) }
     note { "This is note" }
+    usage_rate { 10 / 60.0 }
+    usage_subsidy { 0 }
+    usage_rate_daily { 220 }
+    usage_subsidy_daily { 0 }
   end
 
   factory :instrument_usage_price_policy, parent: :instrument_price_policy do

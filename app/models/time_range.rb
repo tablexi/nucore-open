@@ -32,9 +32,9 @@ class TimeRange
   def duration_days
     return unless start_at && end_at
 
-    seconds = end_at.end_of_day - start_at.beginning_of_day
+    day_diff = end_at.to_date - start_at.to_date
 
-    (seconds / 1.day).ceil
+    (day_diff + 1).to_i
   end
 
   private

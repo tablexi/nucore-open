@@ -138,6 +138,13 @@ FactoryBot.define do
 
     schedule { create :schedule, facility: facility }
 
+    after(:build) do |product, _evaluator|
+      if product.daily_booking?
+        product.max_reserve_mins = nil
+        product.min_reserve_mins = nil
+      end
+    end
+
     after(:create) do |product, evaluator|
       create :schedule_rule, product: product unless evaluator.skip_schedule_rules
       create :instrument_price_policy, price_group: product.facility.price_groups.last, usage_rate: 1, product: product, charge_for: evaluator.charge_for unless evaluator.skip_price_policies

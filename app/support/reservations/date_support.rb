@@ -71,7 +71,7 @@ module Reservations::DateSupport
   end
 
   def duration_days
-    reserve_time_range.duration_days || @duration_days || 0
+    reserve_time_range.duration_days || 0
   end
 
   # If the reservation is ongoing, we sometimes want to know how long a currently

@@ -241,6 +241,7 @@ RSpec.describe InstrumentPricePolicy do
 
     it "does not require usage_rate_daily if instrument is nil" do
       policy.product = nil
+      policy.usage_rate = 10
 
       expect(policy).to be_valid
     end
