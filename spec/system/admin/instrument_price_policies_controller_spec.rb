@@ -154,6 +154,12 @@ RSpec.describe InstrumentPricePoliciesController do
         expect(page).to have_no_link "Remove"
       end
     end
+
+    describe "with hidden price policies", :js do
+      let(:item) { instrument }
+      
+      include_examples "with hidden price groups", "instrument"
+    end
   end
 
   context "Duration pricing mode" do
@@ -400,6 +406,12 @@ RSpec.describe InstrumentPricePoliciesController do
 
       # External
       expect(page).not_to have_content("$90.00") # Step 3 rate (removed)
+    end
+
+    describe "with hidden price policies", :js do
+      let(:item) { instrument }
+
+      include_examples "with hidden price groups", "instrument"
     end
   end
 
