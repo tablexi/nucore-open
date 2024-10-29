@@ -1,6 +1,13 @@
 $(document).ready(function() {
   init_datepickers();
-  new ReservationCalendar().init($("#calendar"), $(".js--reservationForm"));
+
+  var form = {
+    isDailyBooking: $("#calendar").length == 0,
+    durationDaysEl: $('[name="reservation[duration_days]"]'),
+    startDateEl: $('[name="reservation[reserve_start_date]"]'),
+    endDateEl: $('[name="reservation[reserve_end_date]"]'),
+    endDateShownEl: $('[name="reserve_end_date_shown"]')
+  };
 
   // initialize datepicker
   function init_datepickers() {
@@ -14,10 +21,10 @@ $(document).ready(function() {
 
     $('.datepicker').each(function(){
       $(this).datepicker({'minDate': minDaysFromNow, 'maxDate': maxDaysFromNow})
-      		.change(function() {
-      			var d = new Date(Date.parse($(this).val()));
-      			$('#calendar').fullCalendar('gotoDate', d);
-      		});
+        .change(function() {
+          var d = new Date(Date.parse($(this).val()));
+          if (!form.isDailyBooking) $('#calendar').fullCalendar('gotoDate', d);
+        });
     });
   }
 
@@ -37,19 +44,34 @@ $(document).ready(function() {
     $('[name="reservation[actual_duration_mins]_display"]').val(newval).trigger('change');
   }
 
-  function setDateInPicker(picker, date) {
-    var dateFormat = picker.datepicker('option', 'dateFormat');
-    picker.val($.datepicker.formatDate(dateFormat, date));
+  /**
+   * Update reservation_end_date out of duration days and start date
+   */
+  function updateReserveEndDate() {
+    var duration = parseInt(form.durationDaysEl.val());
+    var startDateEpoch = Date.parse(form.startDateEl.val());
+
+    if (!(duration > 0 && startDateEpoch > 0)) { return; }
+
+    var startDate = new Date(startDateEpoch);
+    var endDate = new Date(startDate);
+
+    endDate.setDate(startDate.getDate() + duration - 1);
+
+    var dateFormat = form.startDateEl.datepicker('option', 'dateFormat');
+    var dateStr = $.datepicker.formatDate(dateFormat, endDate)
+
+    form.endDateEl.val(dateStr);
+    form.endDateShownEl.val(dateStr);
   }
-  function setTimeInPickers(id_prefix, date) {
-    var hour = date.getHours() % 12;
-    var ampm = date.getHours() < 12 ? 'AM' : 'PM';
-    if (hour == 0) hour = 12;
-    $('#' + id_prefix + '_hour').val(hour);
-    $('#' + id_prefix + '_min').val(date.getMinutes());
-    $('#' + id_prefix + '_meridian').val(ampm);
-  }
+
   $('.copy_actual_from_reservation a').click(copyReservationTimeIntoActual);
 
+  if (form.isDailyBooking) {
+    form.durationDaysEl.on('keyup', updateReserveEndDate);
+    form.startDateEl.on('change', updateReserveEndDate);
+  } else {
+    new ReservationCalendar().init($("#calendar"), $(".js--reservationForm"));
+  }
 });
 
