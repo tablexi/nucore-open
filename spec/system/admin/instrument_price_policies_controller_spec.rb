@@ -155,9 +155,9 @@ RSpec.describe InstrumentPricePoliciesController do
       end
     end
 
-    describe "with hidden price policies", :js do
+    describe "with hidden price policies", :js, feature_setting: { facility_directors_can_manage_price_groups: true } do
       let(:item) { instrument }
-      
+
       include_examples "with hidden price groups", "instrument"
     end
   end
@@ -408,14 +408,14 @@ RSpec.describe InstrumentPricePoliciesController do
       expect(page).not_to have_content("$90.00") # Step 3 rate (removed)
     end
 
-    describe "with hidden price policies", :js do
+    describe "with hidden price policies", :js, feature_setting: { facility_directors_can_manage_price_groups: true } do
       let(:item) { instrument }
 
       include_examples "with hidden price groups", "instrument"
     end
   end
 
-  context "Schedule Rule Daily pricing mode" do
+  context "Schedule Rule Daily pricing mode", feature_setting: { facility_directors_can_manage_price_groups: true } do
     let(:pricing_mode) { Instrument::Pricing::SCHEDULE_DAILY }
 
     it "can add price policies", :js do
