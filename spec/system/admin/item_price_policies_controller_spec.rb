@@ -68,7 +68,7 @@ RSpec.describe ItemPricePoliciesController, :js do
     end
   end
 
-  describe "with hidden price policies" do
+  describe "with hidden price policies", feature_setting: { facility_directors_can_manage_price_groups: true } do
     include_examples "with hidden price groups", "item"
   end
 
