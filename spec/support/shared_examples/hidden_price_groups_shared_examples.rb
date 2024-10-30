@@ -3,6 +3,8 @@ RSpec.shared_examples "with hidden price groups" do |item_type|
 
   it "hides price policies related to that price group" do
     visit send("facility_#{item_type}_price_policies_path", facility, item)
+
+    expect(page).to have_link("Add Pricing Rules")
     click_link "Add Pricing Rules"
 
     expect(page).to have_content(price_group_to_hide.name)
@@ -26,7 +28,6 @@ RSpec.shared_examples "with hidden price groups" do |item_type|
     end
 
     fill_in "note", with: "This is my note"
-
     click_button "Add Pricing Rules"
     
     expect(page).to have_content(base_price_group.name)
@@ -35,11 +36,14 @@ RSpec.shared_examples "with hidden price groups" do |item_type|
     visit edit_facility_price_group_path(facility, price_group_to_hide)
 
     check "Is Hidden?"
-
     click_button "Update"
+
+    expect(page).to have_content("Price Group was successfully updated")
 
     visit send("facility_#{item_type}_price_policies_path", facility, item)
     
+    expect(page).to have_content("Current Pricing Rules")
+
     expect(page).to have_content(base_price_group.name)
     expect(page).not_to have_content(price_group_to_hide.name)
 
