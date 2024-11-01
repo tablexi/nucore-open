@@ -1,7 +1,7 @@
 $(document).ready(function() {
   init_datepickers();
 
-  var form = {
+  let form = {
     isDailyBooking: $("#calendar").length == 0,
     durationDaysEl: $('[name="reservation[duration_days]"]'),
     startDateEl: $('[name="reservation[reserve_start_date]"]'),
@@ -53,18 +53,18 @@ $(document).ready(function() {
    * Update reservation_end_date out of duration days and start date
    */
   function updateReserveEndDate() {
-    var duration = parseInt(form.durationDaysEl.val());
-    var startDateEpoch = Date.parse(form.startDateEl.val());
+    let duration = parseInt(form.durationDaysEl.val());
+    let startDateEpoch = Date.parse(form.startDateEl.val());
 
     if (!(duration > 0 && startDateEpoch > 0)) { return; }
 
-    var startDate = new Date(startDateEpoch);
-    var endDate = new Date(startDate);
+    let startDate = new Date(startDateEpoch);
+    let endDate = new Date(startDate);
 
     endDate.setDate(startDate.getDate() + duration);
 
-    var dateFormat = form.startDateEl.datepicker('option', 'dateFormat');
-    var dateStr = $.datepicker.formatDate(dateFormat, endDate)
+    let dateFormat = form.startDateEl.datepicker('option', 'dateFormat');
+    let dateStr = $.datepicker.formatDate(dateFormat, endDate)
 
     form.endDateEl.val(dateStr);
   }
