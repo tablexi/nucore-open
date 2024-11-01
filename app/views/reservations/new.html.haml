@@ -64,7 +64,7 @@
       - else
         = link_to t("shared.cancel"), facility_path(@instrument.facility)
 
-- if !@instrument.daily_booking?
+- unless @instrument.daily_booking?
   #overlay
     #spinner
       #hide

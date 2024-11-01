@@ -136,14 +136,7 @@ FactoryBot.define do
     reserve_interval { 1 }
     pricing_mode { "Schedule Rule" }
 
-    schedule { create :schedule, facility: facility }
-
-    after(:build) do |product, _evaluator|
-      if product.daily_booking?
-        product.max_reserve_mins = nil
-        product.min_reserve_mins = nil
-      end
-    end
+    schedule { create :schedule, facility: }
 
     after(:create) do |product, evaluator|
       create :schedule_rule, product: product unless evaluator.skip_schedule_rules
