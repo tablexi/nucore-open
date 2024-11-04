@@ -15,13 +15,11 @@ module PricePolicies
 
     def calculate(start_at, end_at)
       return if start_at > end_at
-      duration_mins = TimeRange.new(start_at, end_at).duration_mins
 
-      if product.is_a?(Instrument) && product.duration_pricing_mode? && price_policy.duration_rates.present?
-        duration_pricing_cost_and_subsidy(duration_mins)
+      if price_policy.daily_booking?
+        calculate_per_day(start_at, end_at)
       else
-        discount_multiplier = calculate_discount(start_at, end_at)
-        cost_and_subsidy(duration_mins, discount_multiplier)
+        calculate_per_minute(start_at, end_at)
       end
     end
 
@@ -34,6 +32,31 @@ module PricePolicies
     end
 
     private
+
+    def calculate_per_minute(start_at, end_at)
+      duration_mins = TimeRange.new(start_at, end_at).duration_mins
+
+      if product.is_a?(Instrument) && product.duration_pricing_mode? && price_policy.duration_rates.present?
+        duration_pricing_cost_and_subsidy(duration_mins)
+      else
+        discount_multiplier = calculate_discount(start_at, end_at)
+        cost_and_subsidy(duration_mins, discount_multiplier)
+      end
+    end
+
+    # TODO: #162415 Implement correctly and validate
+    def calculate_per_day(start_at, end_at)
+      duration_days = TimeRange.new(start_at, end_at).duration_days
+
+      subsidy = if price_policy.usage_subsidy_daily.present?
+                  duration_days * price_policy.usage_subsidy_daily
+                end
+
+      {
+        subsidy: subsidy || 0,
+        cost: duration_days * price_policy.usage_rate_daily,
+      }
+    end
 
     def cost_and_subsidy(duration_mins, discount_multiplier)
       costs = { cost: duration_mins * usage_rate * discount_multiplier }

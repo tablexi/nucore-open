@@ -147,12 +147,12 @@ class Instrument < Product
 
   def clean_up_reservation_rules
     if daily_booking?
-      min_reserve_mins = nil
-      max_reserve_mins = nil
-      reserve_interval = nil
+      self.min_reserve_mins = nil
+      self.max_reserve_mins = nil
+      self.reserve_interval = nil
     else
-      min_reserve_days = nil
-      max_reserve_days = nil
+      self.min_reserve_days = nil
+      self.max_reserve_days = nil
     end
   end
 
