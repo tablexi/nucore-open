@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+
 FactoryBot.define do
   factory :instrument_price_policy do
     price_group
@@ -10,15 +11,10 @@ FactoryBot.define do
     start_date { Time.zone.now.beginning_of_day }
     expire_date { PricePolicy.generate_expire_date(start_date) }
     note { "This is note" }
-    usage_rate { 10 / 60.0 }
-    usage_subsidy { 0 }
-
-    after(:build) do |price_policy, _|
-      if price_policy.daily_booking?
-        price_policy.usage_rate_daily ||= 100
-        price_policy.usage_subsidy_daily ||= 0
-      end
-    end
+    usage_rate_daily { daily_booking? ? 100 : nil }
+    usage_subsidy_daily { daily_booking? ? 0 : nil }
+    usage_rate { daily_booking? ? nil : 10 / 60.0 }
+    usage_subsidy { daily_booking? ? nil : 0 }
   end
 
   factory :instrument_usage_price_policy, parent: :instrument_price_policy do
