@@ -12,8 +12,13 @@ FactoryBot.define do
     note { "This is note" }
     usage_rate { 10 / 60.0 }
     usage_subsidy { 0 }
-    usage_rate_daily { 220 }
-    usage_subsidy_daily { 0 }
+
+    after(:build) do |price_policy, _|
+      if price_policy.daily_booking?
+        price_policy.usage_rate_daily ||= 100
+        price_policy.usage_subsidy_daily ||= 0
+      end
+    end
   end
 
   factory :instrument_usage_price_policy, parent: :instrument_price_policy do
@@ -22,13 +27,6 @@ FactoryBot.define do
 
   factory :instrument_overage_price_policy, parent: :instrument_price_policy do
     charge_for { InstrumentPricePolicy::CHARGE_FOR[:overage] }
-  end
-
-  factory :instrument_daily_booking_price_policy, parent: :instrument_price_policy do
-    usage_rate { nil }
-    usage_subsidy { nil }
-    usage_rate_daily { 100 }
-    usage_subsidy_daily { 0 }
   end
 
   factory :item_price_policy do
