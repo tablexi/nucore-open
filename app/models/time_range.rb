@@ -31,7 +31,7 @@ class TimeRange
 
     seconds = end_at - start_at
 
-    (seconds / 1.day).ceil
+    seconds / 1.day
   end
 
   private

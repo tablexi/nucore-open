@@ -66,6 +66,13 @@ RSpec.describe TimeRange do
       let(:start_at) { Time.zone.local(2024, 10, 24, 16, 0, 0) }
       let(:end_at) { Time.zone.local(2024, 10, 25, 11, 0, 0) }
 
+      it { is_expected.to be_between(0, 1).exclusive }
+    end
+
+    describe "when it starts and end 24 hours appart" do
+      let(:start_at) { Time.zone.local(2024, 10, 24, 16, 0, 0) }
+      let(:end_at) { start_at + 1.day }
+
       it { is_expected.to eq(1) }
     end
 
@@ -73,7 +80,7 @@ RSpec.describe TimeRange do
       let(:start_at) { Time.zone.local(2024, 10, 24, 10, 0, 0) }
       let(:end_at) { Time.zone.local(2024, 10, 25, 19, 0, 0) }
 
-      it { is_expected.to eq(2) }
+      it { is_expected.to be_between(1, 2).exclusive }
     end
   end
 
