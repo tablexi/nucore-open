@@ -136,7 +136,7 @@ FactoryBot.define do
     reserve_interval { 1 }
     pricing_mode { "Schedule Rule" }
 
-    schedule { create :schedule, facility: facility }
+    schedule { create :schedule, facility: }
 
     after(:create) do |product, evaluator|
       create :schedule_rule, product: product unless evaluator.skip_schedule_rules
