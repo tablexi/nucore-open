@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples "creates a product with billing mode" do |product_type, billing_mode|
   let(:logged_in_user) { administrator }
 
@@ -8,12 +10,13 @@ RSpec.shared_examples "creates a product with billing mode" do |product_type, bi
 
     fill_in "Name", with: "My new Product", match: :first
     fill_in "URL Name", with: "new-service"
-    select "Required", from: "#{product_type}[user_notes_field_mode]"
-    select billing_mode, from: "#{product_type}[billing_mode]"
+    select "Required", from: "Users may submit a note when purchasing?"
+    select billing_mode, from: "Billing mode"
 
     click_button "Create"
-    click_on "Pricing"
+    expect(Product.last.name).to eq("My new Product")
 
+    click_on "Pricing"
     expect(page).to have_content "#{PriceGroup.nonbillable} (#{PriceGroup.nonbillable.type_string}) $0"
     expect(PricePolicy.last.product.name).to eq("My new Product")
     expect(PricePolicy.last.usage_rate).to eq(nil)

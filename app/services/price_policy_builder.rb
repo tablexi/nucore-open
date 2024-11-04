@@ -125,15 +125,13 @@ class PricePolicyBuilder
   end
 
   def self.create_price_policy_for(product, price_group)
-    usage_rate = ["Service", "Item"].include?(product.type) ? nil : 0
-
     PricePolicy.create(
       type: "#{product.type}PricePolicy",
-      product: product,
+      product:,
       start_date: 1.month.ago,
       expire_date: 75.years.from_now,
-      price_group: price_group,
-      usage_rate: usage_rate,
+      price_group:,
+      usage_rate: usage_rate_for(product),
       minimum_cost: 0,
       cancellation_cost: 0,
       usage_subsidy: 0,
@@ -143,6 +141,10 @@ class PricePolicyBuilder
       charge_for: "reservation",
       note: "Price rule automatically created because of billing mode"
     )
+  end
+
+  def self.usage_rate_for(product)
+    ["Service", "Item"].include?(product.type) ? nil : 0
   end
 
 end
