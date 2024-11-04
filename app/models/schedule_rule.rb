@@ -119,9 +119,18 @@ class ScheduleRule < ApplicationRecord
   end
 
   def cover?(dt)
-    return false unless on_day?(dt)
-
+    # we check the previous minute in case dt is exactly the
+    # beginning of a day in case it's the end of a reservation
+    # (if it's not then the next minuted checked will be uncovered).
     dt_int = dt.hour * 100 + dt.min
+    dt_day = if dt_int.zero?
+               dt - 1.minute
+             else
+               dt
+             end
+
+    return false unless on_day?(dt_day)
+
     dt_int >= start_time_int && dt_int <= end_time_int
   end
 
