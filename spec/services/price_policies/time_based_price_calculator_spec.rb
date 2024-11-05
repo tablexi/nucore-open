@@ -165,7 +165,11 @@ RSpec.describe PricePolicies::TimeBasedPriceCalculator do
     end
 
     describe "#calculate_discount" do
-      subject(:discount) { calculator.calculate_discount(start_at, end_at) }
+      subject(:discount) do
+        PricePolicies::Strategy::PerMinute.new(
+          price_policy, start_at, end_at
+        ).discount_multiplier
+      end
 
       describe "when the entire time is within a zero discount" do
         let(:start_at) { Time.zone.local(2017, 4, 27, 12, 0) }
