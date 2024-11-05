@@ -46,11 +46,11 @@ RSpec.describe NextAvailableReservationFinder do
       describe "reservation duration" do
         before { instrument.update(min_reserve_days: 4) }
 
-        it "has a correctly duration in minutes" do
+        it "has a correct duration in minutes" do
           expect(reservation.duration_mins.minutes).to eq instrument.min_reserve_days.days
         end
 
-        it "has a correctly duration in minutes" do
+        it "has a correct duration in days" do
           expect(reservation.duration_days).to eq instrument.min_reserve_days
         end
       end

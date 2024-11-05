@@ -529,9 +529,9 @@ RSpec.describe Instrument do
   context "next available reservation with daily booking" do
     let!(:instrument) do
       create(
-        :instrument,
+        :setup_instrument,
+        :daily_booking,
         facility:,
-        pricing_mode: Instrument::Pricing::SCHEDULE_DAILY,
         min_reserve_days: 2
       )
     end
@@ -981,9 +981,9 @@ RSpec.describe Instrument do
   describe "with daily booking pricing mode" do
     subject(:instrument) do
       build(
-        :instrument,
+        :setup_instrument,
+        :daily_booking,
         facility:,
-        pricing_mode: Instrument::Pricing::SCHEDULE_DAILY
       )
     end
 
