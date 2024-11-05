@@ -18,7 +18,6 @@ module PricePolicies
       # Calculate cost and subsidy based on price policy
       #
       # return a Hash { cost: float, subsidy: float }
-      #
       def calculate
         raise NotImplementedError
       end
@@ -43,16 +42,16 @@ module PricePolicies
       delegate :duration_mins, to: :time_range
 
       def calculate
-        costs = { cost: duration_mins * usage_rate * discount_multiplier }
+        costs = { cost: duration_mins * usage_rate * discount_factor }
 
         if costs[:cost] < minimum_cost.to_f
           { cost: minimum_cost, subsidy: minimum_cost_subsidy }
         else
-          costs.merge(subsidy: duration_mins * usage_subsidy * discount_multiplier)
+          costs.merge(subsidy: duration_mins * usage_subsidy * discount_factor)
         end
       end
 
-      def discount_multiplier
+      def discount_factor
         discount = product.schedule_rules.to_a.sum do |sr|
           sr.discount_for(start_at, end_at, price_policy.price_group)
         end
@@ -68,18 +67,16 @@ module PricePolicies
     #
     # Applies subsidy
     class PerDay < BaseStrategy
-      delegate :usage_rate_daily, :usage_subsidy_daily, :minimum_cost, to: :price_policy
+      delegate :usage_rate_daily, :usage_subsidy_daily, to: :price_policy
 
       def calculate
-        actual_cost = duration_days * usage_rate_daily
-
         subsidy = if price_policy.usage_subsidy_daily.present?
                     duration_days * price_policy.usage_subsidy_daily
                   end
 
         {
           subsidy: subsidy || 0,
-          cost: [actual_cost, minimum_cost].max,
+          cost: duration_days * usage_rate_daily,
         }
       end
 

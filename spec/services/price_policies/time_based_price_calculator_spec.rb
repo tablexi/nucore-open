@@ -165,11 +165,11 @@ RSpec.describe PricePolicies::TimeBasedPriceCalculator do
       end
     end
 
-    describe "#calculate_discount" do
+    describe "#discount_factor" do
       subject(:discount) do
         PricePolicies::Strategy::PerMinute.new(
           price_policy, start_at, end_at
-        ).discount_multiplier
+        ).discount_factor
       end
 
       describe "when the entire time is within a zero discount" do
@@ -225,6 +225,14 @@ RSpec.describe PricePolicies::TimeBasedPriceCalculator do
           it "uses usage_rate as rate" do
             is_expected.to eq(cost: 120, subsidy: 0)
           end
+
+          it "calls the correct strategy" do
+            expect_any_instance_of(
+              PricePolicies::Strategy::PerMinute
+            ).to receive(:calculate)
+
+            subject
+          end
         end
 
         context "with duration rates" do
@@ -234,9 +242,19 @@ RSpec.describe PricePolicies::TimeBasedPriceCalculator do
               let(:start_at) { Time.zone.local(2017, 4, 27, 12, 0) }
               let(:end_at) { start_at + 1.hour }
 
-              it "uses usage rate" do
+              before do
                 create(:duration_rate, price_policy:, min_duration_hours: 3)
+              end
 
+              it "calls the correct strategy" do
+                expect_any_instance_of(
+                  PricePolicies::Strategy::SteppedRate
+                ).to receive(:calculate)
+
+                subject
+              end
+
+              it "uses usage rate" do
                 is_expected.to eq(cost: 120, subsidy: 0)
               end
             end
@@ -334,6 +352,53 @@ RSpec.describe PricePolicies::TimeBasedPriceCalculator do
           expect(calculator.calculate(start_at, end_at)[:subsidy].round(4)).to eq(123.75)
         end
       end
+    end
+  end
+
+  context "when instrument has daily rate pricing" do
+    let(:subject) { calculator.calculate(start_at, end_at) }
+    let(:product) do
+      create(
+        :setup_instrument,
+        pricing_mode: Instrument::Pricing::SCHEDULE_DAILY
+      )
+    end
+    let(:price_group) { create(:price_group) }
+    let(:start_at) { Time.current }
+    let(:end_at) { start_at + duration_days.days }
+    let(:duration_days) { 3 }
+    let(:usage_rate_daily) { 199 }
+    let(:usage_subsidy_daily) { 10 }
+
+    before do
+      price_policy.assign_attributes(
+        usage_rate_daily:,
+        usage_subsidy_daily:,
+      )
+    end
+
+    it "calls the correct strategy" do
+      expect_any_instance_of(PricePolicies::Strategy::PerDay).to receive(:calculate)
+
+      subject
+    end
+
+    it "returns a Hash with correct keys" do
+      is_expected.to be_a Hash
+      is_expected.to include(:cost, :subsidy)
+    end
+
+    it "returns cost and subsidy correctly" do
+      is_expected.to eq(
+        cost: duration_days * usage_rate_daily,
+        subsidy: duration_days * usage_subsidy_daily,
+      )
+    end
+
+    context "without subsidy" do
+      let(:usage_subsidy_daily) { 0 }
+
+      it { is_expected.to eq(cost: duration_days * usage_rate_daily, subsidy: 0) }
     end
   end
 end
