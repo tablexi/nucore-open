@@ -13,7 +13,8 @@ window.FullCalendarConfig = class FullCalendarConfig {
   }
 
   init() {
-    return this.$element.fullCalendar($.extend(this.options(), this.customOptions));
+    let options = $.extend(this.options(), this.customOptions);
+    return this.$element.fullCalendar(options);
   }
 
   options() {

@@ -8,12 +8,15 @@ ReservationCalendar.prototype = {
 
     self = this; // so our callbacks have access to this object
 
-    fullCalendarOptions = {
-      eventDrop: this._handleEventDragDrop,
-      eventResize: this._handleEventDragDrop,
-      dayClick: this._handleClick,
-      eventOverlap: false,
-    }
+    fullCalendarOptions = $.extend(
+      {
+        eventDrop: this._handleEventDragDrop,
+        eventResize: this._handleEventDragDrop,
+        dayClick: this._handleClick,
+        eventOverlap: false,
+      },
+      $calendar.data()
+    )
 
     new FullCalendarConfig($calendar, fullCalendarOptions).init();
     $calendar.on("calendar:rendered", this._removeSelfFromSource);

@@ -28,7 +28,7 @@ $(document).ready(function() {
       $(this).datepicker({'minDate': minDaysFromNow, 'maxDate': maxDaysFromNow})
         .change(function() {
           var d = new Date(Date.parse($(this).val()));
-          if (!form.isDailyBooking) $('#calendar').fullCalendar('gotoDate', d);
+          $('#calendar').fullCalendar('gotoDate', d);
         });
     });
   }
@@ -84,8 +84,7 @@ $(document).ready(function() {
     form.startHourEl.on('change', copyFieldValueCallback(form.endHourEl));
     form.startMinEl.on('change', copyFieldValueCallback(form.endMinEl));
     form.startMeridianEl.on('change', copyFieldValueCallback(form.endMeridianEl));
-  } else {
-    new ReservationCalendar().init($("#calendar"), $(".js--reservationForm"));
   }
+  new ReservationCalendar().init($("#calendar"), $(".js--reservationForm"));
 });
 
