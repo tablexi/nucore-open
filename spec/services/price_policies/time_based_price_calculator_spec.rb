@@ -4,6 +4,11 @@ require "rails_helper"
 
 RSpec.describe PricePolicies::TimeBasedPriceCalculator do
   let(:calculator) { described_class.new(price_policy) }
+  let(:calculator_strategy) do
+    calculator.instance_eval do
+      strategy_class
+    end
+  end
   let(:price_policy) do
     build_stubbed(:instrument_price_policy, options.merge(product:, price_group:))
   end
@@ -227,11 +232,7 @@ RSpec.describe PricePolicies::TimeBasedPriceCalculator do
           end
 
           it "calls the correct strategy" do
-            expect_any_instance_of(
-              PricePolicies::Strategy::PerMinute
-            ).to receive(:calculate)
-
-            subject
+            expect(calculator_strategy).to be PricePolicies::Strategy::PerMinute
           end
         end
 
@@ -247,11 +248,7 @@ RSpec.describe PricePolicies::TimeBasedPriceCalculator do
               end
 
               it "calls the correct strategy" do
-                expect_any_instance_of(
-                  PricePolicies::Strategy::SteppedRate
-                ).to receive(:calculate)
-
-                subject
+                expect(calculator_strategy).to be PricePolicies::Strategy::SteppedRate
               end
 
               it "uses usage rate" do
@@ -378,9 +375,7 @@ RSpec.describe PricePolicies::TimeBasedPriceCalculator do
     end
 
     it "calls the correct strategy" do
-      expect_any_instance_of(PricePolicies::Strategy::PerDay).to receive(:calculate)
-
-      subject
+      expect(calculator_strategy).to be PricePolicies::Strategy::PerDay
     end
 
     it "returns a Hash with correct keys" do
