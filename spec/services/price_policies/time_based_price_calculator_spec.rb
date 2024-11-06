@@ -366,6 +366,8 @@ RSpec.describe PricePolicies::TimeBasedPriceCalculator do
     let(:duration_days) { 3 }
     let(:usage_rate_daily) { 199 }
     let(:usage_subsidy_daily) { 10 }
+    let(:expected_cost) { duration_days * usage_rate_daily }
+    let(:expected_subsidy) { duration_days * usage_subsidy_daily }
 
     before do
       price_policy.assign_attributes(
@@ -385,15 +387,21 @@ RSpec.describe PricePolicies::TimeBasedPriceCalculator do
 
     it "returns cost and subsidy correctly" do
       is_expected.to eq(
-        cost: duration_days * usage_rate_daily,
-        subsidy: duration_days * usage_subsidy_daily,
+        cost: expected_cost,
+        subsidy: expected_subsidy,
       )
     end
 
     context "without subsidy" do
       let(:usage_subsidy_daily) { 0 }
 
-      it { is_expected.to eq(cost: duration_days * usage_rate_daily, subsidy: 0) }
+      it { is_expected.to eq(cost: expected_cost, subsidy: 0) }
+    end
+
+    context "when start_at is the beginning of the day" do
+      let(:start_at) { Time.current.beginning_of_day }
+
+      it { is_expected.to eq(cost: expected_cost, subsidy: expected_subsidy) }
     end
   end
 end
