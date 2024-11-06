@@ -56,10 +56,7 @@ RSpec.describe NextAvailableReservationFinder do
       end
 
       it "returns a schedule as soon as possible" do
-        next_available_time = 1.minute.from_now.then do |time|
-          delta = time.min % instrument.reserve_interval
-          time - delta.minutes + instrument.reserve_interval.minutes
-        end
+        next_available_time = 1.minute.from_now
 
         expect(reservation.reserve_start_at).to eq next_available_time
       end

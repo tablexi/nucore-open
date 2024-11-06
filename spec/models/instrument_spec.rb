@@ -531,21 +531,13 @@ RSpec.describe Instrument do
       create(
         :setup_instrument,
         :daily_booking,
+        :always_available,
         facility:,
         min_reserve_days: 2
       )
     end
-    before do
-      instrument.schedule_rules.create(
-        attributes_for(
-          :schedule_rule,
-          start_hour: 0, start_min: 0,
-          end_hour: 23, end_min: 59
-        )
-      )
-    end
 
-    it "correctly find reservations for n * 24 hour blocks" do
+    it "correctly finds reservations for n * 24 hour blocks" do
       after = 1.minute.from_now
       duration =  instrument.min_reserve_days.days
 
@@ -987,10 +979,10 @@ RSpec.describe Instrument do
       )
     end
 
-    it "sets the reserve_interval to default interval for daily booking" do
+    it "sets the reserve_interval to nil for daily booking" do
       instrument.save!
 
-      expect(instrument.reserve_interval).to eq(Instrument::RESERVE_INTERVAL_DAILY)
+      expect(instrument.reserve_interval).to eq(nil)
     end
 
     it "unsets min_reserve_mins and max_reserve_mins" do

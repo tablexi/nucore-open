@@ -102,7 +102,7 @@ module DateHelper
   private
 
   def minute_options(step = nil)
-    step ||= 5
+    step ||= 1
     (0..59).step(step).map { |d| ["%02d" % d, d] }
   end
 

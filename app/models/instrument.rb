@@ -16,7 +16,7 @@ class Instrument < Product
   include EmailListAttribute
 
   RESERVE_INTERVALS = [1, 5, 10, 15, 30, 60].freeze
-  RESERVE_INTERVAL_DAILY = 5
+
   PRICING_MODES = [Pricing::SCHEDULE_RULE, Pricing::DURATION].tap do |pricing_modes|
     if SettingsHelper.feature_on?(:show_daily_rate_option)
       pricing_modes.insert(1, Pricing::SCHEDULE_DAILY)
@@ -152,7 +152,7 @@ class Instrument < Product
     if daily_booking?
       self.min_reserve_mins = nil
       self.max_reserve_mins = nil
-      self.reserve_interval = RESERVE_INTERVAL_DAILY
+      self.reserve_interval = nil
     else
       self.min_reserve_days = nil
       self.max_reserve_days = nil
