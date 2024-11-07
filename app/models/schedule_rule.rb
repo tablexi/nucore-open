@@ -45,7 +45,7 @@ class ScheduleRule < ApplicationRecord
 
   # Returns a single array of calendar objects representing the set of schedule_rules
   def self.as_calendar_objects(schedule_rules, options = {})
-    ScheduleRuleCalendarPresenter.to_json(schedule_rules, options)
+    ScheduleRules::CalendarPresenter.to_json(schedule_rules, options)
   end
 
   def at_least_one_day_selected
@@ -128,8 +128,8 @@ class ScheduleRule < ApplicationRecord
   # Build weekly calendar hashes
   # Returns an array of hashes. A Mon-Fri 9-5 rule would return 5 hashes, one for
   # each day.
-  def as_calendar_objects(options = {})
-    ScheduleRuleCalendarPresenter.new(self, options).to_json
+  def as_calendar_object(options = {})
+    ScheduleRules::CalendarPresenter.new(self, options).to_json
   end
 
   def discount_for(start_at, end_at, price_group)

@@ -73,4 +73,18 @@ module ReservationsHelper
     }
   end
 
+  def calendar_events_path
+    opts = {
+      format: "js",
+      with_details: @instrument.show_details?,
+    }
+    opts[:view] = "month" if @instrument.daily_booking?
+
+    facility_instrument_reservations_path(
+      @instrument.facility,
+      @instrument,
+      opts
+    )
+  end
+
 end
