@@ -979,10 +979,10 @@ RSpec.describe Instrument do
       )
     end
 
-    it "sets the reserve_interval to nil for daily booking" do
+    it "sets the reserve_interval to daily reserve interval" do
       instrument.save!
 
-      expect(instrument.reserve_interval).to eq(nil)
+      expect(instrument.reserve_interval).to eq(Instrument::RESERVE_INTERVAL_DAILY)
     end
 
     it "unsets min_reserve_mins and max_reserve_mins" do
