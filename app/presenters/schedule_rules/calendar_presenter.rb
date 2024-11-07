@@ -42,8 +42,6 @@ module ScheduleRules
           yielder << current_date
           current_date += 1.day
         end
-
-        yielder << end_at
       end
     end
 
@@ -74,7 +72,7 @@ module ScheduleRules
     end
 
     def end_at
-      @end_at ||= (options[:end_at] || start_at).end_of_day
+      @end_at ||= (options[:end_at] || (start_at + 6.days)).end_of_day
     end
 
     def title

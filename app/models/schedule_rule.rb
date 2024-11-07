@@ -128,7 +128,7 @@ class ScheduleRule < ApplicationRecord
   # Build weekly calendar hashes
   # Returns an array of hashes. A Mon-Fri 9-5 rule would return 5 hashes, one for
   # each day.
-  def as_calendar_object(options = {})
+  def as_calendar_objects(options = {})
     ScheduleRules::CalendarPresenter.new(self, options).to_json
   end
 
