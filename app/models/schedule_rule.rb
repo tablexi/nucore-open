@@ -119,8 +119,8 @@ class ScheduleRule < ApplicationRecord
   end
 
   def cover?(dt)
-    # we check the previous minute in case dt is exactly the
-    # beginning of a day in case it's the end of a reservation
+    # check the previous minute in case dt is exactly the
+    # beginning of a day and it's the end of a reservation
     # (if it's not then the next minuted checked will be uncovered).
     dt_int = dt.hour * 100 + dt.min
     dt_day = if dt_int.zero?
