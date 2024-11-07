@@ -25,7 +25,6 @@ class TimeRange
     [minutes, 1].max
   end
 
-  # Amount of 24 hours blocks
   def duration_days
     return unless start_at && end_at
 
