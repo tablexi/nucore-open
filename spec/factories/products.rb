@@ -177,6 +177,10 @@ FactoryBot.define do
           )
       end
     end
+
+    trait :daily_booking do
+      pricing_mode { Instrument::Pricing::SCHEDULE_DAILY }
+    end
   end
 
   factory :instrument_requiring_approval, parent: :setup_instrument do

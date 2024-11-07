@@ -8,19 +8,10 @@ class NextAvailableReservationFinder
   end
 
   def next_available_for(current_user, acting_user)
-    if @product.daily_booking?
-      # TODO: #162473 Find next available reservations for daily booking
-      return Reservation.new(
-        product: @product,
-        reserve_start_at: 1.day.from_now.beginning_of_day,
-        reserve_end_at: 2.days.from_now.beginning_of_day
-      )
-    end
-
     options = current_user.can_override_restrictions?(@product) ? {} : { user: acting_user }
     next_available = @product.next_available_reservation(
       after: 1.minute.from_now,
-      duration: default_reservation_mins.minutes,
+      duration: default_duration,
       options:
     )
     next_available ||= default_reservation
@@ -32,10 +23,14 @@ class NextAvailableReservationFinder
   def default_reservation
     Reservation.new(product: @product,
                     reserve_start_at: Time.current,
-                    reserve_end_at: default_reservation_mins.minutes.from_now)
+                    reserve_end_at: default_duration.from_now)
   end
 
-  def default_reservation_mins
-    @product.min_reserve_mins.to_i > 0 ? @product.min_reserve_mins : 30
+  def default_duration
+    if @product.daily_booking?
+      (@product.min_reserve_days || 1).days
+    else
+      (@product.min_reserve_mins.to_i > 0 ? @product.min_reserve_mins : 30).minutes
+    end
   end
 end
