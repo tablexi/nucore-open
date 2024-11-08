@@ -65,26 +65,12 @@ module ReservationsHelper
     !original.reserve_end_at_editable?
   end
 
-  def full_calendar_config
+  def reservations_calendar_config
     {
       show_tooltip: (@instrument.daily_booking? || @instrument.show_details).to_s,
       start_editable: (!@instrument.daily_booking? && start_time_editing_enabled?(@reservation)).to_s,
       default_view: @instrument.daily_booking? ? "month" : "agendaWeek",
     }
-  end
-
-  def calendar_events_path
-    opts = {
-      format: "js",
-      with_details: @instrument.show_details?,
-    }
-    opts[:view] = "month" if @instrument.daily_booking?
-
-    facility_instrument_reservations_path(
-      @instrument.facility,
-      @instrument,
-      opts
-    )
   end
 
 end
