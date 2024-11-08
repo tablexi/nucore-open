@@ -94,7 +94,7 @@ RSpec.describe "Editing your own reservation" do
 
   describe "with a daily booking instrument" do
     let(:today) { Time.current.beginning_of_day }
-    let(:unavailable_beginning_of_day) { today + 3.days }
+    let(:unavailable_period_start) { today + 3.days }
     let(:instrument) do
       create(
         :setup_instrument,
@@ -123,12 +123,12 @@ RSpec.describe "Editing your own reservation" do
 
     shared_examples "move daily booking reservation" do |error_key|
       it "cannot make a reservation in the unavailable day" do
-        reserve_end_at = unavailable_beginning_of_day + 1.minute
+        new_reserve_end_at = unavailable_period_start + 1.minute
         invalid_reservation = build(
           :purchased_reservation,
           user:,
-          reserve_start_at: reserve_end_at - 1.day,
-          reserve_end_at:,
+          reserve_start_at: new_reserve_end_at - 1.day,
+          reserve_end_at: new_reserve_end_at,
           product: instrument
         )
 
@@ -151,18 +151,18 @@ RSpec.describe "Editing your own reservation" do
 
         expect(page).to_not have_content("Move Up")
 
-        # Move the reservation in between the reservation and unavailable day
+        # Move the reservation just before unavailable period starts
         expect(reservation.reload.reserve_start_at).to eq(
-          unavailable_beginning_of_day - reservation.duration_days.days
+          unavailable_period_start - reservation.duration_days.days
         )
-        expect(reservation.reserve_end_at).to eq unavailable_beginning_of_day
+        expect(reservation.reserve_end_at).to eq unavailable_period_start
       end
     end
 
     describe "just before unavailable day at 00:00" do
       before do
         reservation.product.schedule_rules.first.then do |schedule_rule|
-          wday = unavailable_beginning_of_day.wday
+          wday = unavailable_period_start.wday
           wday_name = Date::ABBR_DAYNAMES[wday].downcase
           schedule_rule.update("on_#{wday_name}" => false)
         end
@@ -176,8 +176,8 @@ RSpec.describe "Editing your own reservation" do
         create(
           :purchased_reservation,
           user: create(:user),
-          reserve_start_at: unavailable_beginning_of_day,
-          reserve_end_at: unavailable_beginning_of_day + 1.day,
+          reserve_start_at: unavailable_period_start,
+          reserve_end_at: unavailable_period_start + 1.day,
           product: instrument,
         )
       end
