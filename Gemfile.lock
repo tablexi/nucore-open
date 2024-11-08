@@ -435,7 +435,7 @@ GEM
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
     orm_adapter (0.5.0)
-    ostruct (0.6.0)
+    ostruct (0.6.1)
     paper_trail (15.2.0)
       activerecord (>= 6.1)
       request_store (~> 1.4)
