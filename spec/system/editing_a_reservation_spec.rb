@@ -121,8 +121,8 @@ RSpec.describe "Editing your own reservation" do
       )
     end
 
-    shared_examples "move a reservation to end of day" do |error_key|
-      it "ensure instrument is not available on the unavailable day" do
+    shared_examples "move daily booking reservation" do |error_key|
+      it "cannot make a reservation in the unavailable day" do
         reserve_end_at = unavailable_beginning_of_day + 1.minute
         invalid_reservation = build(
           :purchased_reservation,
@@ -136,7 +136,7 @@ RSpec.describe "Editing your own reservation" do
         expect(invalid_reservation.errors.map(&:type)).to include(error_key)
       end
 
-      it "moves the reservation to the end of day next to unavailable day" do
+      it "moves just before the unavailable day" do
         visit reservations_path
 
         expect(page).to have_content("Move Up")
@@ -152,12 +152,14 @@ RSpec.describe "Editing your own reservation" do
         expect(page).to_not have_content("Move Up")
 
         # Move the reservation in between the reservation and unavailable day
-        expect(reservation.reload.reserve_start_at).to eq today + 2.days
-        expect(reservation.reload.reserve_end_at).to eq today + 3.days
+        expect(reservation.reload.reserve_start_at).to eq(
+          unavailable_beginning_of_day - reservation.duration_days.days
+        )
+        expect(reservation.reserve_end_at).to eq unavailable_beginning_of_day
       end
     end
 
-    describe "when close to unavailable day" do
+    describe "just before unavailable day at 00:00" do
       before do
         reservation.product.schedule_rules.first.then do |schedule_rule|
           wday = unavailable_beginning_of_day.wday
@@ -166,10 +168,10 @@ RSpec.describe "Editing your own reservation" do
         end
       end
 
-      include_examples "move a reservation to end of day", :no_schedule_rule
+      include_examples "move daily booking reservation", :no_schedule_rule
     end
 
-    describe "when close to other reservation" do
+    describe "just before another reservation at 00:00" do
       before do
         create(
           :purchased_reservation,
@@ -180,7 +182,7 @@ RSpec.describe "Editing your own reservation" do
         )
       end
 
-      include_examples "move a reservation to end of day", :conflict
+      include_examples "move daily booking reservation", :conflict
     end
   end
 end
