@@ -27,22 +27,14 @@ module ScheduleRules
 
     def events
       date_range.filter_map do |date|
-        hash_for_date(date) if rule_occurs_on_date?(date)
+        hash_for_date(date.beginning_of_day) if rule_occurs_on_date?(date)
       end
     end
 
     private
 
     def date_range
-      Enumerator.new do |yielder|
-        day_index = 0
-        current_date = start_at
-
-        while current_date < end_at
-          yielder << current_date
-          current_date += 1.day
-        end
-      end
+      start_at.to_date..end_at.to_date
     end
 
     def hash_for_date(date)

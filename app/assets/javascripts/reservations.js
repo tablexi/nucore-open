@@ -81,7 +81,6 @@ $(document).ready(function() {
 
   $('.copy_actual_from_reservation a').click(copyReservationTimeIntoActual);
 
-  console.log(form)
   if (form.isDailyBooking) {
     form.durationDaysEl.on('keyup', updateReserveEndDate);
     form.startDateEl.on('change', updateReserveEndDate);
