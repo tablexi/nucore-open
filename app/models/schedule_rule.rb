@@ -114,8 +114,14 @@ class ScheduleRule < ApplicationRecord
     "#{end_hour}:#{sprintf '%02d', end_min}"
   end
 
-  def on_day?(datetime)
-    public_send(%(on_#{datetime.strftime('%a').downcase}?))
+  def on_day?(value)
+    weekday = case value
+              when Integer then Date::ABBR_DAYNAMES[value]
+              when String then value
+              when Time then datetime.strftime("%a")
+              end
+
+    public_send(%(on_#{weekday.downcase}?))
   end
 
   def cover?(dt)
