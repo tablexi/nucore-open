@@ -17,7 +17,7 @@ class CalendarEventsPresenter
     @params = params
   end
 
-  def to_json(_opts = {})
+  def as_json(_opts = {})
     events
   end
 
@@ -33,18 +33,20 @@ class CalendarEventsPresenter
       use_dates: monthly_view?
     )
 
-    events = ScheduleRule.as_calendar_objects(
+    schedule_rule_events = ScheduleRules::CalendarPresenter.events(
       inverse_rules,
       unavailable_calendar_opts
     )
 
     if monthly_view?
-      events.each do |event|
-        event.merge!("allDay" => true, "rendering" => "background")
-      end
-    end
+      schedule_rule_events.filter_map do |event|
+        all_day = TimeRange.new(event["start"], event["end"]).duration_days >= 1
 
-    events
+        event.merge("allDay" => true, "rendering" => "background") if all_day
+      end
+    else
+      schedule_rule_events
+    end
   end
 
   def reservation_events

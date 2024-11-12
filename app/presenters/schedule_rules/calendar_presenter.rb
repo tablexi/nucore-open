@@ -9,10 +9,9 @@ module ScheduleRules
 
     delegate :end_hour, :end_min, :instrument, :start_hour, :start_min, :unavailable, to: :schedule_rule
 
-    # Returns a single array of Hashes
-    def self.to_json(schedule_rules, options = {})
-      Array(schedule_rules).flat_map do |schedule_rule|
-        new(schedule_rule, options).to_json
+    def self.events(schedule_rules, options = {})
+      schedule_rules.flat_map do |schedule_rule|
+        new(schedule_rule, options).events
       end
     end
 
@@ -21,8 +20,8 @@ module ScheduleRules
       @options = options
     end
 
-    def to_json(_opts = {})
-      events
+    def as_json(opts = {})
+      events.as_json(opts)
     end
 
     def events
@@ -44,8 +43,8 @@ module ScheduleRules
       {
         "className" => class_name,
         "title" => title.to_s,
-        "start" => format_date(start_at),
-        "end" => format_date(end_at),
+        "start" => start_at,
+        "end" => end_at,
         "allDay" => false,
       }
     end
@@ -86,11 +85,6 @@ module ScheduleRules
       end
     end
 
-    def format_date(timestamp)
-      timestamp = timestamp.to_date if options[:use_dates]
-
-      timestamp.iso8601
-    end
   end
 
 end
