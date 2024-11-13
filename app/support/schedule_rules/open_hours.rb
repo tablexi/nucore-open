@@ -10,7 +10,11 @@ module ScheduleRules
     end
 
     def self.weekdays
-      (0..6).map { |wday| Date::ABBR_DAYNAMES[wday] }
+      Date::ABBR_DAYNAMES
+    end
+
+    def self.time_range(start_time, end_time)
+      [start_time, end_time].join(" - ")
     end
 
     def per_weekday
@@ -29,7 +33,7 @@ module ScheduleRules
           wday_rules = schedule_rules.filter { |sr| sr.on_day?(weekday) }
 
           merged_rule_times(wday_rules).map do |time|
-            { weekday:, range: "#{time[:start]} - #{time[:end]}" }
+            { weekday:, range: self.class.time_range(time[:start], time[:end]) }
           end
         end
     end
@@ -43,6 +47,7 @@ module ScheduleRules
         if rule.start_time_int == current_time
           entry = entries.last || { start: rule.start_time }
           entry[:end] = rule.end_time
+          entries << entry if entries.empty?
         else
           entries << { start: rule.start_time, end: rule.end_time }
         end

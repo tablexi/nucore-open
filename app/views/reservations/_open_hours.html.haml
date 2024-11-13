@@ -1,9 +1,10 @@
 %table.table.table-striped.table-bordered
-  %tr
-    %th
-    - ScheduleRules::OpenHours.weekdays.each do |weekday|
-      %th= weekday
-  %tr
-    %th Open Hours
-    - ScheduleRules::OpenHours.weekdays.each do |weekday|
-      %td= weekday_opening_times[weekday] || '-'
+  %tbody
+    %tr
+      %th
+      - ScheduleRules::OpenHours.weekdays.each do |weekday|
+        %th= weekday
+    %tr
+      %th Open Hours
+      - ScheduleRules::OpenHours.weekdays.each do |weekday|
+        %td= weekday_opening_times[weekday] || '-'
