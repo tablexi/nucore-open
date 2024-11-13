@@ -16,6 +16,8 @@ class ReservationsController < ApplicationController
   include ReservationSwitch
   helper TimelineHelper
 
+  MAX_RESERVATIONS_PERIOD = 40.days
+
   def initialize
     super
     @active_tab = "reservations"
@@ -35,7 +37,10 @@ class ReservationsController < ApplicationController
     @instrument = @facility.instruments.find_by!(url_name: params[:instrument_id])
 
     @start_at = parse_time_param(params[:start]) || Time.zone.now
-    @end_at = parse_time_param(params[:end]) || @start_at.end_of_day
+    @end_at = [
+      parse_time_param(params[:end]) || @start_at.end_of_day,
+      @start_at + MAX_RESERVATIONS_PERIOD,
+    ].min
 
     admin_reservations = @instrument.schedule.admin_reservations.in_range(@start_at, @end_at)
     user_reservations = @instrument.schedule
