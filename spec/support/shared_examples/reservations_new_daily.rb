@@ -23,6 +23,9 @@ RSpec.shared_examples "new daily reservation" do |before_submit: nil, after_subm
     expect(page).to have_content("Create Reservation")
     expect(page).to have_content("Duration days")
 
+    expect(page).to have_css("fc-month-view")
+    expect(page).to_not have_css("fc-agendaWeek-view")
+
     start_date = 1.day.from_now.to_date
     start_hour = "6"
     end_date = 2.days.from_now.to_date
