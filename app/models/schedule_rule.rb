@@ -31,16 +31,18 @@ class ScheduleRule < ApplicationRecord
   # Use this on an ActiveRecord::Relation. Is every minute within the range covered
   # by one of the rules?
   def self.cover?(start_at, end_at = start_at)
-    rule_set = all.to_a
-
     # Time Ranges aren't iterable, so fake it by creating an array of each minute
     # beween the two times. If start_at == end_at, the result will be one element.
     minutes = (end_at - start_at) / 60
     each_minute_in_range = 0.upto(minutes).collect { |n| start_at.advance(minutes: n) }
 
     each_minute_in_range.all? do |time|
-      rule_set.any? { |rule| rule.cover? time }
+      cover_time?(time)
     end
+  end
+
+  def self.cover_time?(time)
+    any? { |rule| rule.cover?(time) }
   end
 
   # Returns a single array of calendar objects representing the set of schedule_rules
