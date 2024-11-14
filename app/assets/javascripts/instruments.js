@@ -1,6 +1,6 @@
 $(document).ready(function() {
   const calendar = $("#calendar");
-  let defaultView = calendar.data('defaultView');
+  const defaultView = calendar.data('defaultView');
 
   const header = { left: 'title', center: '', right: '' };
 
@@ -9,7 +9,6 @@ $(document).ready(function() {
   }
 
   new FullCalendarConfig(
-    calendar,
-    { header: header }
+    calendar, { header }
   ).init();
 });

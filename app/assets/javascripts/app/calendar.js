@@ -69,8 +69,6 @@ window.FullCalendarConfig = class FullCalendarConfig {
       }
     });
 
-    console.log(this.$element.data());
-    console.log(ret);
     return ret;
   }
 

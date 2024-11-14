@@ -3,9 +3,11 @@
 module CalendarHelper
 
   def product_calendar_view(product)
-    return "month" if product.daily_booking?
-
-    "agendaWeek"
+    if product.daily_booking?
+      "month"
+    else
+      "agendaWeek"
+    end
   end
 
   def calendar_events_path(facility, product, **params)
