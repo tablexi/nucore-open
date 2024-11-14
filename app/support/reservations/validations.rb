@@ -172,7 +172,7 @@ module Reservations::Validations
     return true if reserved_by_admin
     # Some old specs don't set an order detail, so we need to safe-navigate
 
-    covered_by_schedule_rules? product.available_schedule_rules(order_detail&.user_for_order)
+    covered_by_schedule_rules?(product.available_schedule_rules(order_detail&.user_for_order))
   end
 
   def in_the_future?

@@ -3,7 +3,6 @@
 require "rails_helper"
 
 RSpec.describe Reservations::Validations do
-
   subject(:reservation) { build :setup_reservation }
 
   let(:now) { Time.zone.now }
@@ -45,7 +44,7 @@ RSpec.describe Reservations::Validations do
       end
 
       context "when reservation is before the cutoff" do
-        let(:reservation) { build :setup_reservation, reserve_start_at: Time.zone.now + 1.hour }
+        let(:reservation) { build :setup_reservation, reserve_start_at: 1.hour.from_now }
         let(:user) { reservation.order_detail.created_by_user }
 
         it "does not save reservation" do
@@ -77,6 +76,89 @@ RSpec.describe Reservations::Validations do
       it "does not run conditional validations" do
         expect(reservation).not_to receive :does_not_conflict_with_other_user_reservation
         reservation.update(reserve_start_at: nil)
+      end
+    end
+  end
+
+  describe "schedule rules" do
+    context "daily booking instrument" do
+      subject(:reservation) { build :setup_reservation, product: }
+      let(:product) { create :setup_instrument, :daily_booking }
+
+      before do
+        product.update_attribute(
+          :pricing_mode, Instrument::Pricing::SCHEDULE_DAILY
+        )
+      end
+
+      it { is_expected.to be_valid }
+
+      context "when schedule rules don't match" do
+        before do
+          product.schedule_rules.destroy_all
+          start_at = Time.current
+          end_at = start_at + 3.days
+          yesterday_weekday = Date::ABBR_DAYNAMES[1.day.ago.wday].downcase
+
+          reservation.reserve_start_at = start_at
+          reservation.reserve_end_at = end_at
+
+          create(
+            :schedule_rule,
+            :unavailable,
+            product:,
+            "on_#{yesterday_weekday}" => true
+          )
+        end
+
+        it "has scheduling errors" do
+          is_expected.to_not be_valid
+
+          expect(subject.errors).to be_added(:base, :no_schedule_rule)
+        end
+      end
+
+      context "valid reservations" do
+        let(:start_at) { Time.current }
+        let(:end_at) { start_at + 3.days }
+
+        before do
+          product.schedule_rules.destroy_all
+          today_weekday = Date::ABBR_DAYNAMES[start_at.wday].downcase
+
+          reservation.reserve_start_at = start_at
+          reservation.reserve_end_at = end_at
+        end
+
+        context "start at is cover but end at is not" do
+          before do
+            today_weekday = Date::ABBR_DAYNAMES[start_at.wday].downcase
+
+            create(
+              :schedule_rule,
+              :unavailable,
+              product:,
+              "on_#{today_weekday}" => true
+            )
+          end
+
+          it { expect(product.schedule_rules.cover?(start_at, end_at)).to be false }
+          it { expect(product.schedule_rules.cover_time?(start_at)).to be true }
+          it { is_expected.to be_valid }
+        end
+
+        context "start at is cover and so is end at" do
+          before do
+            create(
+              :schedule_rule,
+              :all_day,
+              product:,
+            )
+          end
+
+          it { expect(product.schedule_rules.cover?(start_at, end_at)).to be true }
+          it { is_expected.to be_valid }
+        end
       end
     end
   end
