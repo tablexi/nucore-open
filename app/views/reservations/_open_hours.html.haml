@@ -1,10 +1,23 @@
-%table.table.table-striped.table-bordered
-  %tbody
-    %tr
-      %th
-      - ScheduleRules::OpenHours.weekdays.each do |weekday|
-        %th= weekday
-    %tr
-      %th Open Hours
-      - ScheduleRules::OpenHours.weekdays.each do |weekday|
-        %td= weekday_opening_times[weekday] || '-'
+.hidden-phone
+  %table.table.table-striped.table-bordered
+    %tbody
+      %tr
+        %th
+        - ScheduleRules::OpenHours.weekdays.each do |weekday|
+          %th= weekday
+      %tr
+        %th Start time availability
+        - ScheduleRules::OpenHours.weekdays.each do |weekday|
+          %td= weekday_opening_times[weekday] || '-'
+
+.hidden-desktop.hidden-tablet
+  %table.table.table-striped.table-bordered
+    %tbody
+      %tr
+        %th
+        %th Start time availability
+        - ScheduleRules::OpenHours.weekdays.each do |weekday|
+          %tr
+            %th= weekday
+            %td= weekday_opening_times[weekday] || '-'
+
