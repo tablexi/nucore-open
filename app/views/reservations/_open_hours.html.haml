@@ -1,5 +1,5 @@
 .hidden-phone
-  %table.table.table-striped.table-bordered
+  %table.open-hours.table.table-striped.table-bordered
     %tbody
       %tr
         %th= text("instruments.schedule.open_hours_day")
@@ -11,7 +11,7 @@
           %td= weekday_opening_times[weekday] || '-'
 
 .hidden-desktop.hidden-tablet
-  %table.table.table-striped.table-bordered
+  %table.open-hours.table.table-striped.table-bordered
     %tbody
       %tr
         %th= text("instruments.schedule.open_hours_day")

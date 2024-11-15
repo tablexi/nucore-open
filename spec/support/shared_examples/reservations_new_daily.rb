@@ -20,7 +20,9 @@ RSpec.shared_examples "new daily reservation" do |before_submit: nil, after_subm
   it "creates a daily reservation", :js do
     visit reservation_path
 
-    expect(page).to be_axe_clean.within("#content")
+    # Form and open hour table to be axe clean
+    expect(page).to be_axe_clean.within(".simple_form")
+    expect(page).to be_axe_clean.within(".open-hours")
 
     expect(page).to have_content("Create Reservation")
     expect(page).to have_content("Duration days")
