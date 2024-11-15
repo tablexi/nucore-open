@@ -23,6 +23,8 @@ RSpec.shared_examples "new daily reservation" do |before_submit: nil, after_subm
     expect(page).to have_content("Create Reservation")
     expect(page).to have_content("Duration days")
 
+    expect(page).to have_xpath("//div[@id='calendar'][@data-default-view='month']")
+
     start_date = 1.day.from_now.to_date
     start_hour = "6"
     end_date = 2.days.from_now.to_date
