@@ -28,6 +28,9 @@ RSpec.shared_examples "new daily reservation" do |before_submit: nil, after_subm
     # Start time availability table is present
     expect(page).to have_xpath("//table/tbody/tr/th[text()='Start Time Availability']")
 
+    # Calendar is rendered with correct view
+    expect(page).to have_xpath("//div[@id='calendar'][@data-default-view='month']")
+
     start_date = 1.day.from_now.to_date
     start_hour = "6"
     end_date = 2.days.from_now.to_date

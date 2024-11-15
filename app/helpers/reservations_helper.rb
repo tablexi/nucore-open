@@ -68,4 +68,13 @@ module ReservationsHelper
   def weekday_opening_times
     @weekday_opening_times ||= ScheduleRules::OpenHours.new(@instrument.schedule_rules).per_weekday
   end
+
+  def reservations_calendar_config
+    {
+      show_tooltip: (@instrument.daily_booking? || @instrument.show_details).to_s,
+      start_editable: (!@instrument.daily_booking? && start_time_editing_enabled?(@reservation)).to_s,
+      default_view: @instrument.daily_booking? ? "month" : "agendaWeek",
+    }
+  end
+
 end
