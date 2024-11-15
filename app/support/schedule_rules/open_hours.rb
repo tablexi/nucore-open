@@ -17,6 +17,9 @@ module ScheduleRules
       [start_time, end_time].join(" - ")
     end
 
+    # Build a Hash[String, String] with weekdays as keys
+    # and availabile time as values by grouping schedule rules
+    # availability
     def per_weekday
       entries = rules_times.group_by { |entry| entry[:weekday] }
 
@@ -24,6 +27,8 @@ module ScheduleRules
         entries[weekday]&.pluck(:range)&.join(", ")
       end
     end
+
+    private
 
     def rules_times
       return @rules_times if @rules_times.present?
@@ -38,8 +43,8 @@ module ScheduleRules
         end
     end
 
-    private
-
+    # Return an Array[{start:, end:}] containing an entry for
+    # each rule but merging those rules that have continuous times
     def merged_rule_times(rules)
       rules.sort_by(&:start_time_int).reduce([[], 0]) do |ac, rule|
         entries, current_time = ac
@@ -55,6 +60,6 @@ module ScheduleRules
         [entries, rule.end_time_int]
       end.first
     end
-
   end
+
 end
