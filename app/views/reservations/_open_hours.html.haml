@@ -3,10 +3,11 @@
     %tbody
       %tr
         %th
+          %span Day of Week
         - ScheduleRules::OpenHours.weekdays.each do |weekday|
           %th= weekday
       %tr
-        %th Start time availability
+        %th Start Time Availability
         - ScheduleRules::OpenHours.weekdays.each do |weekday|
           %td= weekday_opening_times[weekday] || '-'
 
@@ -15,7 +16,8 @@
     %tbody
       %tr
         %th
-        %th Start time availability
+          %span Day of Week
+        %th Start Time Availability
         - ScheduleRules::OpenHours.weekdays.each do |weekday|
           %tr
             %th= weekday
