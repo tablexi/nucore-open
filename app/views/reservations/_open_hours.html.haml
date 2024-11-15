@@ -2,12 +2,11 @@
   %table.table.table-striped.table-bordered
     %tbody
       %tr
-        %th
-          %span Day of Week
+        %th= text("instruments.schedule.open_hours_day")
         - ScheduleRules::OpenHours.weekdays.each do |weekday|
           %th= weekday
       %tr
-        %th Start Time Availability
+        %th= text("instruments.schedule.open_hours_time")
         - ScheduleRules::OpenHours.weekdays.each do |weekday|
           %td= weekday_opening_times[weekday] || '-'
 
@@ -15,9 +14,8 @@
   %table.table.table-striped.table-bordered
     %tbody
       %tr
-        %th
-          %span Day of Week
-        %th Start Time Availability
+        %th= text("instruments.schedule.open_hours_day")
+        %th= text("instruments.schedule.open_hours_time")
         - ScheduleRules::OpenHours.weekdays.each do |weekday|
           %tr
             %th= weekday
