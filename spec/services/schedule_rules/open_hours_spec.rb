@@ -24,7 +24,11 @@ RSpec.describe ScheduleRules::OpenHours do
       create(
         :schedule_rule,
         :weekday,
-        product:
+        product:,
+        start_hour: 9,
+        start_min: 0,
+        end_hour: 17,
+        end_min: 0,
       )
     end
 
@@ -53,11 +57,7 @@ RSpec.describe ScheduleRules::OpenHours do
       end
 
       it "handles discontinuous rules correctly" do
-        expect(subject["Mon"]).to eq(
-          product.schedule_rules.order(:start_hour).map do |sr|
-            described_class.time_range(sr.start_time, sr.end_time)
-          end.join(", ")
-        )
+        expect(subject["Mon"]).to eq("0:00 - 1:00, 9:00 - 17:00")
       end
     end
 
@@ -75,13 +75,7 @@ RSpec.describe ScheduleRules::OpenHours do
       end
 
       it "handles discontinuous rules correctly" do
-        min_sr = schedule_rules.min_by(&:start_time_int)
-        max_sr = schedule_rules.max_by(&:end_time_int)
-
-        expect(subject["Mon"]).to eq(
-          described_class.time_range(min_sr.start_time, max_sr.end_time)
-        )
-        expect(min_sr).to_not eq(max_sr)
+        expect(subject["Mon"]).to eq("0:00 - 17:00")
       end
     end
   end
