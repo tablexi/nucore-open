@@ -51,7 +51,9 @@ module Reservations::Validations
   end
 
   def starts_before_cutoff
-    errors.add(:reserve_start_at, :after_cutoff, hours: product.cutoff_hours) if starts_before_cutoff?
+    return unless starts_before_cutoff?
+
+    errors.add(:reserve_start_at, :after_cutoff, hours: product.cutoff_hours)
   end
 
   def duration_is_interval
