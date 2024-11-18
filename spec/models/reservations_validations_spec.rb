@@ -93,21 +93,20 @@ RSpec.describe Reservations::Validations do
 
       it { is_expected.to be_valid }
 
-      context "when schedule rules don't match" do
+      context "when start at is not covered" do
         before do
           product.schedule_rules.destroy_all
           start_at = Time.current
           end_at = start_at + 3.days
-          yesterday_weekday = Date::ABBR_DAYNAMES[1.day.ago.wday].downcase
 
           reservation.reserve_start_at = start_at
           reservation.reserve_end_at = end_at
 
+          start_at_wday = Date::ABBR_DAYNAMES[start_at.wday].downcase
           create(
             :schedule_rule,
-            :unavailable,
             product:,
-            "on_#{yesterday_weekday}" => true
+            "on_#{start_at_wday}" => false
           )
         end
 
@@ -124,8 +123,6 @@ RSpec.describe Reservations::Validations do
 
         before do
           product.schedule_rules.destroy_all
-          today_weekday = Date::ABBR_DAYNAMES[start_at.wday].downcase
-
           reservation.reserve_start_at = start_at
           reservation.reserve_end_at = end_at
         end
