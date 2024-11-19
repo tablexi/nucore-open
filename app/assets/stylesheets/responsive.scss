@@ -134,8 +134,15 @@ $navbarActiveBorderColor: #595959;
     display: none !important;
   }
 }
+.table-vertical-phone th, td {
+  writing-mode: horizontal-tb;
+}
 @media screen and (max-width: 600px) {
   .az_list {
     display: none;
+  }
+
+  .table-vertical-phone {
+    writing-mode: vertical-lr;
   }
 }
