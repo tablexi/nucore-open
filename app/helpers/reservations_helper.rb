@@ -65,6 +65,10 @@ module ReservationsHelper
     !original.reserve_end_at_editable?
   end
 
+  def weekday_opening_times
+    @weekday_opening_times ||= ScheduleRules::OpenHours.new(@instrument.schedule_rules).per_weekday
+  end
+
   def reservations_calendar_config
     {
       show_tooltip: (@instrument.daily_booking? || @instrument.show_details).to_s,
