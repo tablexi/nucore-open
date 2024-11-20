@@ -30,6 +30,7 @@ module Reservations
       super.merge(
         title: "Instrument Offline",
         email: created_by.try(:full_name),
+        className: "unavailable"
       )
     end
   end
@@ -59,7 +60,7 @@ module Reservations
         if expires_mins_before.present?
           hash[:expiration] = "Expires #{MinutesToTimeFormatter.new(expires_mins_before)} prior"
         end
-        hash[:className] = 'unavailable' if __getobj__.is_a?(AdminReservation)
+        hash[:className] = "unavailable" if __getobj__.is_a?(AdminReservation)
       end
     end
   end
