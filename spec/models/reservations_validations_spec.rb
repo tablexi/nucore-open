@@ -82,27 +82,25 @@ RSpec.describe Reservations::Validations do
 
   describe "schedule rules" do
     context "daily booking instrument" do
-      subject(:reservation) { build :setup_reservation, product: }
-      let(:product) { create :setup_instrument, :daily_booking }
-
-      before do
-        product.update_attribute(
-          :pricing_mode, Instrument::Pricing::SCHEDULE_DAILY
+      subject(:reservation) do
+        build(
+          :setup_reservation,
+          product:,
+          reserve_start_at: start_at,
+          reserve_end_at: end_at
         )
       end
+      let(:product) { create :setup_instrument, :daily_booking }
+      let(:start_at) { Time.current }
+      let(:start_at_wday) { Date::ABBR_DAYNAMES[start_at.wday].downcase }
+      let(:end_at) { start_at + 3.days }
 
       it { is_expected.to be_valid }
 
       context "when start at is not covered" do
         before do
           product.schedule_rules.destroy_all
-          start_at = Time.current
-          end_at = start_at + 3.days
 
-          reservation.reserve_start_at = start_at
-          reservation.reserve_end_at = end_at
-
-          start_at_wday = Date::ABBR_DAYNAMES[start_at.wday].downcase
           create(
             :schedule_rule,
             product:,
@@ -118,24 +116,17 @@ RSpec.describe Reservations::Validations do
       end
 
       context "valid reservations" do
-        let(:start_at) { Time.current }
-        let(:end_at) { start_at + 3.days }
-
         before do
           product.schedule_rules.destroy_all
-          reservation.reserve_start_at = start_at
-          reservation.reserve_end_at = end_at
         end
 
         context "start at is cover but end at is not" do
           before do
-            today_weekday = Date::ABBR_DAYNAMES[start_at.wday].downcase
-
             create(
               :schedule_rule,
               :unavailable,
               product:,
-              "on_#{today_weekday}" => true
+              "on_#{start_at_wday}" => true
             )
           end
 
@@ -154,6 +145,7 @@ RSpec.describe Reservations::Validations do
           end
 
           it { expect(product.schedule_rules.cover?(start_at, end_at)).to be true }
+          it { expect(product.schedule_rules.cover_time?(start_at)).to be true }
           it { is_expected.to be_valid }
         end
       end
