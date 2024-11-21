@@ -262,5 +262,46 @@ RSpec.describe "Purchasing a reservation" do
         end
       )
     end
+
+    context "on unavailable day" do
+      let(:available_day) { 1.day.from_now.to_date }
+      let(:unavailable_day) { 2.days.from_now.to_date }
+
+      before do
+        instrument.schedule_rules.destroy_all
+        available_wday = Date::ABBR_DAYNAMES[available_day.wday].downcase
+        unavailable_wday = Date::ABBR_DAYNAMES[unavailable_day.wday].downcase
+
+        create(
+          :schedule_rule,
+          product: instrument,
+          "on_#{available_wday}" => true,
+          "on_#{unavailable_wday}" => false,
+        )
+
+        login_as user
+      end
+
+      it "cannot create reservation starting on unavailable day", :js do
+        visit reservation_path
+
+        fill_in("reservation[reserve_start_date]", with: I18n.l(unavailable_day, format: :usa))
+
+        click_button("Create")
+
+        expect(page).to have_content("Unable to place order")
+      end
+
+      it "can create before unavailable day and span over it" do
+        visit reservation_path
+
+        fill_in("reservation[reserve_start_date]", with: I18n.l(available_day, format: :usa))
+        fill_in("reservation[duration_days]", with: "2")
+
+        click_button("Create")
+
+        expect(page).to have_content("Reservation created successfully")
+      end
+    end
   end
 end
