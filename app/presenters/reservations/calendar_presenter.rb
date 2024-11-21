@@ -39,7 +39,7 @@ module Reservations
     def as_calendar_object(options = {})
       ret = super
 
-      return (ret = super) if options[:with_details].blank?
+      return ret if options[:with_details].blank?
 
       ret.merge(
         title: order.user.full_name,
