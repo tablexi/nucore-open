@@ -26,7 +26,7 @@ module ScheduleRules
 
     def events
       date_range.filter_map do |date|
-        hash_for_date(date.beginning_of_day) if rule_occurs_on_date?(date)
+        as_calendar_object(date.beginning_of_day) if rule_occurs_on_date?(date)
       end
     end
 
@@ -36,7 +36,7 @@ module ScheduleRules
       start_at.to_date..end_at.to_date
     end
 
-    def hash_for_date(date)
+    def as_calendar_object(date)
       start_at = date.change(hour: start_hour, min: start_min)
       end_at = date.change(hour: end_hour, min: end_min)
 
