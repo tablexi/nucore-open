@@ -153,7 +153,7 @@ RSpec.describe "Editing your own reservation" do
       end
     end
 
-    describe "when unavailable due to schedule rule" do
+    context "when unavailable due to schedule rule" do
       before do
         # Disable schedule rule on unavailable day
         reservation.product.schedule_rules.first.then do |schedule_rule|
@@ -165,7 +165,7 @@ RSpec.describe "Editing your own reservation" do
 
       include_examples "unavailable due to reason", :no_schedule_rule
 
-      describe "when the reservation last 1 day" do
+      context "when the reservation last 1 day" do
         it "moves just before unavailable day" do
           move_reservation
 
@@ -176,7 +176,7 @@ RSpec.describe "Editing your own reservation" do
         end
       end
 
-      describe "when the reservation lasts 20 days" do
+      context "when the reservation lasts 20 days" do
         before do
           reservation.update_attribute(
             :reserve_end_at, reservation.reserve_start_at + 20.days
@@ -194,7 +194,7 @@ RSpec.describe "Editing your own reservation" do
       end
     end
 
-    describe "when unavailable due to a reservation" do
+    context "when unavailable due to a reservation" do
       let!(:conflict_reservation) do
         create(
           :purchased_reservation,
