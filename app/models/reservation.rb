@@ -247,7 +247,13 @@ class Reservation < ApplicationRecord
   end
 
   def admin?
-    order_detail_id.nil? && !blackout?
+    has_order_detail = if persisted?
+                         order_detail_id.present?
+                       else
+                         order_detail.present?
+                       end
+
+    !has_order_detail && !blackout?
   end
 
   def admin_removable?
