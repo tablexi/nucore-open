@@ -271,7 +271,7 @@ RSpec.describe "Purchasing a reservation" do
       instrument.update!(cutoff_hours: 2)
     end
 
-    it "cannot create a reservation before cutoff hours" do
+    it "cannot create a reservation after cutoff hours" do
       visit new_facility_instrument_single_reservation_path(facility, instrument)
 
       rounded_mins = reserve_time.min.then { |min| min - (min % instrument.reserve_interval) }
