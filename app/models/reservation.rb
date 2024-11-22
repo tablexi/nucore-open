@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "date"
-
 class Reservation < ApplicationRecord
 
   acts_as_paranoid # soft deletes
@@ -271,8 +269,8 @@ class Reservation < ApplicationRecord
     Reservation
       .not_started
       .where("reserve_start_at > :now", now: Time.current)
-      .where("reserve_start_at < :reserve_start_at", reserve_start_at: reserve_start_at)
-      .where(product_id: product_id)
+      .where("reserve_start_at < :reserve_start_at", reserve_start_at:)
+      .where(product_id:)
       .joins(:order_detail)
       .where("order_detail_id IS NULL OR order_details.state IN ('new', 'inprocess')")
       .none?

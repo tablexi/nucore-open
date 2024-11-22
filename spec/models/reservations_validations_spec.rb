@@ -3,7 +3,6 @@
 require "rails_helper"
 
 RSpec.describe Reservations::Validations do
-
   subject(:reservation) { build :setup_reservation }
 
   let(:now) { Time.zone.now }
@@ -45,7 +44,7 @@ RSpec.describe Reservations::Validations do
       end
 
       context "when reservation is before the cutoff" do
-        let(:reservation) { build :setup_reservation, reserve_start_at: Time.zone.now + 1.hour }
+        let(:reservation) { build :setup_reservation, reserve_start_at: 1.hour.from_now }
         let(:user) { reservation.order_detail.created_by_user }
 
         it "does not save reservation" do

@@ -264,7 +264,7 @@ RSpec.describe "Purchasing a reservation" do
     end
   end
 
-  context "honours cutoff hours" do
+  describe "honours cutoff hours" do
     let(:reserve_time) { 78.minutes.from_now }
 
     before do
