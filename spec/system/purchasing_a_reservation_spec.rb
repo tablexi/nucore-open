@@ -304,4 +304,25 @@ RSpec.describe "Purchasing a reservation" do
       end
     end
   end
+
+  describe "honours cutoff hours" do
+    let(:reserve_time) { 78.minutes.from_now }
+
+    before do
+      instrument.update!(cutoff_hours: 2)
+    end
+
+    it "cannot create a reservation after cutoff hours" do
+      visit new_facility_instrument_single_reservation_path(facility, instrument)
+
+      rounded_mins = reserve_time.min.then { |min| min - (min % instrument.reserve_interval) }
+
+      select(format("%02d", reserve_time.hour), from: "reservation[reserve_start_hour]")
+      select(format("%02d", rounded_mins), from: "reservation[reserve_start_min]")
+
+      click_button("Create")
+
+      expect(page).to have_content "Reserve Start must be at least 2 hours in the future"
+    end
+  end
 end
