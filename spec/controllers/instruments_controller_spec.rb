@@ -324,7 +324,7 @@ RSpec.describe InstrumentsController, type: :controller do
         )
       end
 
-      shared_examples "daily booking creation dissallowed" do
+      shared_examples "daily booking creation disallowed" do
         it "does not allow user to create daily booking instrument" do
           sign_in(user)
 
@@ -338,13 +338,13 @@ RSpec.describe InstrumentsController, type: :controller do
       context "as facility admin" do
         let(:user) { create(:user, :facility_administrator, facility:) }
 
-        include_examples "daily booking creation dissallowed"
+        include_examples "daily booking creation disallowed"
       end
 
       context "as facility director" do
         let(:user) { create(:user, :facility_director, facility:) }
 
-        include_examples "daily booking creation dissallowed"
+        include_examples "daily booking creation disallowed"
       end
 
       context "as administrator" do
