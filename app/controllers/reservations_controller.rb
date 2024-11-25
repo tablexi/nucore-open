@@ -16,7 +16,7 @@ class ReservationsController < ApplicationController
   include ReservationSwitch
   helper TimelineHelper
 
-  MAX_RESERVATIONS_PERIOD = 40.days
+  MAX_RESERVATIONS_PERIOD = 45.days
 
   def initialize
     super
