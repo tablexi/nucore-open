@@ -32,7 +32,7 @@ ReservationCalendar.prototype = {
       title: "My Reservation",
       start: start,
       end: end,
-      color: "#378006",
+      className: 'current-event',
       allDay: false,
       startEditable: this._isStartEditable(),
       durationEditable: true
