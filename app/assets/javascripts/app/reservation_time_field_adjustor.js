@@ -86,7 +86,7 @@ window.ReservationTimeFieldAdjustor = class ReservationTimeFieldAdjustor {
     this.reserveEnd.change(this._reserveEndChangeCallback);
     // Trying to bind directly to the element can cause timeing problems
     this.$form.on("change", this.durationFieldSelector, this._durationChangeCallback);
-    return this.$form.on("reservation:set_times", (evt, data) => {
+    this.$form.on("reservation:set_times", (evt, data) => {
       return this.setTimes(data.start, data.end);
     });
   }
@@ -168,28 +168,68 @@ window.ReservationTimeFieldAdjustor = class ReservationTimeFieldAdjustor {
   }
 };
 
-$(function() {
-  // reserveInterval is not set on admin reservation pages, and we don't need these handlers there
-  if (typeof reserveInterval !== 'undefined' && reserveInterval !== null) {
-    $(".js--reservationForm").each((i, elem) => new ReservationTimeFieldAdjustor(
-      $(elem), {
-      "start": [
-        "reservation[reserve_start_date]",
-        "reservation[reserve_start_hour]",
-        "reservation[reserve_start_min]",
-        "reservation[reserve_start_meridian]"
-      ],
-      "end": [
-        "reservation[reserve_end_date]",
-        "reservation[reserve_end_hour]",
-        "reservation[reserve_end_min]",
-        "reservation[reserve_end_meridian]"
-      ],
-      "duration": "reservation[duration_mins]"
-    },
-    reserveInterval));
+window.DailyReservationTimeFieldAdjustor = class DailyReservationTimeFieldAdjustor {
+  constructor($form, opts) {
+    this.form = $form;
+    this.opts = opts;
+    this.reserveStart = DateTimeSelectionWidgetGroup.fromFields(
+      this.form,
+      ...Array.from(this.opts["start"])
+    );
+    this.reserveEnd = DateTimeSelectionWidgetGroup.fromFields(
+      this.form,
+      ...Array.from(this.opts["end"])
+    );
+    this.duration = $(`[name=\"${this.opts["duration"]}\"]`);
+
+    this.addListeners();
   }
-  return $(".js--problemReservationForm").each((i, elem) => new ReservationTimeFieldAdjustor(
+
+  addListeners() {
+    // Update reserve end date when duration or start date change
+    this.duration.on('keyup', this.updateReserveEndDate.bind(this));
+    this.reserveStart.$dateField.on('change', this.updateReserveEndDate.bind(this));
+
+    // Copy start time to end time when changes
+    function copyFieldValueCallback(targetEl) {
+      return function(event) {
+        $(targetEl).val($(event.target).val())
+      }
+    }
+    this.reserveStart.$hourField.on(
+      'change', copyFieldValueCallback(this.reserveEnd.$hourField)
+    );
+    this.reserveStart.$minuteField.on(
+      'change', copyFieldValueCallback(this.reserveEnd.$minuteField)
+    );
+    this.reserveStart.$meridianField.on(
+      'change', copyFieldValueCallback(this.reserveEnd.$meridianField)
+    );
+  }
+
+  /**
+   * Update reservation_end_date out of duration days and start date
+   */
+  updateReserveEndDate() {
+    let duration = parseInt(this.duration.val());
+    let startDateEpoch = Date.parse(this.reserveStart.$dateField.val());
+
+    if (!(duration > 0 && startDateEpoch > 0)) { return; }
+
+    let startDate = new Date(startDateEpoch);
+    let endDate = new Date(startDate);
+
+    endDate.setDate(startDate.getDate() + duration);
+
+    let dateFormat = this.reserveStart.$dateField.datepicker('option', 'dateFormat');
+    let dateStr = $.datepicker.formatDate(dateFormat, endDate)
+
+    this.reserveEnd.$dateField.val(dateStr);
+  }
+}
+
+$(function() {
+  $(".js--problemReservationForm").each((i, elem) => new ReservationTimeFieldAdjustor(
     $(elem), {
     "start": [
       "reservation[actual_start_date]",
