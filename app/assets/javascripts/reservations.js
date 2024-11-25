@@ -68,7 +68,7 @@ $(document).ready(function() {
         "duration": "reservation[duration_days]"
       }
     );
-  } else {
+  } else if (typeof reserveInterval !== 'undefined') {
     new ReservationTimeFieldAdjustor(
       reservationFormEl,
       {
@@ -78,6 +78,6 @@ $(document).ready(function() {
       reserveInterval,
     );
   }
-  new ReservationCalendar().init($("#calendar"), reservationFormEl);
+  new ReservationCalendar().init($("#calendar"), reservationFormEl, isDailyBooking);
 });
 
