@@ -121,6 +121,13 @@ RSpec.describe "Editing your own reservation" do
       )
     end
 
+    it "shows current reservation" do
+      visit reservations_path
+      click_link reservation.to_s
+
+      expect(page).to have_content("My Reservations")
+    end
+
     def move_reservation
       visit reservations_path
 
