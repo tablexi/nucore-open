@@ -205,6 +205,14 @@ window.DailyReservationTimeFieldAdjustor = class DailyReservationTimeFieldAdjust
     this.reserveStart.$meridianField.on(
       'change', copyFieldValueCallback(this.reserveEnd.$meridianField)
     );
+
+    // Trigger form changes when duration or end date changes
+    this.reserveStart.change(this.triggerChange.bind(this));
+    this.duration.on('keyup', this.triggerChange.bind(this));
+    // this.reserveEnd.change(this.triggerChange.bind(this));
+
+    // Trigger change when a change event is received
+    this.form.on('reservation:set_times', this.triggerChange.bind(this));
   }
 
   /**
@@ -225,6 +233,17 @@ window.DailyReservationTimeFieldAdjustor = class DailyReservationTimeFieldAdjust
     let dateStr = $.datepicker.formatDate(dateFormat, endDate)
 
     this.reserveEnd.$dateField.val(dateStr);
+  }
+
+  /* Trigger change and passes start and end times */
+  triggerChange() {
+    this.form.trigger(
+      "reservation:times_changed",
+      {
+        start: this.reserveStart.getDateTime(),
+        end: this.reserveEnd.getDateTime()
+      }
+    );
   }
 }
 
