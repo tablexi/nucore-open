@@ -289,7 +289,9 @@ RSpec.describe "Purchasing a reservation" do
 
         click_button("Create")
 
-        expect(page).to have_content("Unable to place order")
+        expect(page).to have_content(
+          I18n.t("activerecord.errors.models.reservation.attributes.base.no_schedule_rule")
+        )
       end
 
       it "can create before unavailable day and span over it" do
