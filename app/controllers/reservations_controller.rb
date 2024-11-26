@@ -16,7 +16,7 @@ class ReservationsController < ApplicationController
   include ReservationSwitch
   helper TimelineHelper
 
-  MAX_RESERVATIONS_PERIOD = 40.days
+  MAX_RESERVATIONS_PERIOD = 45.days
 
   def initialize
     super
@@ -212,10 +212,10 @@ class ReservationsController < ApplicationController
     end
 
     if mergeable && success
-      flash[:notice] = "The reservation was successfully updated."
+      flash[:notice] = I18n.t("controllers.reservations.update.success")
       redirect_to facility_order_path(@order_detail.facility, @order_detail.order.merge_order || @order_detail.order)
     elsif success
-      flash[:notice] = "The reservation was successfully updated."
+      flash[:notice] = I18n.t("controllers.reservations.update.success")
       redirect_to (@order.purchased? ? reservations_path : cart_path)
     else
       render_edit
