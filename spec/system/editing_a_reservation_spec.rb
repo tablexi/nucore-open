@@ -133,6 +133,12 @@ RSpec.describe "Editing your own reservation" do
       click_link reservation.to_s
 
       expect(page).to have_css(".current-event", text: "My Reservation")
+
+      fill_in("Duration", with: "10")
+
+      click_button "Save"
+
+      expect(page).to have_content(I18n.t("controllers.reservations.update.success"))
     end
 
     def move_reservation
