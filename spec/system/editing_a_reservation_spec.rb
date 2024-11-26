@@ -23,6 +23,13 @@ RSpec.describe "Editing your own reservation" do
     # 9:30-10:30am
     let!(:reservation) { create(:purchased_reservation, :tomorrow, product: instrument, user: user) }
 
+    it "shows current reservation", :js do
+      visit reservations_path
+      click_link reservation.to_s
+
+      expect(page).to have_css(".current-event", text: "My Reservation")
+    end
+
     it "allows me to move and shorten the reservation" do
       visit reservations_path
       click_link reservation.to_s
@@ -119,6 +126,19 @@ RSpec.describe "Editing your own reservation" do
         reserve_end_at: today + 2.days,
         product: instrument,
       )
+    end
+
+    it "shows current reservation", :js do
+      visit reservations_path
+      click_link reservation.to_s
+
+      expect(page).to have_css(".current-event", text: "My Reservation")
+
+      fill_in("Duration", with: "10")
+
+      click_button "Save"
+
+      expect(page).to have_content(I18n.t("controllers.reservations.update.success"))
     end
 
     def move_reservation
