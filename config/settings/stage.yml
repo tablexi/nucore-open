@@ -3,8 +3,12 @@ email:
   fake:
     enabled: true
     to:
-      - nucore@txidigital.com
+      - nucore@wyeworks.com
     allow_list: []
+    allow_domains:
+      - wyeworks.com
+      - txidigital.com
+      - tablexi.com
 
 # paperclip:
 #   storage: s3
