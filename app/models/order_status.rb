@@ -122,6 +122,7 @@ class OrderStatus < ApplicationRecord
       new_status.self_and_descendants
         .or(in_process.self_and_descendants)
         .or(canceled.self_and_descendants)
+        .or(unrecoverable.self_and_descendants)
         .or(complete.self_and_descendants)
         .for_facility(facility).sorted
     end
