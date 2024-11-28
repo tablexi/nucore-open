@@ -123,6 +123,9 @@ RSpec.describe "Instrument Scheduling Tab" do
       visit facility_instrument_schedule_rules_path(facility, instrument)
 
       expect(page).to_not have_content("Discount")
+      within("table") do
+        expect(page).to have_content("Days of Week")
+      end
     end
 
     it "works as expected on create" do
