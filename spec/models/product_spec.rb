@@ -3,6 +3,11 @@
 require "rails_helper"
 
 RSpec.describe Product do
+  it "cannot apply discounts by default" do
+    product = Product.new
+    expect(product.can_apply_discounts?).to be false
+  end
+
   describe "with everything configured" do
     subject(:product) { create(:instrument_requiring_approval) }
 
