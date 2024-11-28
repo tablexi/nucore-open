@@ -344,7 +344,7 @@ class Product < ApplicationRecord
   end
 
   def can_apply_discounts?
-    false
+    true
   end
 
   protected

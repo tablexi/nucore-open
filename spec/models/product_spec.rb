@@ -3,9 +3,9 @@
 require "rails_helper"
 
 RSpec.describe Product do
-  it "cannot apply discounts by default" do
+  it "can apply discounts by default" do
     product = Product.new
-    expect(product.can_apply_discounts?).to be false
+    expect(product.can_apply_discounts?).to be true
   end
 
   describe "with everything configured" do
