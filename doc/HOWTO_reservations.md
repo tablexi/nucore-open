@@ -5,12 +5,24 @@ Instruments have a time schedule where they can be reserved. A Reservation
 generally refer to a user scheduling the use of the instrument but also can
 refer to the instrument being offline or reserved for an administrative task.
 
-Reservations on instruments are a kind of product the user purchase and can
-have different ways of charging depending on the Instrument's pricing mode. So
-whenever a new reservation is created an order is created or updated to include
-it as part of its items.
+Instruments are a type of Product which whose usage can be purchased by users
+through Reservations. So whenever a new reservation is created, an order is
+created or updated to include the Instrument as part of its items with a cost
+set according to the Instrument's characteristics and the reservation duration.
 
-## Schedule Rules: Instruments availability schedule
+How the cost is calculated from the duration depends on the Instrument's
+pricing policy which can be one of three types:
+
+1. Schedule Rule: charge per minute with fixed rate.
+2. Duration: charge per minute with a layered rate depending on the duration.
+3. Schedule Rule (Daily Booking): charged per day with fixed rate.
+
+The first two allow reservations to be defined on a per minute basis while the
+third one is done in 24 hours blocks.
+
+## Schedule Rules
+
+They define the Instrument availability schedule.
 
 Admins can define the time when an instrument is available for reservation. The
 schedule rules for instruments are defined by specifying a start and end time
@@ -20,13 +32,20 @@ from 9:00 to 17:00 from Monday to Friday.
 One instrument can have several schedule rules defined although they cannot
 have overlapping/conflicting time definitions.
 
-## Reservations: a time slot over an Instrument for a user
+## Reservations
+
+Used for a time slot purchased by a user over an Instrument.
+
+The `Reservation` model is inherited by `OfflineReservation` and
+`AdminReservation` and they follow a STI pattern.
+
+### Schedule Rule or Duration priced Instruments
 
 Instruments can be reserved on a time slot if two conditions are satisfied:
 
 1. The schedule rules allow *the full duration of that time slot*
 2. There's no other reservation that overlaps that time slot for the instrument
-   or the user making the reservation (for other instruments).
+   or the user making the reservation (for other instruments)
 
 Both checks are verified during the `Reservation` model validation in the
 module `Reservations::Validations`.
@@ -38,10 +57,20 @@ The second condition is verified on `Reservation#conflict_user_reservation` and
 basically queries the DB to check if there's another record with those
 conditions.
 
-The `Reservation` model is inherited by `OfflineReservation` and
-`AdminReservation` and they follow a STI pattern.
+### Daily Booking priced Instruments
 
-## OfflineReservation: a time slot representing the instrument being offline
+For these Instruments, a reservation is valid if:
+
+1. The schedule rules allow *the start time of the time slot*
+2. There's no other reservation that overlaps that time slot for the instrument
+   or the user making the reservation (for other instruments)
+
+The first condition is verified by checking if any schedule rule covers the
+time slot start time, see `ScheduleRule::cover_time?`.
+
+## OfflineReservation
+
+Represents a time slot for the instrument being offline.
 
 Offline Reservations are created by Admins by going to the "Reservations" admin
 tab for an instrument and clicking: Mark Instrument Offline and then Bring
@@ -50,27 +79,16 @@ restricted by schedule rules.
 
 See `OfflineReservationsController`.
 
-## AdminReservation: a time slot reserved by an Admin to prevent the Instrument
-usage
+## AdminReservation
+
+It's a time slot reserved by an Admin to prevent the Instrument from being
+used.
 
 This kind of reservations are created by Admins and prevent the instrument from
 being reserved by users. They can be scheduled and are not restricted by
 schedule rules.
 
 See `FacilityReservationsController`.
-
-## Daily Booking Instruments
-
-Instruments can have a special type of scheduling called _Dialy Booking_ which
-means they can only be reserved for a multiple of 24 hour blocks.
-
-Schedule rule checks behave different for these instruments, condition 1 turns
-into:
-
-1. The schedule rules allow *the start time of the time slot*
-
-This is verified by checking if any schedule rule covers the time slot start
-time, see `ScheduleRule::cover_time?`.
 
 ## Find next available time
 
