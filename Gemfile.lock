@@ -385,7 +385,7 @@ GEM
       net-imap
       net-pop
       net-smtp
-    mailgun-ruby (1.2.15)
+    mailgun-ruby (1.2.16)
       rest-client (>= 2.0.2)
     marcel (1.0.4)
     matrix (0.4.2)
@@ -749,7 +749,7 @@ DEPENDENCIES
   kt-paperclip
   ldap_authentication!
   letter_opener
-  mailgun-ruby (~> 1.2.15)
+  mailgun-ruby (~> 1.2.16)
   matrix
   mysql2
   nested_form_fields
