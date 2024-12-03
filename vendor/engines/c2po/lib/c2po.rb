@@ -2,14 +2,28 @@
 
 module C2po
 
-  C2PO_ACCOUNT_TYPES = %w(CreditCardAccount PurchaseOrderAccount).freeze
+  ACCOUNT_TYPES = %w(CreditCardAccount PurchaseOrderAccount).freeze
 
-  C2PO_ACCOUNT_TYPES_APPENDER = proc do
-    Account.config.account_types.concat C2po::C2PO_ACCOUNT_TYPES
-    Account.config.facility_account_types.concat C2po::C2PO_ACCOUNT_TYPES
-    Account.config.statement_account_types.concat C2po::C2PO_ACCOUNT_TYPES
-    Account.config.affiliate_account_types.concat C2po::C2PO_ACCOUNT_TYPES
-  end.freeze
+  def self.setup_account_types
+    account_types = ACCOUNT_TYPES.dup
+
+    unless SettingsHelper.feature_on?(:credit_card_accounts)
+      account_types.delete("CreditCardAccount")
+    end
+
+    # Replace C2po account types
+    %i(
+      account_types
+      facility_account_types
+      statement_account_types
+      affiliate_account_types
+    ).each do |config_key|
+      Account.config.send(config_key).then do |config_account_types|
+        config_account_types.reject! { |type| ACCOUNT_TYPES.include?(type) }
+        config_account_types.concat account_types
+      end
+    end
+  end
 
   class Engine < Rails::Engine
 
@@ -22,7 +36,7 @@ module C2po
       Facility.facility_account_validators << C2po::C2poAccountValidator
 
       # Permit engine-specific params
-      FacilitiesController.permitted_facility_params.concat [:accepts_po, :accepts_cc]
+      FacilitiesController.permitted_facility_params.push [:accepts_po, :accepts_cc]
 
       EngineManager.allow_view_overrides!("c2po")
 
@@ -31,7 +45,8 @@ module C2po
       ViewHook.add_hook "facilities.facility_fields", "before_is_active", "c2po/facilities/facility_fields"
       ViewHook.add_hook "facility_accounts.show", "additional_account_fields", "c2po/facility_accounts/show/additional_account_fields"
       ViewHook.add_hook "facility_accounts.show", "after_end_of_form", "c2po/facility_accounts/show/remittance_information"
-      C2PO_ACCOUNT_TYPES_APPENDER.call
+
+      C2po.setup_account_types
     end
 
     initializer :append_migrations do |app|
@@ -41,7 +56,7 @@ module C2po
     end
 
     initializer :append_account_types, before: "set_routes_reloader_hook" do |app|
-      app.reloader.to_run(&C2PO_ACCOUNT_TYPES_APPENDER)
+      app.reloader.to_run(C2po.method(:setup_account_types))
     end
 
     initializer "model_core.factories", after: "factory_girl.set_factory_paths" do
