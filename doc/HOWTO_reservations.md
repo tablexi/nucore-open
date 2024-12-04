@@ -7,18 +7,19 @@ refer to the instrument being offline or reserved for an administrative task.
 
 Instruments are a type of Product which whose usage can be purchased by users
 through Reservations. So whenever a new reservation is created, an order is
-created or updated to include the Instrument as part of its items with a cost
-set according to the Instrument's characteristics and the reservation duration.
+created or updated to include the Instrument as part of its order details with
+a cost set according to the Instrument's characteristics and the reservation
+duration.
 
 How the cost is calculated from the duration depends on the Instrument's
 pricing policy which can be one of three types:
 
 1. Schedule Rule: charge per minute with fixed rate.
-2. Duration: charge per minute with a layered rate depending on the duration.
+2. Duration: charge per minute with a stepped rate depending on the duration.
 3. Schedule Rule (Daily Booking): charged per day with fixed rate.
 
 The first two allow reservations to be defined on a per minute basis while the
-third one is done in 24 hours blocks.
+third one is done in 24-hour blocks.
 
 ## Schedule Rules
 
