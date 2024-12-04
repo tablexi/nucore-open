@@ -11,31 +11,23 @@ RSpec.describe "Admin Billing Tab" do
   end
 
   describe "Reconcile Credit Card menu" do
-    def refresh_account_config
-      Account.config.statement_account_types.clear
-      C2po.setup_account_types
-    end
-
+    let(:link_name) { "Reconcile Credit Card" }
     it(
       "render Reconcile Credit Card if feature disabled",
-      feature_setting: { credit_card_accounts: true }
+      feature_setting: { reconcile_credit_cards: true }
     ) do
-      refresh_account_config
-
       visit facility_transactions_path(facility)
 
-      expect(page).to have_content("Reconcile Credit Card")
+      expect(page).to have_content(link_name)
     end
 
     it(
       "does not render Reconcile Credit Card if feature disabled",
-      feature_setting: { credit_card_accounts: false }
+      feature_setting: { reconcile_credit_cards: false }
     ) do
-      refresh_account_config
-
       visit facility_transactions_path(facility)
 
-      expect(page).to_not have_content("Reconcile Credit Card")
+      expect(page).to_not have_content(link_name)
     end
   end
 end

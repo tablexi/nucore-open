@@ -23,7 +23,7 @@
 
   - if current_facility.single_facility? && Account.config.reconcilable_account_types.any?
     %li.nav-spacer
-    - Account.config.reconcilable_account_types.each do |account_type|
+    - reconcilable_account_types.each do |account_type|
       - route_name = Account.config.account_type_to_route(account_type)
       = tab text("reconcile", model: account_type.constantize.model_name.human(count: 2)),
         [route_name.to_sym, FacilityAccount], (sidenav_tab == route_name)
