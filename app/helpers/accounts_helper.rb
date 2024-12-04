@@ -45,10 +45,4 @@ module AccountsHelper
     end
   end
 
-  def reconcilable_account_types
-    Account.config.reconcilable_account_types.reject do |account_type|
-      !SettingsHelper.feature_on?(:reconcile_credit_cards) && account_type.to_s == "CreditCardAccount"
-    end
-  end
-
 end
