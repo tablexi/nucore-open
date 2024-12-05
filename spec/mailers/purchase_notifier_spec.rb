@@ -5,8 +5,8 @@ require "rails_helper"
 RSpec.describe PurchaseNotifier do
   let(:email) { ActionMailer::Base.deliveries.last }
   let(:facility) { create(:setup_facility) }
-  let(:order) { create(:purchased_order, product: product) }
-  let(:product) { create(:setup_instrument, facility: facility) }
+  let(:order) { create(:purchased_order, product:) }
+  let(:product) { create(:setup_instrument, facility:) }
   let(:user) { order.user }
 
   describe ".order_notification" do
@@ -53,7 +53,7 @@ RSpec.describe PurchaseNotifier do
 
     before(:each) do
       order.order_details.first.update_attribute(:note, note) if note.present?
-      described_class.order_receipt(order: order, user: user).deliver_now
+      described_class.order_receipt(order:, user:).deliver_now
     end
 
     it "generates a receipt", :aggregate_failures do
@@ -69,7 +69,7 @@ RSpec.describe PurchaseNotifier do
 
     context "when ordered on behalf of another user" do
       let(:administrator) { create(:user, :administrator) }
-      let(:order) { create(:purchased_order, product: product, created_by: administrator.id) }
+      let(:order) { create(:purchased_order, product:, created_by: administrator.id) }
 
       it "mentions who placed the order in the receipt", :aggregate_failures do
         expect(email.html_part.to_s)
@@ -82,6 +82,37 @@ RSpec.describe PurchaseNotifier do
         let(:note) { "*NOTE CONTENT*" }
         it { expect(email.text_part.to_s).to include("*NOTE CONTENT*") }
         it { expect(email.html_part.to_s).to include("*NOTE CONTENT*") }
+      end
+    end
+  end
+
+  context "order for" do
+    let(:order_for_field) { "Order For" }
+    let(:recipient) { "test@example.com" }
+
+    context "order created by admin" do
+      let(:admin) { create(:user, :administrator) }
+
+      before do
+        order.update_attribute(:created_by_user, admin)
+        described_class.order_notification(order, recipient).deliver_now
+      end
+
+      it "includes created by and order for" do
+        expect(email.html_part.to_s).to include(order_for_field)
+        expect(email.html_part.to_s).to include(order.user.full_name)
+        expect(email.html_part.to_s).to include(order.created_by_user.email)
+      end
+    end
+
+    context "order created by user" do
+      before do
+        order.update_attribute(:user, order.created_by_user)
+        described_class.order_notification(order, recipient).deliver_now
+      end
+
+      it "does not include order for" do
+        expect(email.html_part.to_s).to_not include(order_for_field)
       end
     end
   end
