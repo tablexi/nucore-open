@@ -13,7 +13,7 @@ RSpec.describe "Admin Billing Tab" do
   describe "Reconcile Credit Card menu" do
     let(:link_name) { "Reconcile Credit Card" }
 
-    it "render Reconcile Credit Card if feature disabled" do
+    it "render Reconcile Credit Card if its creation is enabled" do
       Account.config.creation_disabled_types.reject! { |acc| acc == CreditCardAccount.to_s }
 
       visit facility_transactions_path(facility)
@@ -21,7 +21,7 @@ RSpec.describe "Admin Billing Tab" do
       expect(page).to have_content(link_name)
     end
 
-    it "does not render Reconcile Credit Card if feature disabled" do
+    it "does not render Reconcile Credit Card if its creation is disabled" do
       Account.config.creation_disabled_types.push CreditCardAccount.to_s
 
       visit facility_transactions_path(facility)
