@@ -13,6 +13,16 @@ RSpec.describe "Admin Billing Tab" do
   describe "Reconcile Credit Card menu" do
     let(:link_name) { "Reconcile Credit Card" }
 
+    around do |example|
+      creation_disabled_types_orig = Account.config.creation_disabled_types.dup
+
+      example.run
+
+      Account.config.instance_eval do
+        @creation_disabled_types = creation_disabled_types_orig
+      end
+    end
+
     it "render Reconcile Credit Card if its creation is enabled" do
       Account.config.creation_disabled_types.reject! { |acc| acc == CreditCardAccount.to_s }
 
