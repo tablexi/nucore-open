@@ -3,6 +3,7 @@ en:
     purchase_notifier:
       product_order_notification:
         subject: "%{product} Order Notification"
+        order_for: Order For
       order_notification:
         subject: "!app_name! Order Notification"
       order_receipt:
