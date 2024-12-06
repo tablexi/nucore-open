@@ -19,7 +19,7 @@
     %tr
       %td
         %strong= text(".order_for")
-      %d= mail_to @order.user.full_name
+      %td= mail_to @order.user.email, @order.user.full_name
   %tr
     %td
       %strong= Account.model_name.human

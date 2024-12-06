@@ -98,11 +98,20 @@ RSpec.describe PurchaseNotifier do
         described_class.order_notification(order, recipient).deliver_now
       end
 
-      it "includes created by and order for" do
-        expect(email.html_part.to_s).to include(order_for_field)
-        expect(email.html_part.to_s).to include(order.user.full_name)
-        expect(email.html_part.to_s).to include(order.created_by_user.email)
+      shared_examples "includes involved users info" do |part|
+        let(:mail_content) { email.send(part).to_s }
+
+        it "includes created by and order for in #{part}" do
+          expect(mail_content).to include(order_for_field)
+          expect(mail_content).to include(order.user.full_name)
+          expect(mail_content).to include(order.user.email)
+          expect(mail_content).to include(order.created_by_user.email)
+          expect(mail_content).to include(order.created_by_user.full_name)
+        end
       end
+
+      include_examples "includes involved users info", :html_part
+      include_examples "includes involved users info", :text_part
     end
 
     context "order created by user" do
@@ -113,6 +122,10 @@ RSpec.describe PurchaseNotifier do
 
       it "does not include order for" do
         expect(email.html_part.to_s).to_not include(order_for_field)
+      end
+
+      it "does not include order for" do
+        expect(email.text_part.to_s).to_not include(order_for_field)
       end
     end
   end
