@@ -80,6 +80,12 @@ module Nucore
     # Prevent invalid (usually malicious) URLs from causing exceptions/issues
     config.middleware.insert 0, Rack::UTF8Sanitizer
 
+    config.exceptions_app = self.routes
+
+    config.action_dispatch.rescue_responses["NUCore::PermissionDenied"] = :forbidden
+    config.action_dispatch.rescue_responses["CanCan::AccessDenied"] = :forbidden
+    config.action_dispatch.rescue_responses["NUCore::NotPermittedWhileActingAs"] = :forbidden
+
     config.active_storage.variant_processor = :vips
 
     # Indicate to the browser that an image should be lazily loaded
