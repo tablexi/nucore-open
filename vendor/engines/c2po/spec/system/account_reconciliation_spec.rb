@@ -15,6 +15,10 @@ RSpec.describe "Account Reconciliation", js: true do
   let(:director) { create(:user, :facility_director, facility: facility) }
   let(:statement) { StatementPresenter.new order_detail.statement }
 
+  def credit_card_account_enabled?
+    Account.config.reconcilable_account_types.include?("CreditCardAccount")
+  end
+
   before do
     orders.zip(statements).each do |order, statement|
       order.order_details.each do |od|
@@ -34,6 +38,8 @@ RSpec.describe "Account Reconciliation", js: true do
     let(:other_order_number) { "##{orders.last.id} - #{orders.last.order_details.first.id}" }
 
     it "can search and then reconcile a credit card order" do
+      skip("credit card account disabled") unless credit_card_account_enabled?
+
       visit facility_notifications_path(facility)
       click_link "Reconcile Credit Cards"
 
@@ -74,6 +80,8 @@ RSpec.describe "Account Reconciliation", js: true do
 
     context "with bulk reconciliation note" do
       it "sets the note when checkbox is checked" do
+        skip("credit card account disabled") unless credit_card_account_enabled?
+
         visit credit_cards_facility_accounts_path(facility)
         click_link "Reconcile Credit Cards"
 
@@ -93,6 +101,8 @@ RSpec.describe "Account Reconciliation", js: true do
       end
 
       it "does NOT set the note when checkbox is NOT checked" do
+        skip("credit card account disabled") unless credit_card_account_enabled?
+
         visit credit_cards_facility_accounts_path(facility)
         click_link "Reconcile Credit Cards"
 
