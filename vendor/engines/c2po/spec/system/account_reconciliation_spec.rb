@@ -38,7 +38,7 @@ RSpec.describe "Account Reconciliation", js: true do
     let(:other_order_number) { "##{orders.last.id} - #{orders.last.order_details.first.id}" }
 
     it "can search and then reconcile a credit card order" do
-      break skip("credit card account disabled") unless credit_card_account_enabled?
+      skip("credit card account disabled") unless credit_card_account_enabled?
 
       visit facility_notifications_path(facility)
       click_link "Reconcile Credit Cards"
@@ -80,7 +80,7 @@ RSpec.describe "Account Reconciliation", js: true do
 
     context "with bulk reconciliation note" do
       it "sets the note when checkbox is checked" do
-        break skip("credit card account disabled") unless credit_card_account_enabled?
+        skip("credit card account disabled") unless credit_card_account_enabled?
 
         visit credit_cards_facility_accounts_path(facility)
         click_link "Reconcile Credit Cards"
@@ -101,7 +101,7 @@ RSpec.describe "Account Reconciliation", js: true do
       end
 
       it "does NOT set the note when checkbox is NOT checked" do
-        break skip("credit card account disabled") unless credit_card_account_enabled?
+        skip("credit card account disabled") unless credit_card_account_enabled?
 
         visit credit_cards_facility_accounts_path(facility)
         click_link "Reconcile Credit Cards"
