@@ -168,7 +168,7 @@ RSpec.describe AccountConfig, type: :model do
       instance.statement_account_types << some_account_type.dup
     end
 
-    it "includes statement accoun types" do
+    it "includes statement account types" do
       expect(instance.reconcilable_account_types).to include(some_account_type)
     end
 
