@@ -25,7 +25,7 @@ RSpec.shared_examples "new daily reservation" do |before_submit: nil, after_subm
     expect(page).to be_axe_clean.within(".open-hours")
 
     expect(page).to have_content("Create Reservation")
-    expect(page).to have_content("Duration days")
+    expect(page).to have_content("Duration Days")
 
     # Start time availability table is present
     expect(page).to have_xpath("//table/tbody/tr/th[text()='Start Time Availability']")
