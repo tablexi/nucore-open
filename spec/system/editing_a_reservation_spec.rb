@@ -298,5 +298,13 @@ RSpec.describe "Editing your own reservation" do
       expect(reservation.reload.reserve_start_at).to eq(new_start_at)
       expect(reservation.reload.duration_days).to eq(new_duration_days)
     end
+
+    it "cannot save a 0 day reservation" do
+      fill_in("Duration Days", with: 0)
+
+      click_button("Save")
+
+      expect(page).to have_content("Duration must be greater than zero")
+    end
   end
 end
