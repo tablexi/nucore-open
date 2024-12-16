@@ -187,8 +187,14 @@ module Reservations::DateSupport
     # need to be reset to nil so the individual pieces will
     # take precedence, but only reset them if we're going to overwrite them
 
-    self.reserve_start_at = nil if reserve_attrs.keys.any? { |k| k.to_s.start_with?("reserve_start") }
-    self.reserve_end_at   = nil if reserve_attrs.keys.any? { |k| k.to_s.start_with?("reserve_end") } || reserve_attrs.key?(:duration_mins) || reserve_attrs.key?(:duration_days)
+    if reserve_attrs.keys.any? { |k| k.to_s.start_with?("reserve_start") }
+      self.reserve_start_at = nil
+    end
+    if reserve_attrs.keys.any? { |k| k.to_s.start_with?("reserve_end") } ||
+       reserve_attrs.key?(:duration_mins) ||
+       reserve_attrs.key?(:duration_days)
+      self.reserve_end_at = nil
+    end
 
     assign_attributes reserve_attrs
   end
