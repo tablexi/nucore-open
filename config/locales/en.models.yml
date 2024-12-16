@@ -402,6 +402,7 @@ en:
         reserve_start_at: Reserve Start
         reserve_end_at: Reserve End
         duration_mins: Duration
+        duration_days: Duration Days
         actuals_string: Actual Usage
         actual_start_date: Actual Start
         actual_duration_mins: Actual Duration
