@@ -295,7 +295,7 @@ GEM
       ruby-saml (~> 1.7)
     diff-lcs (1.5.1)
     domain_name (0.6.20240107)
-    dumb_delegator (1.0.0)
+    dumb_delegator (1.1.0)
     dynamic_form (1.3.1)
       actionview (> 5.2.0)
       activemodel (> 5.2.0)
