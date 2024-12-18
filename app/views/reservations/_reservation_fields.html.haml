@@ -11,7 +11,9 @@
             = text_field_tag "reservation[reserve_start_date]", f.object.reserve_start_date, class: "datepicker string optional span3", disabled: start_disabled
             - if f.object.actual_start_at?
               .started-at= "Started: #{l(f.object.actual_start_at, format: :usa)}"
-          - unless instrument.fixed_start_time?
+          - if instrument.fixed_start_time?
+            = time_select f, :reserve_start, { minute_step: 60 }, disabled: true, hidden: true
+          - else
             .span4
               = time_select f, :reserve_start, { minute_step: instrument.reserve_interval }, disabled: start_disabled
         = label_tag :reservation_reserve_end_date, "Reserve End", class: "string optional control-label"
@@ -21,7 +23,9 @@
               = f.text_field :reserve_end_date,
                 class: "datepicker string optional span3",
                 disabled: true
-            - unless instrument.fixed_start_time?
+            - if instrument.fixed_start_time?
+              = time_select f, :reserve_end, { minute_step: 60 }, disabled: true, hidden: true
+            - else
               .span4
                 = time_select f, :reserve_end,
                   { minute_step: instrument.reserve_interval },
