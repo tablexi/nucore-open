@@ -63,7 +63,7 @@
       - else
         = link_to t("shared.cancel"), facility_path(@instrument.facility)
 
-- if @instrument.daily_booking?
+- if @instrument.daily_booking? && !@instrument.fixed_start_time?
   = render "reservations/open_hours"
 
 #overlay

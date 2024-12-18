@@ -92,6 +92,8 @@ RSpec.shared_examples "new daily reservation with fixed start time" do |before_s
     expect(page).to_not have_field("reservation[reserve_start_min]")
     expect(page).to_not have_field("reservation[reserve_start_meridian]")
 
+    expect(page).to_not have_content("Start Time Availability")
+
     fill_in("Reserve Start", with: I18n.l(1.day.from_now.to_date, format: :usa))
 
     instance_eval(&before_submit) if before_submit.present?

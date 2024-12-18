@@ -42,7 +42,7 @@
     - else
       %li= link_to t('shared.cancel'), cart_path
 
-- if @instrument.daily_booking?
+- if @instrument.daily_booking? && !@instrument.fixed_start_time?
   = render "reservations/open_hours"
 
 #overlay
