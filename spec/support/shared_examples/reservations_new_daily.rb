@@ -80,7 +80,7 @@ end
 RSpec.shared_examples "new daily reservation with fixed start time" do |before_submit: nil, after_submit: nil|
   it "creates a reservation" do
     expect(instrument.daily_booking?).to be true
-    expect(instrument.fixed_start_time?).to be true
+    expect(instrument.start_time_disabled?).to be true
 
     visit reservation_path
 

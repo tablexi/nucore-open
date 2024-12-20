@@ -72,7 +72,7 @@ RSpec.describe "Creating an instrument", :js do
 
         expect(instrument.min_reserve_days).to eq(5)
         expect(instrument.max_reserve_days).to eq(10)
-        expect(instrument.fixed_start_time).to be false
+        expect(instrument.start_time_disabled).to be false
       end
 
       it "can create an instrument with fixed time" do

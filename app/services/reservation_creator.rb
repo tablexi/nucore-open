@@ -89,7 +89,7 @@ class ReservationCreator
       ).merge(
         product:,
       ).tap do |reservation_params|
-        if product.fixed_start_time?
+        if product.start_time_disabled?
           reservation_params.merge!(
             reserve_start_hour: 0,
             reserve_start_min: 0,

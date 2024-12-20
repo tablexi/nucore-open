@@ -37,10 +37,10 @@
     hint: text("instruments.instrument_fields.reservation.instruct.max_reserve"),
     wrapper_html: { class: "js--normal-booking", hidden: daily_booking }
 
-  = f.input :fixed_start_time, as: :boolean,
+  = f.input :start_time_disabled, as: :boolean,
     label: false,
-    inline_label: Instrument.human_attribute_name(:fixed_start_time),
-    hint: text("instruments.instrument_fields.reservation.instruct.fixed_start_time"),
+    inline_label: Instrument.human_attribute_name(:start_time_disabled),
+    hint: text("instruments.instrument_fields.reservation.instruct.start_time_disabled"),
     wrapper_html: { class: "js--daily-booking", hidden: !daily_booking }
 
   = f.input :min_reserve_days,

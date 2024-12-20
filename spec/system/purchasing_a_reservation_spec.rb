@@ -233,7 +233,7 @@ RSpec.describe "Purchasing a reservation" do
 
       context "when start time is fixed" do
         before do
-          instrument.update(fixed_start_time: true)
+          instrument.update(start_time_disabled: true)
         end
 
         include_examples "new daily reservation with fixed start time"
@@ -272,7 +272,7 @@ RSpec.describe "Purchasing a reservation" do
 
       context "when start time is fixed" do
         before do
-          instrument.update(fixed_start_time: true)
+          instrument.update(start_time_disabled: true)
         end
 
         include_examples(

@@ -663,7 +663,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_12_185208) do
     t.boolean "cross_core_ordering_available", default: false, null: false
     t.integer "min_reserve_days"
     t.integer "max_reserve_days"
-    t.boolean "fixed_start_time", default: false, null: false
+    t.boolean "start_time_disabled", default: false, null: false
     t.index ["dashboard_token"], name: "index_products_on_dashboard_token"
     t.index ["facility_account_id"], name: "fk_facility_accounts"
     t.index ["facility_id"], name: "fk_rails_0c9fa1afbe"
