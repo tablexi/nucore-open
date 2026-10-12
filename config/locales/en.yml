@@ -450,16 +450,6 @@ en:
         total: "Total"
         reconciled: "Reconciled?"
       submit: "Reconcile Orders"
-    history:
-      head:
-        h2: "Reconcile Journals"
-        h3: "Closed Journals"
-      notice: "No journals have been closed yet"
-      th:
-        created_at: "Created At"
-        journal: "Journal Date"
-        reference: "Reference"
-        status: "Status"
 
   facility_notifications:
     in_review:

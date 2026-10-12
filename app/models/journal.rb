@@ -45,10 +45,6 @@ class Journal < ApplicationRecord
 
   has_many :journal_rows
 
-  # _order_details is used for building associations, and may contain duplicates.
-  # Consider this private. Use order_details instead.
-  has_many :_order_details, class_name: "OrderDetail", through: :journal_rows, source: :order_detail
-
   validates_presence_of   :reference, :updated_by, on: :update
   validates_presence_of   :created_by
   validates_presence_of   :journal_date
@@ -63,29 +59,8 @@ class Journal < ApplicationRecord
 
   scope :pending, -> { where(is_successful: nil) }
 
-  # Digs up journals pertaining to the passed in facilities
-  #
-  # == Parameters
-  #
-  # facilities::
-  #   enumerable of facilities (usually ones which the user has access to)
-  #
-  # include_multi::
-  #   include multi-facility journals in the results?
-  def self.for_facilities(facilities, include_multi = false)
-    allowed_ids = facilities.collect(&:id)
-
-    if include_multi
-      Journal.includes(journal_rows: { order_detail: :order }).references(:order).where("orders.facility_id IN (?)", allowed_ids).select("journals.*")
-    else
-      Journal.where(facility_id: allowed_ids)
-    end
-  end
-
-  # TODO: Is it posible to have a cross-facility journal? If not, there are lots
-  # of specs and other logic that do allow it.
-  def self.facility_ids_with_pending_journals
-    Journal.joins(_order_details: :order).where(is_successful: nil).distinct.pluck("orders.facility_id")
+  def self.for_facilities(facilities)
+    where(facility_id: facilities.map(&:id))
   end
 
   # This pseudo-association cannot be a `has_many :through` because that will
@@ -100,21 +75,6 @@ class Journal < ApplicationRecord
   def create_journal_rows!(order_details)
     builder = JournalRowBuilder.new(self, order_details).create
     builder.errors.uniq
-  end
-
-  def facility_ids
-    if facility_id?
-      [facility_id]
-    else
-      _order_details.joins(:order)
-                    .select("orders.facility_id")
-                    .collect(&:facility_id)
-                    .distinct
-    end
-  end
-
-  def facility_abbreviations
-    Facility.where(id: facility_ids).collect(&:abbreviation)
   end
 
   def amount
@@ -218,10 +178,9 @@ class Journal < ApplicationRecord
   end
 
   def set_facility_id
-    self.facility_id = if @order_details_for_creation.collect { |od| od.order.facility_id }.uniq.size > 1
-                         raise CreationError, "Cannot create a cross facility journal"
-                       else
-                         @order_details_for_creation.first.order.facility_id
-                       end
+    facility_ids = @order_details_for_creation.map { |od| od.order.facility_id }.uniq
+    raise CreationError, "Cannot create a cross facility journal" if facility_ids.many?
+
+    self.facility_id = facility_ids.first
   end
 end

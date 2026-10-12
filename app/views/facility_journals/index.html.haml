@@ -9,7 +9,6 @@
   %div= t(".instructions_html")
 
   - @pending_journals.each do |pending_journal|
-    - facility_abbreviations = pending_journal.facility_abbreviations
     = simple_form_for([current_facility, pending_journal]) do |f|
       = f.error_messages
       %table.table.table-striped.table-hover
@@ -30,7 +29,7 @@
                 = render "downloads", facility: current_facility, journal: pending_journal, label_size: :short
             %td= format_usa_datetime(pending_journal.created_at)
             - if cross_facility?
-              %td= facility_abbreviations.join("<br>").html_safe
+              %td= pending_journal.facility.abbreviation
             %td= f.input :reference, label: false, input_html: { class: 'form-control' }
             %td= f.input :description, label: false, input_html: { class: 'form-control' }
             %td

@@ -81,7 +81,7 @@ class JournalRowBuilder
 
   # Set an array of facility_ids with pending journals
   def pending_facility_ids
-    @pending_facility_ids ||= Journal.facility_ids_with_pending_journals
+    @pending_facility_ids ||= Journal.pending.where.not(id: journal.id).distinct.pluck(:facility_id)
   end
 
   # Run all validations on an order detail

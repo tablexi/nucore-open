@@ -12,8 +12,6 @@
           %th= Order.model_name.human
           %th= OrderDetail.model_name.human
           %th.nowrap= OrderDetail.human_attribute_name(@date_range_field)
-          - if current_facility.blank? || cross_facility?
-            %th= Facility.model_name.human
           %th.order-note= OrderDetail.human_attribute_name("description")
           %th.nowrap= OrderDetail.human_attribute_name("user")
           %th= Account.model_name.human
@@ -26,8 +24,6 @@
           %tr{ class: row_class(order_detail) }
             %td.nowrap= link_to order_detail.order.id, facility_order_path(order_detail.order.facility, order_detail.order)
             %td.nowrap= link_to order_detail.id, manage_order_detail_path(order_detail), class: "manage-order-detail"
-            - if current_facility.blank? || cross_facility?
-              %td= order_detail.order.facility
             %td= format_usa_date(order_detail.public_send(:"#{@date_range_field}"))
             %td.user-order-detail.order-note
               .order-detail-description
