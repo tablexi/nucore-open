@@ -52,4 +52,44 @@ RSpec.describe "instrument reservations" do
       expect(page).to have_css(".fc-event.other-instrument")
     end
   end
+
+  describe "show canceled", :js do
+    let(:admin) { create(:user, :administrator) }
+    let!(:instrument) { create(:setup_instrument, :always_available) }
+    let(:facility) { instrument.facility }
+
+    before do
+      travel_back
+
+      login_as admin
+      create(
+        :purchased_reservation,
+        reserve_start_at: 2.hours.from_now,
+        reserve_end_at: 3.hours.from_now,
+        product: instrument
+      )
+      create(
+        :purchased_reservation,
+        :canceled,
+        reserve_start_at: 4.hours.from_now,
+        reserve_end_at: 5.hours.from_now,
+        product: instrument
+      )
+
+      visit facility_instrument_schedule_path(facility, instrument)
+    end
+
+    it "hides canceled reservations until the checkbox is checked" do
+      expect(page).to have_css(".fc-event")
+      expect(page).not_to have_css(".fc-event.canceled")
+
+      check "show_canceled"
+
+      expect(page).to have_css(".fc-event.canceled")
+
+      uncheck "show_canceled"
+
+      expect(page).not_to have_css(".fc-event.canceled")
+    end
+  end
 end

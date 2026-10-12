@@ -4,6 +4,7 @@ $event-color: #039be5;
 $event-color2: #c2c2c2;
 $event-color3: #f6bf26;
 $event-color4: #7cb342;
+$event-color5: #a5341b;
 
 $event-text-color: white;
 
@@ -39,6 +40,11 @@ $event-text-color: white;
 .fc-event.current-event {
   background-color: $event-color4;
   border-color: $event-color4;
+}
+
+.fc-event.canceled {
+  background-color: $event-color5;
+  border-color: $event-color5;
 }
 
 #overlay.on #spinner #hide  {

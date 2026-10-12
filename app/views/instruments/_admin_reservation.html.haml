@@ -1,0 +1,24 @@
+%tr
+  - if admin_reservation.admin_removable?
+    %td
+      = link_to t("shared.remove"),
+        facility_instrument_reservation_path(current_facility, @product, admin_reservation),
+        data: { confirm: t("shared.confirm_message") },
+        method: :delete
+
+    %td= admin_reservation.class.model_name.human
+
+    %td
+      = link_to admin_reservation,
+        facility_instrument_reservation_edit_admin_path(current_facility, @product, admin_reservation)
+
+    %td= reservation_category_label(admin_reservation)
+    %td= admin_reservation.admin_note
+
+  - else
+    %td
+    %td= admin_reservation.class.model_name.human
+    %td
+      = link_to admin_reservation, edit_facility_instrument_offline_reservation_path(current_facility, @product, admin_reservation)
+    %td= reservation_category_label(admin_reservation)
+    %td= admin_reservation.admin_note

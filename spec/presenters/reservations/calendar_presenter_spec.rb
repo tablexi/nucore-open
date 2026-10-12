@@ -24,6 +24,20 @@ RSpec.describe Reservations::CalendarPresenter do
     end
   end
 
+  context "with a canceled reservation" do
+    let(:reservation) { build(:setup_reservation) }
+
+    before { reservation.order_detail.canceled_at = 1.minute.ago }
+
+    it { is_expected.to include(className: ["canceled"]) }
+
+    it "keeps the other-instrument class when discriminating" do
+      expect(
+        presenter.as_calendar_object(discriminate: true, instrument_id: reservation.product_id + 1)
+      ).to include(className: ["other-instrument", "canceled"])
+    end
+  end
+
   context "with an offline reservation" do
     let(:reservation) { build(:offline_reservation, product:) }
 

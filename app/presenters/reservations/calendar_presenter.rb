@@ -39,9 +39,12 @@ module Reservations
     def as_calendar_object(options = {})
       ret = super
 
+      class_names = []
       if options[:discriminate] && options[:instrument_id].present? && product_id != options[:instrument_id]
-        ret[:className] = "other-instrument"
+        class_names << "other-instrument"
       end
+      class_names << "canceled" if canceled?
+      ret[:className] = class_names if class_names.any?
 
       return ret if options[:with_details].blank?
 
