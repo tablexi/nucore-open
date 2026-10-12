@@ -113,6 +113,27 @@ RSpec.describe ReservationsController, feature_setting: { "reservations.auto_end
           expect(assigns(:reservations)).to include(canceled_reservation)
         end
 
+        it "includes them for a user with granular read access", feature_setting: { granular_permissions: true } do
+          user = create(:user)
+          create(:facility_user_permission, user:, facility:)
+          sign_in user
+          do_request
+          expect(assigns(:reservations)).to include(canceled_reservation)
+        end
+
+        it "does not include them when granular permissions are off", feature_setting: { granular_permissions: false } do
+          user = create(:user)
+          create(:facility_user_permission, user:, facility:)
+          sign_in user
+          do_request
+          expect(assigns(:reservations)).not_to include(canceled_reservation)
+        end
+
+        it "does not include them for an anonymous user" do
+          do_request
+          expect(assigns(:reservations)).not_to include(canceled_reservation)
+        end
+
         it "does not include them for a non admin user" do
           sign_in create(:user)
           do_request
