@@ -21,7 +21,18 @@ $(document).ready(function() {
       data: () => ({ show_canceled: showCanceled.is(":checked") }),
     };
 
-    showCanceled.on("change", () => calendar.fullCalendar("refetchEvents"));
+    showCanceled.on("change", () => {
+      const url = new URL(document.location);
+
+      if (showCanceled.is(":checked")) {
+        url.searchParams.set("show_canceled", "true");
+      } else {
+        url.searchParams.delete("show_canceled");
+      }
+
+      window.history.replaceState({}, "", url);
+      calendar.fullCalendar("refetchEvents");
+    });
   }
 
   new FullCalendarConfig(calendar, options).init();

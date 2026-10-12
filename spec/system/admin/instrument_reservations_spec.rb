@@ -91,5 +91,26 @@ RSpec.describe "instrument reservations" do
 
       expect(page).not_to have_css(".fc-event.canceled")
     end
+
+    it "preserves the checkbox state across a page reload" do
+      check "show_canceled"
+
+      expect(page).to have_css(".fc-event.canceled")
+
+      visit current_url
+
+      expect(page).to have_checked_field("show_canceled")
+      expect(page).to have_css(".fc-event.canceled")
+    end
+
+    it "drops the parameter again when unchecked" do
+      check "show_canceled"
+      uncheck "show_canceled"
+
+      visit current_url
+
+      expect(page).to have_unchecked_field("show_canceled")
+      expect(page).not_to have_css(".fc-event.canceled")
+    end
   end
 end
