@@ -67,6 +67,13 @@ class Reservation < ApplicationRecord
       .joins_order
   end
 
+  def self.canceled
+    user
+      .where.not(order_details: { canceled_at: nil })
+      .where(orders: { state: "purchased" })
+      .joins_order
+  end
+
   scope :ends_in_the_future, lambda {
     where(reserve_end_at: nil).or(where("reserve_end_at > ?", Time.current))
   }
