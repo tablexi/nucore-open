@@ -547,6 +547,28 @@ RSpec.describe InstrumentsController, type: :controller do
           is_expected.to render_template "schedule"
         end
       end
+
+      describe "the show canceled checkbox" do
+        it "is rendered for a user who can administer reservations" do
+          sign_in @admin
+          do_request
+          expect(response.body).to include "show_canceled"
+        end
+
+        it "is not rendered for a billing administrator, who cannot administer reservations" do
+          sign_in create(:user, :facility_billing_administrator, facility:)
+          do_request
+          expect(response).to render_template "schedule"
+          expect(response.body).not_to include "show_canceled"
+        end
+
+        it "is checked when the show_canceled param is set" do
+          sign_in @admin
+          @params[:show_canceled] = "true"
+          do_request
+          expect(response.body).to match(/id="show_canceled"[^>]*checked/)
+        end
+      end
     end
 
     context "instrument_statuses" do
@@ -684,11 +706,31 @@ RSpec.describe InstrumentsController, type: :controller do
   context "with granular permissions", feature_setting: { granular_permissions: true } do
     let(:creation_user) { create(:user) }
     let(:edition_user) { create(:user) }
+    let(:read_access_user) { create(:user) }
     let(:unpermitted_user) { create(:user) }
 
     before do
       create(:facility_user_permission, user: creation_user, facility:, product_creation: true)
       create(:facility_user_permission, user: edition_user, facility:, product_edition: true)
+      create(:facility_user_permission, user: read_access_user, facility:)
+    end
+
+    describe "GET #schedule" do
+      def get_schedule
+        get :schedule, params: { facility_id: facility.url_name, instrument_id: instrument.url_name }
+      end
+
+      it "renders the show canceled checkbox for a user with read access" do
+        sign_in read_access_user
+        get_schedule
+        expect(response).to render_template "schedule"
+        expect(response.body).to include "show_canceled"
+      end
+
+      it "denies a user with no facility permission" do
+        sign_in unpermitted_user
+        expect { get_schedule }.to raise_error(CanCan::AccessDenied)
+      end
     end
 
     describe "GET #index" do

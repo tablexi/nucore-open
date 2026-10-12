@@ -20,10 +20,11 @@
 
 %h3= t(".reservations_calendar")
 
-.checkbox
-  %label
-    = check_box_tag "show_canceled", "1", false
-    = t(".show_canceled")
+- if can?(:administer, Reservation)
+  .checkbox
+    %label
+      = check_box_tag "show_canceled", "true", params[:show_canceled] == "true"
+      = t(".show_canceled")
 
 #overlay
   #spinner
