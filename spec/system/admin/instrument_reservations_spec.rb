@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "instrument reservations" do
-  describe "shared schedule", :js do
+  describe "shared schedule", :js, :skip_time_travel do
     let(:admin) { create(:user, :administrator) }
     let!(:instrument) { create(:setup_instrument, :always_available) }
     let!(:instrument2) do
@@ -19,10 +19,6 @@ RSpec.describe "instrument reservations" do
     end
 
     before do
-      # Use actual current time so
-      # loaded reservations are correct
-      travel_back
-
       login_as admin
       create(
         :purchased_reservation,
@@ -53,14 +49,12 @@ RSpec.describe "instrument reservations" do
     end
   end
 
-  describe "show canceled", :js do
+  describe "show canceled", :js, :skip_time_travel do
     let(:admin) { create(:user, :administrator) }
     let!(:instrument) { create(:setup_instrument, :always_available) }
     let(:facility) { instrument.facility }
 
     before do
-      travel_back
-
       login_as admin
       create(
         :purchased_reservation,

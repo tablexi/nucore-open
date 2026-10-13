@@ -70,7 +70,7 @@ class Reservation < ApplicationRecord
   def self.canceled
     user
       .where.not(order_details: { canceled_at: nil })
-      .where(orders: { state: "purchased" })
+      .merge(Order.purchased)
       .joins_order
   end
 
