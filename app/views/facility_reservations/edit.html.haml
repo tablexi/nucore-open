@@ -19,15 +19,7 @@
   = f.error_messages
 
   - if @reservation.admin_editable?
-    .datetime-block
-      = f.input :reserve_start_date, as: :date_field,
-        min_date: @max_days_ago.days.from_now, max_date: @max_window.days.from_now,
-        input_html: { value: @reservation.reserve_start_at }
-      .form-group
-        .controls
-          .string.optional.control-label &nbsp;
-          = time_select f, :reserve_start
-      = f.input :duration_mins, input_html: { class: "timeinput" }
+    = render "reservations/reservation_fields", f: f
   - else
     = f.input :reserve_start_date, label: "Reservation", as: :readonly, input_html: { value: @reservation.reserve_to_s }
 
@@ -64,4 +56,4 @@
 #overlay
   #spinner
     #hide
-      #calendar
+      #calendar{ data: reservations_calendar_config }
