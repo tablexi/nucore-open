@@ -46,4 +46,18 @@ RSpec.describe "listing the payment sources available for an order" do
       expect(response.parsed_body.pluck("id")).to include(account.id)
     end
   end
+
+  describe "as staff of another facility, while building a cross-core order" do
+    let(:other_facility) { create(:setup_facility) }
+    let(:staff) { create(:user, :staff, facility: other_facility) }
+
+    before { login_as staff }
+
+    it "returns the payment sources available for the order" do
+      get_available_accounts
+
+      expect(response).to be_successful
+      expect(response.parsed_body.pluck("id")).to include(account.id)
+    end
+  end
 end

@@ -12,7 +12,8 @@ class FacilityAccountsController < ApplicationController
   before_action :init_account, except: :index
   before_action :build_account, only: [:new, :create]
 
-  authorize_resource :account
+  authorize_resource :account, except: [:accounts_available_for_order]
+  authorize_resource :account, parent: false, only: [:accounts_available_for_order]
 
   before_action :set_facility_accounts_for_user, only: [:accounts_available_for_order]
   before_action :set_account_types, only: :index
