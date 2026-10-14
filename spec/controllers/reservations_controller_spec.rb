@@ -90,6 +90,58 @@ RSpec.describe ReservationsController, feature_setting: { "reservations.auto_end
       end
     end
 
+    describe "canceled reservations" do
+      let!(:canceled_reservation) { create(:purchased_reservation, :canceled, product: instrument) }
+
+      before do
+        @params[:start] = Time.current.iso8601
+        @params[:end] = 2.days.from_now.iso8601
+      end
+
+      it "excludes them when show_canceled is not set" do
+        sign_in create(:user, :administrator)
+        do_request
+        expect(assigns(:reservations)).not_to include(canceled_reservation)
+      end
+
+      context "when show_canceled=true" do
+        before { @params[:show_canceled] = true }
+
+        it "includes them for an admin" do
+          sign_in create(:user, :administrator)
+          do_request
+          expect(assigns(:reservations)).to include(canceled_reservation)
+        end
+
+        it "includes them for a user with granular read access", feature_setting: { granular_permissions: true } do
+          user = create(:user)
+          create(:facility_user_permission, user:, facility:)
+          sign_in user
+          do_request
+          expect(assigns(:reservations)).to include(canceled_reservation)
+        end
+
+        it "does not include them when granular permissions are off", feature_setting: { granular_permissions: false } do
+          user = create(:user)
+          create(:facility_user_permission, user:, facility:)
+          sign_in user
+          do_request
+          expect(assigns(:reservations)).not_to include(canceled_reservation)
+        end
+
+        it "does not include them for an anonymous user" do
+          do_request
+          expect(assigns(:reservations)).not_to include(canceled_reservation)
+        end
+
+        it "does not include them for a non admin user" do
+          sign_in create(:user)
+          do_request
+          expect(assigns(:reservations)).not_to include(canceled_reservation)
+        end
+      end
+    end
+
     describe "start/stop parameters" do
       let(:start_range) { Time.zone.local(2018, 5, 15, 12, 13) }
       let(:end_range) { start_range + 1.week }

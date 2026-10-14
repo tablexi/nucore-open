@@ -19,6 +19,13 @@
 %h2= @product
 
 %h3= t(".reservations_calendar")
+
+- if can?(:administer, Reservation)
+  .checkbox
+    %label
+      = check_box_tag "show_canceled", "true", params[:show_canceled] == "true"
+      = t(".show_canceled")
+
 #overlay
   #spinner
     #hide
@@ -69,28 +76,4 @@
         %th= Reservation.human_attribute_name(:category)
         %th= Reservation.human_attribute_name(:admin_note)
     %tbody
-      - @admin_reservations.each do |reservation|
-        %tr
-          - if reservation.admin_removable?
-            %td
-              = link_to t("shared.remove"),
-                facility_instrument_reservation_path(current_facility, @product, reservation),
-                data: { confirm: t("shared.confirm_message") },
-                method: :delete
-
-            %td= reservation.class.model_name.human
-
-            %td
-              = link_to reservation,
-                facility_instrument_reservation_edit_admin_path(current_facility, @product, reservation)
-
-            %td= reservation_category_label(reservation)
-            %td= reservation.admin_note
-
-          - else
-            %td
-            %td= reservation.class.model_name.human
-            %td
-              = link_to reservation, edit_facility_instrument_offline_reservation_path(current_facility, @product, reservation)
-            %td= reservation_category_label(reservation)
-            %td= reservation.admin_note
+      = render partial: "admin_reservation", collection: @admin_reservations

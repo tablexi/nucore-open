@@ -53,6 +53,14 @@ class ReservationsController < ApplicationController
 
     @reservations = admin_reservations + user_reservations + offline_reservations
 
+    if params[:show_canceled] == "true" && can?(:administer, Reservation)
+      @reservations += @instrument.schedule
+                                  .reservations
+                                  .canceled
+                                  .in_range(@start_at, @end_at)
+                                  .includes(order_detail: { order: :user })
+    end
+
     # We don't need the unavailable hours month view
     @rules = @instrument.schedule_rules
     if @instrument.requires_approval? && acting_user && acting_user.cannot_override_restrictions?(@instrument)
