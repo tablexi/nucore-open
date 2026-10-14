@@ -203,6 +203,7 @@ $(function() {
   // Only try to load relay statuses if there are relays to check
   if ($('.relay_checkbox :checkbox').length > 0) loadRelayStatuses();
 
+  /* Used to maintain scroll between day navigation */
   function lastHiddenInstrumentId() {
     var hiddenInstruments = $('.timeline_instrument').filter(function() {
       return $(window).scrollTop() + $('.timeline_header').height() > $(this).offset().top;
@@ -212,7 +213,16 @@ $(function() {
   }
 
   $('#reservation_left, #reservation_right').on('click', function(event) {
-    var urlWithoutFragment = this.href.split('#')[0]
-    this.href = urlWithoutFragment + '#' + lastHiddenInstrumentId()
+    let href = this.href.split('#')[0]
+    let newFragment = lastHiddenInstrumentId()
+
+    if ($('#show_canceled').is(':checked')) {
+      href += "&show_canceled=true"
+    }
+    if (newFragment) {
+      href += '#' + newFragment
+    }
+
+    this.href = href
   });
 });

@@ -25,8 +25,9 @@
     .timeline_options
       = f.input :show_canceled,
         as: :boolean,
-        input_html: { value: 1 },
-        checked: params[:show_canceled] == "1",
+        input_html: { checked: params[:show_canceled] == "true" },
+        checked_value: "true",
+        include_hidden: false,
         inline_label: true,
         label: false,
         wrapper_html: { class: "compressed-inline" }
