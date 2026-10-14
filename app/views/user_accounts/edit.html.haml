@@ -19,7 +19,7 @@
         %th= Account.model_name.human
         %th.centered= Facility.model_name.human
     %tbody
-      = f.fields_for :account_users do |af|
+      = f.fields_for :account_users, account_users_for_facility do |af|
         %tr
           %td.centered.table-user-accounts__remove
             - if af.object.owner?

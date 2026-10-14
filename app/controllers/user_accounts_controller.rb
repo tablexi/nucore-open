@@ -34,12 +34,26 @@ class UserAccountsController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(account_users_attributes: [:id, :_destroy])
+    permitted = params.require(:user).permit(account_users_attributes: [:id, :_destroy])
+    submitted = permitted[:account_users_attributes]
+    return permitted if submitted.blank?
+
+    editable_ids = account_users_for_facility.ids.map(&:to_s)
+    permitted[:account_users_attributes] = submitted.select do |_index, attributes|
+      editable_ids.include?(attributes[:id].to_s)
+    end
+    permitted
   end
 
   def load_accounts
     @accounts = @user.accounts.includes(:owner_user).for_facility(current_facility)
   end
+
+  def account_users_for_facility
+    @account_users_for_facility ||=
+      @user.account_users.joins(:account).merge(Account.for_facility(current_facility))
+  end
+  helper_method :account_users_for_facility
 
   def clear_owners(accounts)
     # Unmark owner records for destruction

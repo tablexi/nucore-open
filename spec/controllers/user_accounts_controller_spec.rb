@@ -26,7 +26,7 @@ RSpec.describe UserAccountsController do
     let(:director) { create(:user, :facility_director, facility: facility) }
     let(:purchaser) { create(:user) }
     let(:owner) { create(:user) }
-    let(:account) { create(:account, :with_account_owner, owner: owner) }
+    let(:account) { create(:nufs_account, :with_account_owner, owner: owner) }
 
     describe "removing the account owner" do
       before do
@@ -76,6 +76,55 @@ RSpec.describe UserAccountsController do
 
       it "adds a log event" do
         expect(LogEvent.find_by(loggable: account_user, event_type: :delete, user: director)).to be_present
+      end
+    end
+  end
+
+  describe "accounts belonging to another facility", if: Account.config.facility_account_types.include?("PurchaseOrderAccount") do
+    render_views
+
+    let(:director) { create(:user, :facility_director, facility: facility) }
+    let(:member) { create(:user) }
+    let(:other_facility) { create(:facility) }
+    let(:other_account) do
+      create(:purchase_order_account, :with_account_owner, facility: other_facility, description: "Other facility account")
+    end
+    let(:global_account) do
+      create(:nufs_account, :with_account_owner, description: "Global account")
+    end
+    let!(:other_account_user) { AccountUser.grant(member, AccountUser::ACCOUNT_PURCHASER, other_account, by: director) }
+    let!(:global_account_user) { AccountUser.grant(member, AccountUser::ACCOUNT_PURCHASER, global_account, by: director) }
+
+    before { sign_in director }
+
+    describe "GET to :edit" do
+      before { get :edit, params: { facility_id: facility.url_name, user_id: member.id } }
+
+      it "lists the memberships available at this facility" do
+        expect(response.body).to include("Global account")
+      end
+
+      it "does not list memberships on another facility's account" do
+        expect(response.body).not_to include("Other facility account")
+      end
+    end
+
+    describe "PATCH to :update" do
+      before do
+        patch :update,
+              params: {
+                facility_id: facility.url_name,
+                user_id: member.id,
+                user: { account_users_attributes: { "0" => { _destroy: "1", id: other_account_user.id } } },
+              }
+      end
+
+      it "does not destroy the membership" do
+        expect(other_account_user.reload.deleted_at).to be_blank
+      end
+
+      it "does not create any log entries" do
+        expect(LogEvent.where(loggable: other_account_user)).to be_none
       end
     end
   end
