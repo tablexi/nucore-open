@@ -163,4 +163,69 @@ RSpec.describe OrderDetails::Reconciler do
       end
     end
   end
+
+  describe "#unreconcile_all" do
+    let(:order) { create(:complete_order, product:) }
+    let(:order_detail) { order.order_details.first }
+    let(:params) do
+      ActionController::Parameters.new(order_detail.id.to_s => { selected: "1" })
+    end
+    let(:reconciler) { described_class.new(OrderDetail.all, params, nil) }
+
+    before do
+      order_detail.update!(
+        fulfilled_at: 6.months.ago,
+        deposit_number: "TX-1",
+        reconciled_note: "Reconciled manually",
+      )
+      order_detail.to_reconciled!
+    end
+
+    it "moves the order detail back to complete" do
+      expect(reconciler.unreconcile_all).to eq(1)
+
+      order_detail.reload
+      expect(order_detail.state).to eq("complete")
+      expect(order_detail.order_status).to eq(OrderStatus.complete)
+      expect(order_detail.reconciled_at).to be_nil
+      expect(order_detail.deposit_number).to be_nil
+      expect(order_detail.reconciled_note).to be_nil
+    end
+
+    it "does not move fulfilled_at" do
+      expect { reconciler.unreconcile_all }.not_to change { order_detail.reload.fulfilled_at }
+    end
+
+    it "does not reprice the order detail" do
+      expect { reconciler.unreconcile_all }.not_to change { order_detail.reload.actual_cost }
+    end
+
+    context "when the price has changed since the order was fulfilled" do
+      before do
+        product.price_policies.each do |price_policy|
+          price_policy.update!(unit_cost: price_policy.unit_cost * 3)
+        end
+      end
+
+      it "does not reprice the order detail" do
+        expect { reconciler.unreconcile_all }.not_to change { order_detail.reload.actual_cost }
+      end
+    end
+
+    context "when no price policy is active today" do
+      before do
+        product.price_policies.update_all(expire_date: 1.day.ago)
+      end
+
+      it "does not clear the cost" do
+        expect { reconciler.unreconcile_all }.not_to change { order_detail.reload.actual_cost }
+      end
+
+      it "does not turn it into a problem order" do
+        reconciler.unreconcile_all
+
+        expect(order_detail.reload).not_to be_problem_order
+      end
+    end
+  end
 end

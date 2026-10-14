@@ -461,6 +461,14 @@ class OrderDetail < ApplicationRecord
     change_status!(OrderStatus.complete)
   end
 
+  def unreconcile!
+    @unreconciling = true
+    self.reconciled_at = nil
+    to_complete_from_reconciled!
+  ensure
+    @unreconciling = false
+  end
+
   def backdate_to_complete!(event_time = Time.zone.now)
     # if we're setting it to complete, automatically set the actuals for a reservation
     if reservation
@@ -1051,7 +1059,13 @@ class OrderDetail < ApplicationRecord
     price_policy&.calculate_cost_and_subsidy_from_order_detail(self) || {}
   end
 
+  def unreconciling?
+    @unreconciling.present?
+  end
+
   def make_complete
+    return if unreconciling?
+
     # Don't update fulfilled_at if it was manually set.
     self.fulfilled_at = @manual_fulfilled_at.presence || Time.current
     assign_price_policy

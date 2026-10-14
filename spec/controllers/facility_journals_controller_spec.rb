@@ -572,6 +572,38 @@ RSpec.describe FacilityJournalsController do
           end
         end
 
+        describe "when the active price policies have expired since fulfillment" do
+          let(:order_details) { [@order_detail1, @order_detail2, @order_detail3] }
+
+          before do
+            order_details.each do |order_detail|
+              order_detail.update!(
+                fulfilled_at: 6.months.ago,
+                state: "reconciled",
+                reconciled_at: 1.day.ago,
+                order_status: OrderStatus.reconciled,
+              )
+              order_detail.product.price_policies.update_all(expire_date: 1.day.ago)
+            end
+          end
+
+          it "keeps each order's fulfillment date and cost" do
+            originals = order_details.map { |od| od.slice(:fulfilled_at, :actual_cost) }
+
+            perform
+
+            order_details.each_with_index do |order_detail, index|
+              expect(order_detail.reload.slice(:fulfilled_at, :actual_cost)).to eq(originals[index])
+            end
+          end
+
+          it "does not turn them into problem orders" do
+            perform
+
+            expect(order_details.map { |od| od.reload.problem_order? }).to all(be false)
+          end
+        end
+
         describe "when some order details are not reconciled" do
           before do
             @order_detail1.update!(state: "reconciled", reconciled_at: 1.day.ago, order_status: OrderStatus.reconciled)
