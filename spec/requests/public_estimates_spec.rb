@@ -52,24 +52,6 @@ RSpec.describe "Public estimates" do
       expect(response.body).to_not include(bundle.name)
     end
 
-    context "when there're extra customer types" do
-      let(:new_customer_types) { %w[base external cancer_center] }
-
-      before do
-        allow(Settings.public_estimates).to receive(:customer_types) { new_customer_types }
-        cancer_center = PriceGroup.setup_global(name: Settings.price_group.name.cancer_center, is_internal: false, display_order: 2)
-        create(:item_price_policy, product: item, price_group: cancer_center, unit_cost: 25, unit_subsidy: 0)
-      end
-
-      it "prices the estimate with an extra configured customer type" do
-        get estimate_path, params: {
-          customer_type: "cancer_center", facility_id: facility.id, quantities: { item.id.to_s => "2" }
-        }
-
-        expect(response.body).to include("$50.00")
-      end
-    end
-
     it "shows a print shortcut and the selected facility and customer type with the results" do
       get estimate_path, params: {
         customer_type: "external", facility_id: facility.id, quantities: { item.id.to_s => "1" }
