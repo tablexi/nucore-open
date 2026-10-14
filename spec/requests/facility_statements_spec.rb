@@ -304,7 +304,7 @@ RSpec.describe "Statements" do
             expect { action.call }.not_to change(LogEvent, :count)
 
             expect(flash[:error]).to eq(
-              "No orders on this statement were eligible to unreconcile"
+              "No orders on this #{I18n.t('statement_downcase')} were eligible to unreconcile"
             )
           end
         end
