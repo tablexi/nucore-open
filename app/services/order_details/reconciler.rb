@@ -63,10 +63,9 @@ module OrderDetails
         next unless order_detail.reconciled?
 
         begin
-          order_detail.reconciled_at = nil
           order_detail.deposit_number = nil
           order_detail.reconciled_note = nil
-          order_detail.to_complete_from_reconciled!
+          order_detail.unreconcile!
           @count += 1
         rescue AASM::InvalidTransition, ActiveRecord::RecordInvalid => e
           @persist_errors << "Order ##{order_detail.id}: #{e.message}"

@@ -15,12 +15,16 @@ RSpec.describe ReconcilliationsController do
   end
 
   describe "DELETE to :destroy" do
+    def perform
+      delete :destroy, params: { facility_id: facility.url_name, order_id: order_detail.order.id, order_detail_id: order_detail.id }
+    end
+
     context "for an administrator" do
       let(:admin) { FactoryBot.create(:user, :administrator) }
 
       before :each do
         sign_in admin
-        delete :destroy, params: { facility_id: facility.url_name, order_id: order_detail.order.id, order_detail_id: order_detail.id }
+        perform
       end
 
       it "changes the order detail’s status to complete" do
@@ -28,6 +32,13 @@ RSpec.describe ReconcilliationsController do
       end
 
       it "redirects the user to the facility transactions page" do
+        expect(response).to redirect_to facility_transactions_path(facility)
+      end
+
+      it "does nothing when the order detail is already unreconciled" do
+        expect { perform }.not_to raise_error
+
+        expect(order_detail.reload.state).to eq "complete"
         expect(response).to redirect_to facility_transactions_path(facility)
       end
     end

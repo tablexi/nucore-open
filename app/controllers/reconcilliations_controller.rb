@@ -8,7 +8,7 @@ class ReconcilliationsController < ApplicationController
   def destroy
     authorize! :unreconcile, @order_detail
 
-    @order_detail.update!(state: "complete", order_status: OrderStatus.complete, reconciled_at: nil)
+    @order_detail.unreconcile! if @order_detail.reconciled?
     redirect_to facility_transactions_path(current_facility)
   end
 

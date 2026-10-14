@@ -43,7 +43,7 @@ module Statements
 
     def reconciler
       @reconciler ||= OrderDetails::Reconciler.new(
-        statement.order_details.includes(:journal_rows),
+        statement.order_details,
         selected_params,
         nil,
       )
