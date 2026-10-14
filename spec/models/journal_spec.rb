@@ -218,7 +218,6 @@ RSpec.describe Journal do
       @admin = FactoryBot.create(:user)
       @facilitya = FactoryBot.create(:facility, abbreviation: "A")
       @facilityb = FactoryBot.create(:facility, abbreviation: "B")
-      @facilityc = FactoryBot.create(:facility, abbreviation: "C")
       @account = FactoryBot.create(:nufs_account, :with_account_owner, owner: @admin, facility: @facilitya)
 
       def create_pending_journal_for(facility)
@@ -241,16 +240,6 @@ RSpec.describe Journal do
       expect(journal.journal_rows).to be_present
     end
 
-    context "(with pending journal for A)" do
-      before :each do
-        create_pending_journal_for(@facilitya)
-      end
-
-      it "should not allow creation of a journal for A" do
-        expect { create_pending_journal_for(@facilitya) }.to raise_error(Journal::CreationError)
-      end
-    end
-
     describe "cross facility journal" do
       let(:journal) { Journal.new(created_by: @admin.id, journal_date: Time.current, order_details_for_creation: order_details) }
       let(:order_details) do
@@ -260,27 +249,9 @@ RSpec.describe Journal do
         ]
       end
 
-      it "cannot create the journal" do
-        expect { journal.save }.to raise_error(Journal::CreationError)
-      end
-    end
-
-    context "(with pending journals for A and B)" do
-      before :each do
-        create_pending_journal_for(@facilitya)
-        create_pending_journal_for(@facilityb)
-      end
-
-      it "should not allow creation of a journal for A (journal pending on A)" do
-        expect { create_pending_journal_for(@facilitya) }.to raise_error(Journal::CreationError)
-      end
-
-      it "should not allow creation of a journal for B (journal pending on B)" do
-        expect { create_pending_journal_for(@facilityb) }.to raise_error(Journal::CreationError)
-      end
-
-      it "should allow creation of a journal for C" do
-        expect { create_pending_journal_for(@facilityc) }.to_not raise_error
+      it "is invalid" do
+        expect(journal.save).to be(false)
+        expect(journal.errors).to be_added(:base, :multiple_facilities)
       end
     end
   end

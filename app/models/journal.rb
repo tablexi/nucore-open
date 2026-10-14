@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Journal < ApplicationRecord
-  class CreationError < NUCore::Error; end
 
   module Overridable
 
@@ -53,6 +52,7 @@ class Journal < ApplicationRecord
   validate :must_have_order_details, on: :create, if: :order_details_for_creation
   validate :must_not_span_fiscal_years, on: :create, if: :should_check_fiscal_years?
   validate :journal_date_cannot_be_before_last_fulfillment, on: :create, if: :has_order_details_for_creation?
+  validate :must_not_span_facilities, on: :create, if: :has_order_details_for_creation?
   validates_with JournalDateMustBeAfterCutoffs, on: :create
   before_validation :set_facility_id, on: :create, if: :has_order_details_for_creation?
   after_create :create_new_journal_rows!, if: -> { has_order_details_for_creation? && !defer_journal_row_creation }
@@ -177,10 +177,15 @@ class Journal < ApplicationRecord
     errors.add(:journal_date, :cannot_be_before_last_fulfillment) if journal_date.end_of_day < last_fulfilled
   end
 
-  def set_facility_id
-    facility_ids = @order_details_for_creation.map { |od| od.order.facility_id }.uniq
-    raise CreationError, "Cannot create a cross facility journal" if facility_ids.many?
+  def must_not_span_facilities
+    errors.add(:base, :multiple_facilities) if order_details_for_creation_facility_ids.many?
+  end
 
-    self.facility_id = facility_ids.first
+  def set_facility_id
+    self.facility_id = order_details_for_creation_facility_ids.first
+  end
+
+  def order_details_for_creation_facility_ids
+    @order_details_for_creation.map { |od| od.order.facility_id }.uniq
   end
 end

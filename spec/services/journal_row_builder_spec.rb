@@ -130,14 +130,4 @@ RSpec.describe JournalRowBuilder, :default_journal_row_converters, type: :servic
     end
   end
 
-  describe "#pending_facility_ids" do
-    let(:journal) { create(:journal, facility: create(:facility), is_successful: nil) }
-    let!(:other_pending_journal) { create(:journal, facility: create(:facility), is_successful: nil) }
-    let!(:closed_journal) { create(:journal, facility: create(:facility), is_successful: true) }
-
-    it "returns the facility ids of other pending journals" do
-      expect(builder.pending_facility_ids).to eq([other_pending_journal.facility_id])
-    end
-  end
-
 end
