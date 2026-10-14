@@ -213,8 +213,8 @@ $(function() {
   }
 
   $('#reservation_left, #reservation_right').on('click', function(event) {
-    var href = this.href.split('#')[0]
-    var newFragment = lastHiddenInstrumentId()
+    let href = this.href.split('#')[0]
+    let newFragment = lastHiddenInstrumentId()
 
     if ($('#show_canceled').is(':checked')) {
       href += "&show_canceled=true"
