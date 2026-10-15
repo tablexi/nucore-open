@@ -1,4 +1,4 @@
-- start_disabled = start_time_editing_disabled?(f.object)
+- start_disabled = !local_assigns[:admin_edit] && start_time_editing_disabled?(f.object)
 - instrument = f.object.product
 
 .well.js--reservationValidations
