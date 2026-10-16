@@ -450,16 +450,6 @@ en:
         total: "Total"
         reconciled: "Reconciled?"
       submit: "Reconcile Orders"
-    history:
-      head:
-        h2: "Reconcile Journals"
-        h3: "Closed Journals"
-      notice: "No journals have been closed yet"
-      th:
-        created_at: "Created At"
-        journal: "Journal Date"
-        reference: "Reference"
-        status: "Status"
 
   facility_notifications:
     in_review:
@@ -1485,7 +1475,6 @@ en:
       models:
         journal:
           invalid_account: "Account %{account_number} is invalid. %{validation_error}."
-          pending_overlap: "%{label}: Facility %{facility} already has a pending journal"
         reservation:
           cannot_move: Sorry, but your reservation can no longer be moved.
           move_failed: Sorry, but your reservation could not be moved. Please try again later.

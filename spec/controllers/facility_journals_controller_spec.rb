@@ -50,6 +50,26 @@ RSpec.describe FacilityJournalsController do
       expect(response).to be_successful
       expect(assigns(:pending_journals)).to eq([@pending_journal])
     end
+
+    context "in cross facility", feature_setting: { "roles.global_billing_administrator" => true } do
+      let(:other_facility) { create(:facility) }
+      let!(:other_pending_journal) { create(:journal, facility: other_facility, created_by: @admin.id, journal_date: Time.zone.now, is_successful: nil) }
+
+      before :each do
+        @params[:facility_id] = "all"
+        sign_in create(:user, :global_billing_administrator)
+        do_request
+      end
+
+      it "lists the journals of every facility" do
+        expect(assigns(:journals)).to include(@journal, @pending_journal, other_pending_journal)
+        expect(assigns(:pending_journals)).to contain_exactly(@pending_journal, other_pending_journal)
+      end
+
+      it "shows the facility of each pending journal" do
+        expect(response.body).to include(facility.abbreviation, other_facility.abbreviation)
+      end
+    end
   end
 
   describe "#update" do

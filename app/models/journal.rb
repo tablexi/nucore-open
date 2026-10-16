@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Journal < ApplicationRecord
-  class CreationError < NUCore::Error; end
 
   module Overridable
 
@@ -45,10 +44,6 @@ class Journal < ApplicationRecord
 
   has_many :journal_rows
 
-  # _order_details is used for building associations, and may contain duplicates.
-  # Consider this private. Use order_details instead.
-  has_many :_order_details, class_name: "OrderDetail", through: :journal_rows, source: :order_detail
-
   validates_presence_of   :reference, :updated_by, on: :update
   validates_presence_of   :created_by
   validates_presence_of   :journal_date
@@ -57,35 +52,15 @@ class Journal < ApplicationRecord
   validate :must_have_order_details, on: :create, if: :order_details_for_creation
   validate :must_not_span_fiscal_years, on: :create, if: :should_check_fiscal_years?
   validate :journal_date_cannot_be_before_last_fulfillment, on: :create, if: :has_order_details_for_creation?
+  validate :must_not_span_facilities, on: :create, if: :has_order_details_for_creation?
   validates_with JournalDateMustBeAfterCutoffs, on: :create
   before_validation :set_facility_id, on: :create, if: :has_order_details_for_creation?
   after_create :create_new_journal_rows!, if: -> { has_order_details_for_creation? && !defer_journal_row_creation }
 
   scope :pending, -> { where(is_successful: nil) }
 
-  # Digs up journals pertaining to the passed in facilities
-  #
-  # == Parameters
-  #
-  # facilities::
-  #   enumerable of facilities (usually ones which the user has access to)
-  #
-  # include_multi::
-  #   include multi-facility journals in the results?
-  def self.for_facilities(facilities, include_multi = false)
-    allowed_ids = facilities.collect(&:id)
-
-    if include_multi
-      Journal.includes(journal_rows: { order_detail: :order }).references(:order).where("orders.facility_id IN (?)", allowed_ids).select("journals.*")
-    else
-      Journal.where(facility_id: allowed_ids)
-    end
-  end
-
-  # TODO: Is it posible to have a cross-facility journal? If not, there are lots
-  # of specs and other logic that do allow it.
-  def self.facility_ids_with_pending_journals
-    Journal.joins(_order_details: :order).where(is_successful: nil).distinct.pluck("orders.facility_id")
+  def self.for_facilities(facilities)
+    where(facility_id: facilities.map(&:id))
   end
 
   # This pseudo-association cannot be a `has_many :through` because that will
@@ -100,21 +75,6 @@ class Journal < ApplicationRecord
   def create_journal_rows!(order_details)
     builder = JournalRowBuilder.new(self, order_details).create
     builder.errors.uniq
-  end
-
-  def facility_ids
-    if facility_id?
-      [facility_id]
-    else
-      _order_details.joins(:order)
-                    .select("orders.facility_id")
-                    .collect(&:facility_id)
-                    .distinct
-    end
-  end
-
-  def facility_abbreviations
-    Facility.where(id: facility_ids).collect(&:abbreviation)
   end
 
   def amount
@@ -217,11 +177,15 @@ class Journal < ApplicationRecord
     errors.add(:journal_date, :cannot_be_before_last_fulfillment) if journal_date.end_of_day < last_fulfilled
   end
 
+  def must_not_span_facilities
+    errors.add(:base, :multiple_facilities) if order_details_for_creation_facility_ids.many?
+  end
+
   def set_facility_id
-    self.facility_id = if @order_details_for_creation.collect { |od| od.order.facility_id }.uniq.size > 1
-                         raise CreationError, "Cannot create a cross facility journal"
-                       else
-                         @order_details_for_creation.first.order.facility_id
-                       end
+    self.facility_id = order_details_for_creation_facility_ids.first
+  end
+
+  def order_details_for_creation_facility_ids
+    @order_details_for_creation.map { |od| od.order.facility_id }.uniq
   end
 end

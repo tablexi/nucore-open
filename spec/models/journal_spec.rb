@@ -218,40 +218,26 @@ RSpec.describe Journal do
       @admin = FactoryBot.create(:user)
       @facilitya = FactoryBot.create(:facility, abbreviation: "A")
       @facilityb = FactoryBot.create(:facility, abbreviation: "B")
-      @facilityc = FactoryBot.create(:facility, abbreviation: "C")
-      @facilityd = FactoryBot.create(:facility, abbreviation: "D")
       @account = FactoryBot.create(:nufs_account, :with_account_owner, owner: @admin, facility: @facilitya)
 
-      # little helper to create the calls which the controller performs
-      def create_pending_journal_for(*facilities_list)
-        @ods = []
+      def create_pending_journal_for(facility)
+        order_detail = place_and_complete_item_order(@admin, facility, @account, true)
+        define_open_account(@item.account, @account.account_number)
 
-        facilities_list.each do |f|
-          od = place_and_complete_item_order(@admin, f, @account, true)
-          define_open_account(@item.account, @account.account_number)
-
-          @ods << od
-        end
-
-        journal = Journal.create!(
+        Journal.create!(
           created_by: @admin.id,
           journal_date: Time.zone.now,
+          order_details_for_creation: [order_detail],
         )
-
-        journal.create_journal_rows!(@ods)
-
-        journal
       end
     end
 
-    context "(with pending journal for A)" do
-      before :each do
-        create_pending_journal_for(@facilitya)
-      end
+    it "creates a pending journal for the order details facility" do
+      journal = create_pending_journal_for(@facilitya)
 
-      it "should not allow creation of a journal for A" do
-        expect { create_pending_journal_for(@facilitya) }.to raise_error(Journal::CreationError)
-      end
+      expect(journal).to be_open
+      expect(journal.facility).to eq(@facilitya)
+      expect(journal.journal_rows).to be_present
     end
 
     describe "cross facility journal" do
@@ -263,34 +249,9 @@ RSpec.describe Journal do
         ]
       end
 
-      it "cannot create the journal" do
-        expect { journal.save }.to raise_error(Journal::CreationError)
-      end
-    end
-
-    context "(with: pending journal for A & B)" do
-      before :each do
-        create_pending_journal_for(@facilitya, @facilityb)
-      end
-
-      it "should not allow creation of a journal for B & C (journal pending on B)" do
-        expect { create_pending_journal_for(@facilityb, @facilityc) }.to raise_error(Journal::CreationError)
-      end
-
-      it "should not allow creation of a journal for A (journal pending on A)" do
-        expect { create_pending_journal_for(@facilitya) }.to raise_error(Journal::CreationError)
-      end
-
-      it "should not allow creation of a journal for B (journal pending on B)" do
-        expect { create_pending_journal_for(@facilityb) }.to raise_error(Journal::CreationError)
-      end
-
-      it "should allow creation of a journal for C" do
-        expect { create_pending_journal_for(@facilityc) }.to_not raise_error
-      end
-
-      it "should allow creation of a journal for C & D (no journals on either C or D)" do
-        expect { create_pending_journal_for(@facilityc, @facilityd) }.to_not raise_error
+      it "is invalid" do
+        expect(journal.save).to be(false)
+        expect(journal.errors).to be_added(:base, :multiple_facilities)
       end
     end
   end
@@ -404,20 +365,12 @@ RSpec.describe Journal do
       journal.create_journal_rows!(order_details)
     end
 
-    describe "a normal journal" do
-      it "finds the facility" do
-        expect(described_class.for_facilities([facility])).to include(journal)
-      end
+    it "finds journals for the given facilities" do
+      expect(described_class.for_facilities([facility])).to include(journal)
     end
 
-    describe "multi-facility journal" do
-      subject(:journal) do
-        build(:journal, facility: nil, created_by: 1, journal_date: journal_date)
-      end
-
-      it "finds the facility" do
-        expect(described_class.for_facilities([order.facility], true)).to include(journal)
-      end
+    it "excludes journals for other facilities" do
+      expect(described_class.for_facilities([create(:facility)])).not_to include(journal)
     end
   end
 

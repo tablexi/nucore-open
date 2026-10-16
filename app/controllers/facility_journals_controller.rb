@@ -38,11 +38,7 @@ class FacilityJournalsController < ApplicationController
     @search_form = TransactionSearch::SearchForm.new(params[:search])
     @search =
       TransactionSearch::Searcher
-      .new(
-        current_facility,
-        facilities: current_facility.cross_facility?,
-        suspended_accounts: true,
-      )
+      .new(current_facility, suspended_accounts: true)
       .search(order_details, @search_form)
 
     @date_range_field = @search_form.date_params[:field]
@@ -227,7 +223,7 @@ class FacilityJournalsController < ApplicationController
   end
 
   def init_journals
-    @journals = Journal.for_facilities(manageable_facilities, manageable_facilities.size > 1).includes(:journal_rows).order("journals.created_at DESC")
+    @journals = Journal.for_facilities(manageable_facilities).includes(:journal_rows).order("journals.created_at DESC")
     jid = params[:id] || params[:journal_id]
     @journal = @journals.find(jid) if jid
     @journals = @journals.paginate(page: params[:page], per_page: 10)

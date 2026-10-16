@@ -109,12 +109,7 @@ class Facility < ApplicationRecord
   end
 
   def has_pending_journals?
-    pending_facility_ids = Journal.facility_ids_with_pending_journals
-    if cross_facility?
-      pending_facility_ids.any?
-    else
-      pending_facility_ids.member?(id)
-    end
+    journals.pending.exists?
   end
 
   def cross_facility?

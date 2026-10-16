@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
-require "set"
-
 # Ported from Journal model.
 # We should improve upon this logic.
 class JournalRowBuilder
 
   attr_reader :order_details, :journal, :journal_rows, :errors, :options,
-              :product_recharges, :journaled_facility_ids
+              :product_recharges
 
   # This is for when you need to create a journal row without all the additional
   # validations and error checking
@@ -26,7 +24,6 @@ class JournalRowBuilder
   def reset
     @errors = []
     @journal_rows = []
-    @journaled_facility_ids = Set.new
     @product_recharges = {}
   end
 
@@ -79,15 +76,9 @@ class JournalRowBuilder
     errors.blank?
   end
 
-  # Set an array of facility_ids with pending journals
-  def pending_facility_ids
-    @pending_facility_ids ||= Journal.facility_ids_with_pending_journals
-  end
-
   # Run all validations on an order detail
   def validate_order_detail(order_detail)
     validate_order_detail_unjournaled(order_detail)
-    validate_facility_can_journal(order_detail)
     validate_account(order_detail)
   end
 
@@ -95,26 +86,6 @@ class JournalRowBuilder
   def validate_order_detail_unjournaled(order_detail)
     if order_detail.journal_id.present?
       @errors << "#{order_detail} is already journaled in journal #{order_detail.journal_id}"
-    end
-  end
-
-  # Validate the order_details's facility doesn't currently have a pending
-  # journal.
-  #
-  # Ported from original journal model logic. Consider replacing the raised
-  # error with a push to `@errors` instead.
-  def validate_facility_can_journal(order_detail)
-    facility_id = order_detail.order.facility_id
-    unless journaled_facility_ids.member?(facility_id)
-      if pending_facility_ids.member?(facility_id)
-        raise ::Journal::CreationError.new(I18n.t(
-                                             "activerecord.errors.models.journal.pending_overlap",
-                                             label: order_detail.to_s,
-                                             facility: Facility.find(facility_id),
-                                           ))
-      else
-        journaled_facility_ids.add(facility_id)
-      end
     end
   end
 

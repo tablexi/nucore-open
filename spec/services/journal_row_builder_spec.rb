@@ -130,12 +130,4 @@ RSpec.describe JournalRowBuilder, :default_journal_row_converters, type: :servic
     end
   end
 
-  describe "#pending_facility_ids" do
-    let(:fake_facility_ids) { ["fake id"] }
-    it "returns pending facility ids" do
-      allow(Journal).to receive(:facility_ids_with_pending_journals).and_return(fake_facility_ids)
-      expect(builder.pending_facility_ids).to eq(fake_facility_ids)
-    end
-  end
-
 end
