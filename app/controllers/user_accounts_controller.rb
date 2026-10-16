@@ -5,6 +5,7 @@ class UserAccountsController < ApplicationController
   layout "two_column"
 
   before_action :init_current_facility
+  before_action :require_cross_facility, only: [:edit, :update]
   load_resource class: "User", id_param: :user_id, instance_name: :user
   authorize_resource class: AccountUser
   before_action { @active_tab = "admin_users" }
@@ -33,27 +34,17 @@ class UserAccountsController < ApplicationController
 
   private
 
-  def user_params
-    permitted = params.require(:user).permit(account_users_attributes: [:id, :_destroy])
-    submitted = permitted[:account_users_attributes]
-    return permitted if submitted.blank?
+  def require_cross_facility
+    raise ActiveRecord::RecordNotFound unless current_facility.cross_facility?
+  end
 
-    editable_ids = account_users_for_facility.ids.map(&:to_s)
-    permitted[:account_users_attributes] = submitted.select do |_index, attributes|
-      editable_ids.include?(attributes[:id].to_s)
-    end
-    permitted
+  def user_params
+    params.require(:user).permit(account_users_attributes: [:id, :_destroy])
   end
 
   def load_accounts
     @accounts = @user.accounts.includes(:owner_user).for_facility(current_facility)
   end
-
-  def account_users_for_facility
-    @account_users_for_facility ||=
-      @user.account_users.joins(:account).merge(Account.for_facility(current_facility))
-  end
-  helper_method :account_users_for_facility
 
   def clear_owners(accounts)
     # Unmark owner records for destruction
