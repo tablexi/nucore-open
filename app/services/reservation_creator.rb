@@ -88,15 +88,7 @@ class ReservationCreator
         duration_field,
       ).merge(
         product:,
-      ).tap do |reservation_params|
-        if product.start_time_disabled?
-          reservation_params.merge!(
-            reserve_start_hour: 0,
-            reserve_start_min: 0,
-            reserve_start_meridian: "AM"
-          )
-        end
-      end
+      )
   end
 
   def accessory_params

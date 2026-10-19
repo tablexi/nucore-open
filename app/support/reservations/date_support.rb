@@ -3,7 +3,6 @@
 # Support for reading/writing reservation and actual start and
 # end times using values split across text inputs
 module Reservations::DateSupport
-
   extend ActiveSupport::Concern
 
   included do
@@ -226,9 +225,16 @@ module Reservations::DateSupport
   # set set_reserve_start_at based on reserve_start_xxx virtual attributes
   def set_reserve_start_at
     return unless reserve_start_at.blank?
-    if @reserve_start_date && @reserve_start_hour && @reserve_start_min && @reserve_start_meridian
-      self.reserve_start_at = parse_usa_date(@reserve_start_date, "#{@reserve_start_hour}:#{@reserve_start_min.to_s.rjust(2, '0')} #{@reserve_start_meridian}")
+
+    if product.start_time_disabled?
+      @reserve_start_hour = 0
+      @reserve_start_min = 0
+      @reserve_start_meridian = "AM"
     end
+
+    return unless @reserve_start_date && @reserve_start_hour && @reserve_start_min && @reserve_start_meridian
+
+    self.reserve_start_at = parse_usa_date(@reserve_start_date, "#{@reserve_start_hour}:#{@reserve_start_min.to_s.rjust(2, '0')} #{@reserve_start_meridian}")
   end
 
   # set reserve_end_at based on duration_mins
