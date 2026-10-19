@@ -316,4 +316,35 @@ RSpec.describe Reservations::DateSupport do
       end
     end
   end
+
+  describe "when instrument is daily booking" do
+    let(:instrument) do
+      build_stubbed(:instrument, pricing_mode: Instrument::Pricing::SCHEDULE_DAILY)
+    end
+
+    before do
+      reservation.assign_attributes(
+        product: instrument,
+        split_times: true,
+      )
+    end
+
+    context "when start time disabled" do
+      let(:new_date) { 10.days.from_now.to_date }
+
+      before do
+        instrument.start_time_disabled = true
+      end
+
+      it "assign just the date" do
+        reservation.assign_attributes(
+          reserve_start_date: new_date,
+          duration_days: 1,
+        )
+
+        expect(reservation).to be_valid
+        expect(reservation.reserve_start_at).to eq(new_date.beginning_of_day)
+      end
+    end
+  end
 end
