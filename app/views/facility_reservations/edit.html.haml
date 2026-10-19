@@ -33,7 +33,7 @@
 
   .clearfix
 
-  - if @reservation.can_edit_actuals?
+  - if !@reservation.product.daily_booking? && @reservation.can_edit_actuals?
     .datetime-block
       = f.input :actual_start_date, as: :date_field,
         min_date: @reservation_window.max_days_ago, max_date: Date.current,
