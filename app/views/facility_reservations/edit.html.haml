@@ -4,8 +4,6 @@
     var minTime         = #{@instrument.first_available_hour};
     var maxTime         = #{@instrument.last_available_hour+1};
     var currentReservationId = #{@reservation.id};
-    var dailyBooking = #{@instrument.daily_booking?};
-
     var reserveMinimum  = #{@instrument.min_reserve_mins || 0};
     var reserveMaximum  = #{@instrument.max_reserve_mins || 0};
     var initialDate = "#{@reservation&.reserve_start_at&.iso8601}";
@@ -33,6 +31,7 @@
 
   .clearfix
 
+  -# TODO: Do daily booking reservations need actual times editing?
   - if !@reservation.product.daily_booking? && @reservation.can_edit_actuals?
     .datetime-block
       = f.input :actual_start_date, as: :date_field,
