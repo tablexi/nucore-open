@@ -37,7 +37,11 @@ class OrderImport < ApplicationRecord
   def process_upload!
     imported = false
 
-    with_lock do
+    transaction do
+      if persisted?
+        self.class.where(id:).lock.load
+        reload
+      end
       next if processed?
 
       import_upload
