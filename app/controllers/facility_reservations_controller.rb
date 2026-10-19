@@ -62,7 +62,7 @@ class FacilityReservationsController < ApplicationController
         @reservation.save_as_user!(session_user)
         @order_detail.save!
         flash.now[:notice] = "The reservation has been updated successfully.#{additional_notice}"
-      rescue ActiveRecord::RecordInvalid => e
+      rescue ActiveRecord::RecordInvalid
         flash.now[:error] = "An error was encountered while updating the reservation."
         raise ActiveRecord::Rollback
       end
