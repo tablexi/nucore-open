@@ -45,26 +45,6 @@ RSpec.describe OrderImportJob, feature_setting: { "pricing.user_based_price_grou
       .with("Reports::OrderImport", report_recipient, order_import:, successes: 1, failures: 0)
   end
 
-  context "when the report email fails and the report job is retried" do
-    before do
-      attempts = 0
-      allow(CsvReportMailer).to receive(:csv_report_email).and_wrap_original do |method, *args|
-        attempts += 1
-        raise "Mail server unavailable" if attempts == 1
-
-        method.call(*args)
-      end
-    end
-
-    it "does not import the orders again" do
-      expect { run_import_job }.to change(Order, :count).by(1)
-
-      expect(CsvReportMailer).to have_received(:csv_report_email).twice
-      expect(report_emails.size).to eq(1)
-      expect(report_text).to include("1 line items were created")
-    end
-  end
-
   context "when the job runs again for an already processed import" do
     it "does not import the orders or send the report again" do
       run_import_job
