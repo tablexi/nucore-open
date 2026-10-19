@@ -389,14 +389,8 @@ RSpec.describe FacilityReservationsController do
       end
     end
 
-    context "with a daily booking instrument" do
-      let(:daily_instrument) do
-        create(
-          :setup_instrument, :daily_booking,
-          facility: @authable,
-          facility_account: @facility_account,
-        )
-      end
+    # Depends on `daily_instrument` being defined
+    shared_examples "editing a daily booking instrument" do
       let(:reservation) do
         create(:reservation, :daily, product: daily_instrument)
       end
@@ -434,6 +428,11 @@ RSpec.describe FacilityReservationsController do
         it "renders the duration_days field and month-view calendar" do
           do_request
 
+          if daily_instrument.start_time_disabled
+            expect(response.body).not_to have_css("select[name='reservation[reserve_start_hour]']")
+          else
+            expect(response.body).to have_css("select[name='reservation[reserve_start_hour]']")
+          end
           expect(response.body).to have_css("input[name='reservation[duration_days]']")
           expect(response.body).to have_css("#calendar[data-default-view='month']")
         end
@@ -466,6 +465,31 @@ RSpec.describe FacilityReservationsController do
           )
         end
       end
+    end
+
+    context "with a daily booking instrument" do
+      let(:daily_instrument) do
+        create(
+          :setup_instrument, :daily_booking,
+          facility: @authable,
+          facility_account: @facility_account,
+        )
+      end
+
+      it_behaves_like "editing a daily booking instrument"
+    end
+
+    context "with a daily booking with start time disabled" do
+      let(:daily_instrument) do
+        create(
+          :setup_instrument, :daily_booking,
+          facility: @authable,
+          facility_account: @facility_account,
+          start_time_disabled: true,
+        )
+      end
+
+      it_behaves_like "editing a daily booking instrument"
     end
   end
 
