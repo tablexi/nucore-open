@@ -439,8 +439,6 @@ RSpec.describe FacilityReservationsController do
       end
 
       describe "update" do
-        let(:start_at) { reservation.start_at }
-
         before :each do
           @method = :put
           @action = :update
@@ -479,6 +477,7 @@ RSpec.describe FacilityReservationsController do
       it_behaves_like "editing a daily booking instrument"
     end
 
+    # TODO: test reserve start at update when start time disabled (NU-500)
     context "with a daily booking with start time disabled" do
       let(:daily_instrument) do
         create(
