@@ -62,6 +62,7 @@ class ReservationCreator
     return @reservation if defined?(@reservation)
     @reservation = @order_detail.build_reservation
     @reservation.assign_attributes(reservation_create_params)
+    @reservation.assign_beginning_of_day_start if product.start_time_disabled?
     @reservation.assign_times_from_params(reservation_create_params)
     @reservation
   end
@@ -88,15 +89,7 @@ class ReservationCreator
         duration_field,
       ).merge(
         product:,
-      ).tap do |reservation_params|
-        if product.start_time_disabled?
-          reservation_params.merge!(
-            reserve_start_hour: 0,
-            reserve_start_min: 0,
-            reserve_start_meridian: "AM"
-          )
-        end
-      end
+      )
   end
 
   def accessory_params

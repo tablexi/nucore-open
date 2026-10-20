@@ -24,6 +24,14 @@ module Reservations::DateSupport
     set_all_split_times
   end
 
+  def assign_beginning_of_day_start
+    assign_attributes(
+      reserve_start_hour: 0,
+      reserve_start_min: 0,
+      reserve_start_meridian: "AM"
+    )
+  end
+
   #
   # Virtual attributes
   #

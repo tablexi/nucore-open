@@ -208,6 +208,7 @@ class ReservationsController < ApplicationController
       return
     end
 
+    @reservation.assign_beginning_of_day_start if @instrument.start_time_disabled?
     @reservation.assign_times_from_params(reservation_params)
     with_dropped_params do
       reservation_update_attributes = params.require(:reservation).permit(:note)
