@@ -47,7 +47,6 @@ class FacilityReservationsController < ApplicationController
     raise ActiveRecord::RecordNotFound if @reservation != Reservation.find(params[:id]) || @reservation.locked?
     set_windows
 
-    @reservation.assign_beginning_of_day_start if @instrument.start_time_disabled?
     @reservation.assign_times_from_params(reservation_params)
 
     additional_notice = ""
