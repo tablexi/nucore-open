@@ -373,7 +373,7 @@ GEM
       base64
     kgio (2.11.4)
     kostya-sigar (2.0.11)
-    kt-paperclip (8.0.0)
+    kt-paperclip (8.0.1)
       activemodel (>= 4.2.0)
       activesupport (>= 4.2.0)
       marcel (>= 1.0.1)
@@ -408,7 +408,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2026.1006)
+    mime-types-data (3.2026.1013)
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
     minitest (6.0.6)
