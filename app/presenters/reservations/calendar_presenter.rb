@@ -26,12 +26,13 @@ module Reservations
   end
 
   class OfflineCalendarPresenter < CalendarPresenter
-    def as_calendar_object(_options = {})
+    def as_calendar_object(options = {})
       super.merge(
         title: "Instrument Offline",
-        email: created_by.try(:full_name),
         className: "unavailable"
-      )
+      ).tap do |hash|
+        hash[:email] = created_by.try(:full_name) if options[:with_details].present?
+      end
     end
   end
 
@@ -58,12 +59,13 @@ module Reservations
   end
 
   class FallbackCalendarPresenter < CalendarPresenter
-    def as_calendar_object(_options = {})
+    def as_calendar_object(options = {})
       super.merge(
         title: model_name.human,
-        email: created_by.try(:full_name),
         userNote: user_note,
       ).tap do |hash|
+        hash[:email] = created_by.try(:full_name) if options[:with_details].present?
+
         if expires_mins_before.present?
           hash[:expiration] = "Expires #{MinutesToTimeFormatter.new(expires_mins_before)} prior"
         end
