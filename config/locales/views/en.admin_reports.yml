@@ -8,6 +8,7 @@ en:
           submit: Email Report
           reports:
             relay: Instrument Relay Data
+            price_list: Price List
         filters:
           fiscal_year:
             label: Fiscal Year

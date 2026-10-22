@@ -38,6 +38,17 @@ RSpec.describe "Admin reports" do
         expect(response).to have_http_status(:not_found)
       end
 
+      it "queues the price list report email with the selected fiscal year" do
+        allow(Settings).to receive(:admin_reports).and_return(["Reports::PriceListReport"])
+        year = SettingsHelper.fiscal_year_beginning.year - 1
+        get admin_reports_path
+
+        expect(response.body).to include("Price List")
+        expect { get admin_report_path("price_list", fiscal_year: year.to_s) }
+          .to have_enqueued_job(CsvReportEmailJob)
+          .with("Reports::PriceListReport", admin.email, fiscal_year: year.to_s)
+      end
+
       context "with a report that declares filters" do
         let(:fiscal_year) { SettingsHelper.fiscal_year_beginning.year - 1 }
 
