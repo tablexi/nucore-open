@@ -5,5 +5,9 @@ en:
         index:
           description: Each report is emailed to you as a CSV file.
           none: There are no reports available.
+          submit: Email Report
           reports:
             relay: Instrument Relay Data
+        filters:
+          fiscal_year:
+            label: Fiscal Year

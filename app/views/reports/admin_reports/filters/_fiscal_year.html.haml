@@ -1,0 +1,5 @@
+= label_tag :fiscal_year, text("label"), class: "sr-only"
+= select_tag :fiscal_year,
+  options_for_select(fiscal_year_options, current_fiscal_year),
+  class: "form-control input-sm",
+  title: text("label")

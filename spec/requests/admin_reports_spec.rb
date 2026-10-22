@@ -37,6 +37,42 @@ RSpec.describe "Admin reports" do
 
         expect(response).to have_http_status(:not_found)
       end
+
+      context "with a report that declares filters" do
+        let(:fiscal_year) { SettingsHelper.fiscal_year_beginning.year - 1 }
+
+        before do
+          stub_const("Reports::FilteredTestReport", Class.new do
+            def self.filters
+              [:fiscal_year]
+            end
+          end)
+          allow(Settings).to receive(:admin_reports).and_return(["Reports::FilteredTestReport"])
+        end
+
+        it "renders a fiscal year select instead of a plain link" do
+          get admin_reports_path
+
+          expect(response.body).to include("fiscal_year")
+          expect(response.body).to include(SettingsHelper.fiscal_year_beginning.year.to_s)
+        end
+
+        it "passes the submitted filter through to the job" do
+          expect { get admin_report_path("filtered_test", fiscal_year: fiscal_year.to_s) }
+            .to have_enqueued_job(CsvReportEmailJob)
+            .with("Reports::FilteredTestReport", admin.email, fiscal_year: fiscal_year.to_s)
+        end
+
+        it "omits a blank filter so the report applies its own default" do
+          expect { get admin_report_path("filtered_test", fiscal_year: "") }
+            .to have_enqueued_job(CsvReportEmailJob).with("Reports::FilteredTestReport", admin.email)
+        end
+
+        it "ignores params the report did not declare" do
+          expect { get admin_report_path("filtered_test", sneaky: "1") }
+            .to have_enqueued_job(CsvReportEmailJob).with("Reports::FilteredTestReport", admin.email)
+        end
+      end
     end
 
     context "as an unprivileged user" do
