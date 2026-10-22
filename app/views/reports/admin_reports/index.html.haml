@@ -12,11 +12,4 @@
   %p.notice= text("none")
 - else
   - @reports.each do |report|
-    - if report.filters.any?
-      = form_tag admin_report_path(report.key), method: :get, class: "form-inline" do
-        %span= text("reports.#{report.key}", default: report.key.titleize)
-        - report.filters.each do |filter|
-          = render "reports/admin_reports/filters/#{filter}"
-        = submit_tag text("submit"), class: "btn btn-primary btn-sm", name: nil
-    - else
-      %p= link_to text("reports.#{report.key}", default: report.key.titleize), admin_report_path(report.key)
+    %p= link_to admin_report_name(report), admin_report_path(report.key)

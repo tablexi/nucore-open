@@ -1211,6 +1211,7 @@ en:
       subject: "!app_name! Price List Export FY%{fiscal_year}"
       headers:
         product_type: Product Type
+        cancellation_cost: Cancellation Cost
         step_1_start: Step 1 Start (hr)
         step_1_rate: Step 1 Rate (hr)
         step_2_start: Step 2 Start (hr)
