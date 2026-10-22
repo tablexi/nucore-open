@@ -46,7 +46,7 @@ module Reports
     end
 
     def initialize(fiscal_year: nil)
-      @fiscal_year = (fiscal_year.presence || SettingsHelper.fiscal_year_beginning.year).to_i
+      @fiscal_year = Integer(fiscal_year.to_s, exception: false) || SettingsHelper.fiscal_year_beginning.year
     end
 
     attr_reader :fiscal_year
@@ -155,7 +155,7 @@ module Reports
 
     def policy_for(product, price_group)
       policy = policies[[product.id, price_group.id]]
-      policy unless policy.nil? || policy.restrict_purchase?
+      policy if policy&.can_purchase?
     end
 
     def rate_for(product, price_group, column)
@@ -210,7 +210,11 @@ module Reports
       duration_rate = sorted_duration_rates(policy)[index]
       return if duration_rate.nil?
 
-      field == :start ? duration_rate.min_duration_hours : duration_rate.subsidized_hourly_cost
+      field == :start ? duration_rate.min_duration_hours : step_rate(duration_rate)
+    end
+
+    def step_rate(duration_rate)
+      duration_rate.subsidy.present? ? duration_rate.subsidized_hourly_cost : duration_rate.hourly_rate
     end
 
     def sorted_duration_rates(policy)

@@ -30,6 +30,10 @@ RSpec.describe Reports::PriceListReport do
     I18n.t("reports.price_list.headers.#{key}")
   end
 
+  def product_header(key, default)
+    I18n.t("reports.price_list.headers.#{key}", default:)
+  end
+
   describe "the fiscal year" do
     it "defaults to the current fiscal year" do
       expect(report.fiscal_year).to eq(SettingsHelper.fiscal_year_beginning.year)
@@ -44,6 +48,10 @@ RSpec.describe Reports::PriceListReport do
       expect(described_class.new(fiscal_year: "").fiscal_year).to eq(SettingsHelper.fiscal_year_beginning.year)
     end
 
+    it "falls back to the current fiscal year when given something that is not a year" do
+      expect(described_class.new(fiscal_year: "abc").fiscal_year).to eq(SettingsHelper.fiscal_year_beginning.year)
+    end
+
     it "names the fiscal year in the filename and subject" do
       year = SettingsHelper.fiscal_year_beginning.year
       expect(report.filename).to eq("price_list_fy#{year}.csv")
@@ -53,8 +61,13 @@ RSpec.describe Reports::PriceListReport do
 
   describe "columns" do
     it "leads with the product columns" do
-      expect(rows.headers.first(3))
-        .to eq([Facility.model_name.human, report_header(:product_type), Product.model_name.human])
+      expect(rows.headers.first(3)).to eq(
+        [
+          product_header(:facility, Facility.model_name.human),
+          report_header(:product_type),
+          product_header(:name, Product.model_name.human),
+        ]
+      )
     end
 
     it "emits a block of rate columns for every visible price group" do
@@ -171,6 +184,30 @@ RSpec.describe Reports::PriceListReport do
       expect(base_column(report_header(:step_1_rate))).to eq(["90.0"])
       expect(base_column(report_header(:step_2_rate))).to eq(["80.0"])
       expect(base_column(report_header(:step_3_rate))).to eq(["50.0"])
+    end
+
+  end
+
+  describe "a stepped instrument whose steps have no subsidy" do
+    let(:instrument) do
+      create(:setup_instrument, facility:, name: "A Microscope", pricing_mode: Instrument::Pricing::DURATION)
+    end
+    let(:policy) do
+      create(
+        :instrument_price_policy,
+        product: instrument,
+        price_group: base_price_group,
+        usage_rate: 100,
+        usage_subsidy: 0,
+      )
+    end
+
+    before { create(:duration_rate, price_policy: policy, min_duration_hours: 2, rate: 90) }
+
+    it "reports the step rate instead of erroring the whole row" do
+      expect(column(product_header(:name, Product.model_name.human))).to eq(["A Microscope"])
+      expect(base_column(report_header(:step_1_start))).to eq(["2"])
+      expect(base_column(report_header(:step_1_rate))).to eq(["90.0"])
     end
   end
 
