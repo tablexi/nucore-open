@@ -7,7 +7,7 @@ module ReportsHelper
   FISCAL_YEARS_BACK = 5
 
   def current_fiscal_year
-    SettingsHelper.fiscal_year_beginning.year
+    SettingsHelper.fiscal_year_end.year
   end
 
   def fiscal_year_options

@@ -46,7 +46,7 @@ module Reports
     end
 
     def initialize(fiscal_year: nil)
-      @fiscal_year = Integer(fiscal_year.to_s, exception: false) || SettingsHelper.fiscal_year_beginning.year
+      @fiscal_year = Integer(fiscal_year.to_s, exception: false) || SettingsHelper.fiscal_year_end.year
     end
 
     attr_reader :fiscal_year
@@ -135,7 +135,7 @@ module Reports
     end
 
     def fiscal_year_beginning
-      @fiscal_year_beginning ||= SettingsHelper.fiscal_year(fiscal_year)
+      @fiscal_year_beginning ||= SettingsHelper.fiscal_year(fiscal_year - 1)
     end
 
     def fiscal_year_end

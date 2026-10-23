@@ -40,7 +40,7 @@ RSpec.describe "Admin reports" do
 
       it "queues the price list report email with the selected fiscal year" do
         allow(Settings).to receive(:admin_reports).and_return(["Reports::PriceListReport"])
-        year = SettingsHelper.fiscal_year_beginning.year - 1
+        year = SettingsHelper.fiscal_year_end.year - 1
         get admin_reports_path
 
         expect(response.body).to include("Price List")
@@ -50,7 +50,7 @@ RSpec.describe "Admin reports" do
       end
 
       context "with a report that declares filters" do
-        let(:fiscal_year) { SettingsHelper.fiscal_year_beginning.year - 1 }
+        let(:fiscal_year) { SettingsHelper.fiscal_year_end.year - 1 }
 
         before do
           stub_const("Reports::FilteredTestReport", Class.new do
@@ -72,7 +72,7 @@ RSpec.describe "Admin reports" do
             .not_to have_enqueued_job(CsvReportEmailJob)
 
           expect(response.body).to include("fiscal_year")
-          expect(response.body).to include(SettingsHelper.fiscal_year_beginning.year.to_s)
+          expect(response.body).to include(SettingsHelper.fiscal_year_end.year.to_s)
         end
 
         it "passes the submitted filter through to the job" do

@@ -36,24 +36,24 @@ RSpec.describe Reports::PriceListReport do
 
   describe "the fiscal year" do
     it "defaults to the current fiscal year" do
-      expect(report.fiscal_year).to eq(SettingsHelper.fiscal_year_beginning.year)
+      expect(report.fiscal_year).to eq(SettingsHelper.fiscal_year_end.year)
     end
 
     it "accepts a fiscal year as a string, as the job passes it" do
-      year = SettingsHelper.fiscal_year_beginning.year - 1
+      year = SettingsHelper.fiscal_year_end.year - 1
       expect(described_class.new(fiscal_year: year.to_s).fiscal_year).to eq(year)
     end
 
     it "falls back to the current fiscal year when given blank" do
-      expect(described_class.new(fiscal_year: "").fiscal_year).to eq(SettingsHelper.fiscal_year_beginning.year)
+      expect(described_class.new(fiscal_year: "").fiscal_year).to eq(SettingsHelper.fiscal_year_end.year)
     end
 
     it "falls back to the current fiscal year when given something that is not a year" do
-      expect(described_class.new(fiscal_year: "abc").fiscal_year).to eq(SettingsHelper.fiscal_year_beginning.year)
+      expect(described_class.new(fiscal_year: "abc").fiscal_year).to eq(SettingsHelper.fiscal_year_end.year)
     end
 
     it "names the fiscal year in the filename and subject" do
-      year = SettingsHelper.fiscal_year_beginning.year
+      year = SettingsHelper.fiscal_year_end.year
       expect(report.filename).to eq("price_list_fy#{year}.csv")
       expect(report.description).to include(year.to_s)
     end
@@ -264,11 +264,19 @@ RSpec.describe Reports::PriceListReport do
     end
 
     it "omits rates from a fiscal year the policies do not cover" do
-      past = described_class.new(fiscal_year: SettingsHelper.fiscal_year_beginning.year - 2)
+      past = described_class.new(fiscal_year: SettingsHelper.fiscal_year_end.year - 2)
       past_rows = CSV.parse(past.to_csv, headers: true)
 
       expect(past_rows.pluck(Product.model_name.human)).to eq(["A Reagent"])
       expect(past_rows.pluck("#{base_price_group.name} - #{policy_header(:unit_cost)}")).to eq([nil])
+    end
+
+    it "is named for the year the fiscal year ends in, not the one it starts in" do
+      policy = PricePolicy.find_by(product: item, price_group: base_price_group)
+      labelled = described_class.new(fiscal_year: SettingsHelper.fiscal_year_end(policy.start_date).year)
+
+      expect(CSV.parse(labelled.to_csv, headers: true)
+        .pluck("#{base_price_group.name} - #{policy_header(:unit_cost)}")).to eq(["30.0"])
     end
   end
 
