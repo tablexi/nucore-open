@@ -76,6 +76,15 @@ RSpec.describe Reports::PriceListReport do
       expect(rows.headers.count { |header| header.end_with?(" - #{policy_header(:usage_rate_daily)}") })
         .to eq(PriceGroup.visible.count)
     end
+
+    it "qualifies a facility price group with the facility abbreviation" do
+      other_facility = create(:setup_facility, name: "Bio Imaging")
+      create(:price_group, facility:, name: "Shared Rate")
+      create(:price_group, facility: other_facility, name: "Shared Rate")
+
+      expect(rows.headers).to include("Shared Rate (#{facility.abbreviation}) - #{policy_header(:unit_cost)}")
+      expect(rows.headers).to include("Shared Rate (#{other_facility.abbreviation}) - #{policy_header(:unit_cost)}")
+    end
   end
 
   describe "products" do

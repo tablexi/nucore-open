@@ -105,8 +105,14 @@ module Reports
 
     def price_group_headers
       price_groups.flat_map do |price_group|
-        RATE_COLUMNS.map { |column| "#{price_group.name} - #{header_for(column, rate_header_default(column))}" }
+        RATE_COLUMNS.map { |column| "#{price_group_label(price_group)} - #{header_for(column, rate_header_default(column))}" }
       end
+    end
+
+    def price_group_label(price_group)
+      return price_group.name if price_group.facility.nil?
+
+      "#{price_group.name} (#{price_group.facility.abbreviation})"
     end
 
     def header_for(column, default)
@@ -131,7 +137,7 @@ module Reports
     end
 
     def price_groups
-      @price_groups ||= PriceGroup.ordered_with_subsidies(PriceGroup.visible.to_a)
+      @price_groups ||= PriceGroup.ordered_with_subsidies(PriceGroup.visible.includes(:facility).to_a)
     end
 
     def fiscal_year_beginning
