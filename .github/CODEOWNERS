@@ -1,7 +1,7 @@
 # Lines starting with '#' are comments.
 # Each line is a file pattern followed by one or more owners.
 
-* @LeticiaErrandonea @diebas @joaquinco
+* @LeticiaErrandonea @diebas
 
 # Do not add reviewers for dependabot updates
 Gemfile*
